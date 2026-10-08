@@ -176,7 +176,9 @@
 
 ![조치기록 조회 및 검색](./images/screen-action-records.webp)
 
-<!-- 사고영상 보관함 화면 이미지를 추가해주세요. -->
+**사고 영상 보관함**
+
+![사고 영상 보관함](./images/screen-accident-videos.png)
 
 ### 관리자 현황·통계
 
@@ -188,7 +190,7 @@
 
 ## 11. 시연 영상
 
-<!-- 시연 영상 링크를 추가해주세요. -->
+📺 [ALL EYES 시연 영상 보기](./images/demo.mp4)
 
 <br>
 
