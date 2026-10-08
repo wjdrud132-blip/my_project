@@ -190,7 +190,7 @@
 
 ## 11. 시연 영상
 
-📺 [ALL EYES 시연 영상 보기](./images/demo.mp4)
+📺 [ALL EYES 시연 영상 다운로드](https://github.com/wjdrud132-blip/my_project/raw/refs/heads/main/ALL-EYES/images/demo.mp4)
 
 <br>
 
