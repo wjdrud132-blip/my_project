@@ -1,0 +1,82 @@
+/* [수정완료] 기존 높이 제한을 해제하고 카드가 화면 아래에서 잘리지 않게 합니다. */
+body { overflow: auto; }
+.settings-page { padding-top: 16px; padding-bottom: 20px; }
+/* 설정 제목과 설명을 카드 시작선에 맞추고 글자 크기와 간격을 통일합니다. */
+.settings-page .settings-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 0 24px;
+  padding: 0;
+  text-align: left;
+}
+.settings-page .settings-heading .eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.settings-page .settings-heading h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -.03em;
+}
+.settings-page .settings-heading .description {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0;
+}
+@media(max-width:700px) {
+  .settings-page .settings-heading { margin-bottom: 20px; }
+  .settings-page .settings-heading h1 { font-size: 24px; }
+}
+/* [수정완료] 고정 최대 폭을 해제하여 화면 너비에 맞게 카드를 넓힙니다. */
+.settings-layout { width: 100%; max-width: none; margin-left: 0; grid-template-columns: clamp(240px,22vw,340px) minmax(0,1fr); gap: clamp(18px,2vw,32px); align-items: stretch; }
+.settings-content { display: grid; gap: 18px; }
+/* [수정완료] 카드의 위아래 여백을 6px씩 늘려 세로 길이를 살짝 확대합니다. */
+.settings-content .settings-card { margin: 0; padding: calc(clamp(20px,2vw,30px) + 6px) clamp(20px,2vw,30px); }
+.basic-grid { grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 12px; padding-top: 12px; gap: 14px; }
+.basic-grid strong, .profile-card h2 { overflow-wrap: anywhere; }
+.profile-card { position: static; min-height: 0; padding: clamp(22px,2vw,32px); }
+.profile-card-avatar { width: 58px; height: 58px; margin: 0 auto 10px; }
+.profile-quote { margin-top: 16px; padding-top: 14px; }
+.account-row { margin-top: 18px; padding: 18px; }
+/* [수정완료] 활성화 표시 아래 메모 입력칸을 배치합니다. */
+.profile-memo { margin-top: 18px; text-align: left; }
+.profile-memo label { display: block; margin-bottom: 7px; font-size: 12px; color: #526d82; }
+.profile-memo textarea { display: block; width: 100%; box-sizing: border-box; min-height: 80px; padding: 10px; border: 1px solid #cbdcd0; border-radius: 8px; background: #ffffff; color: #293e34; font: inherit; resize: vertical; }
+.profile-memo textarea:focus-visible { outline: 2px solid #789b85; outline-offset: 2px; }
+@media(max-width:700px) {
+  .settings-layout { width: 100%; margin-left: 0; grid-template-columns: 1fr; }
+  .basic-grid { grid-template-columns: 1fr; }
+}
+/* [수정완료] 참고 이미지의 구조는 유지하고 기존 초록색 프로필 디자인을 복원합니다. */
+.settings-layout .profile-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  /* [수정완료] 프로필 카드 배경을 흰색으로 변경합니다. */
+  padding: 36px 24px; background: #ffffff; border-color: #d7e4da;
+}
+.profile-card .profile-card-avatar {
+  width: clamp(110px,10vw,170px); height: auto; aspect-ratio: 1;
+  flex-shrink: 0; margin: 12px auto 28px; background: #d4e6d9; color: #3c6954;
+}
+.profile-card h2 { font-size: 20px; line-height: 1.5; }
+.profile-card .profile-quote {
+  width: 100%; margin-top: 36px; padding-top: 32px;
+  border-top: 1px solid #cfe0d3; color: #71867b;
+  font-size: 12px; font-weight: 400; line-height: 1.8;
+}
+/* [수정완료] 낮은 화면에서는 내부 여백을 줄이고 필요한 경우 스크롤로 내용을 확인합니다. */
+@media(max-height:750px) {
+  .settings-content { gap: 12px; }
+  .settings-content .settings-card { padding: 24px 22px; }
+  .profile-card { padding: 20px; }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */

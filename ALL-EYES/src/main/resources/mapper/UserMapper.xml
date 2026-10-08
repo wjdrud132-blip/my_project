@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- PGH -->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.UserMapper">
+
+    <select id="findUserWard" resultType="com.aio.hospitalsafety.dto.WardOption">
+        SELECT w.ward_id, w.ward_nm AS ward_name
+        FROM tb_emp e
+        JOIN tb_ward w ON w.ward_id = e.ward_id AND w.hosp_div_id = e.hosp_div_id
+        WHERE e.hosp_div_id = #{hospitalId} AND e.emp_id = #{userId}
+          AND e.role_cd = 'USER'
+    </select>
+
+    <resultMap id="userMap"
+               type="com.aio.hospitalsafety.domain.User">
+        <constructor>
+            <idArg column="EMP_ID"
+                   javaType="java.lang.String"/>
+            <arg column="EMP_PW"
+                 javaType="java.lang.String"/>
+            <arg column="HOSP_DIV_ID"
+                 javaType="java.lang.String"/>
+            <arg column="WARD_ID"
+                 javaType="java.lang.Long"/>
+            <arg column="EMP_NM"
+                 javaType="java.lang.String"/>
+            <arg column="ROLE_CD"
+                 javaType="com.aio.hospitalsafety.domain.Role"/>
+            <arg column="AUTH_ST"
+                 javaType="com.aio.hospitalsafety.domain.ApprovalStatus"/>
+            <arg column="CRT_DT"
+                 javaType="java.time.Instant"/>
+            <arg column="UPD_DT"
+                 javaType="java.time.Instant"/>
+            <arg column="FAILED_LOGIN_COUNT"
+                 javaType="java.lang.Integer"/>
+            <arg column="LOCKED_UNTIL"
+                 javaType="java.time.Instant"/>
+        </constructor>
+    </resultMap>
+
+    <select id="isInitialUserPassword"
+            resultType="java.lang.Boolean">
+        SELECT MUST_CHANGE_PASSWORD
+        FROM TB_EMP
+        WHERE HOSP_DIV_ID = #{hospitalId}
+          AND EMP_ID = #{userId}
+          AND ROLE_CD = 'USER'
+    </select>
+
+    <select id="findByHospitalIdAndUserId"
+            resultMap="userMap">
+        SELECT
+            EMP_ID,
+            EMP_PW,
+            HOSP_DIV_ID,
+            WARD_ID,
+            EMP_NM,
+            ROLE_CD,
+            AUTH_ST,
+            CRT_DT,
+            UPD_DT,
+            FAILED_LOGIN_COUNT,
+            LOCKED_UNTIL
+        FROM TB_EMP
+        WHERE HOSP_DIV_ID = #{hospitalId}
+          AND EMP_ID = #{userId}
+    </select>
+
+    <!--
+        사용자가 비밀번호를 변경하면 실패 횟수와 잠금을 초기화한다.
+    -->
+    <update id="updatePassword">
+        UPDATE TB_EMP
+        SET EMP_PW = #{passwordHash},
+            MUST_CHANGE_PASSWORD = FALSE,
+            FAILED_LOGIN_COUNT = 0,
+            LOCKED_UNTIL = NULL,
+            UPD_DT = CURRENT_TIMESTAMP
+        WHERE EMP_ID = #{userId}
+    </update>
+
+    <!--
+        존재하는 계정의 비밀번호가 틀렸을 때 실행한다.
+
+        잠금이 없으면 실패 횟수를 1씩 증가시킨다.
+        실패 횟수가 5회가 되면 현재 시각부터 1분 동안 잠근다.
+        잠금 중에는 WHERE 조건으로 인해 횟수와 잠금 시간이 증가하지 않는다.
+        이전 잠금이 만료된 뒤 다시 실패하면 새로운 연속 실패 1회로 계산한다.
+    -->
+    <update id="registerFailedLogin">
+        UPDATE TB_EMP
+        SET FAILED_LOGIN_COUNT = CASE
+                WHEN LOCKED_UNTIL IS NOT NULL
+                     AND LOCKED_UNTIL &lt;= CURRENT_TIMESTAMP
+                    THEN 1
+                ELSE FAILED_LOGIN_COUNT + 1
+            END,
+            LOCKED_UNTIL = CASE
+                WHEN LOCKED_UNTIL IS NOT NULL
+                     AND LOCKED_UNTIL &lt;= CURRENT_TIMESTAMP
+                    THEN NULL
+                WHEN FAILED_LOGIN_COUNT + 1 &gt;= 5
+                    THEN CURRENT_TIMESTAMP + INTERVAL '1 minute'
+                ELSE NULL
+            END,
+            UPD_DT = CURRENT_TIMESTAMP
+        WHERE HOSP_DIV_ID = #{hospitalId}
+          AND EMP_ID = #{userId}
+          AND (
+              LOCKED_UNTIL IS NULL
+              OR LOCKED_UNTIL &lt;= CURRENT_TIMESTAMP
+          )
+    </update>
+
+    <!-- 로그인 성공 시 실패 횟수와 잠금을 초기화한다. -->
+    <update id="resetFailedLogin">
+        UPDATE TB_EMP
+        SET FAILED_LOGIN_COUNT = 0,
+            LOCKED_UNTIL = NULL,
+            UPD_DT = CURRENT_TIMESTAMP
+        WHERE HOSP_DIV_ID = #{hospitalId}
+          AND EMP_ID = #{userId}
+          AND (
+              FAILED_LOGIN_COUNT != 0
+              OR LOCKED_UNTIL IS NOT NULL
+          )
+    </update>
+
+</mapper>

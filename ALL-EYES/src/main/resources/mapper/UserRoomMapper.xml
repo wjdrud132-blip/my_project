@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- [2026.09.30 추가] 간호사 담당 병실(tb_emp_location → tb_location). 여러 병실·여러 간호사 가능, 담당 병실은 선택 사항 -->
+<mapper namespace="com.aio.hospitalsafety.mapper.admin.UserRoomMapper">
+
+    <select id="findWardName" resultType="java.lang.String">
+        SELECT ward_nm
+        FROM tb_ward
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND ward_id = #{wardId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findRoomLocations" resultType="com.aio.hospitalsafety.dto.admin.RoomLocation">
+        SELECT
+            l.location_id,
+            l.location_nm AS location_name
+        FROM tb_location l
+        JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE w.hosp_div_id = #{hospitalDomain}
+          AND l.ward_id = #{wardId,jdbcType=BIGINT}
+          AND l.location_type = 'ROOM'
+          AND l.location_nm IN
+        <foreach collection="locationNames" item="locationName" open="(" separator="," close=")">
+            #{locationName}
+        </foreach>
+    </select>
+
+    <select id="findUserRoomNames" resultType="java.lang.String">
+        SELECT l.location_nm
+        FROM tb_emp_location el
+        JOIN tb_location l
+          ON l.location_id = el.location_id
+        WHERE el.emp_id = #{userId}
+        ORDER BY CAST(NULLIF(REGEXP_REPLACE(l.location_nm, '[^0-9]', '', 'g'), '') AS INTEGER), l.location_nm
+    </select>
+
+    <delete id="deleteUserRooms">
+        DELETE FROM tb_emp_location
+        WHERE emp_id = #{userId}
+    </delete>
+
+    <insert id="insertUserRoom">
+        INSERT INTO tb_emp_location (emp_id, location_id)
+        VALUES (#{userId}, #{locationId,jdbcType=BIGINT})
+    </insert>
+
+</mapper>

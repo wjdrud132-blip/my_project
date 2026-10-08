@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.admin.AdminUserManagementMapper">
+
+    <!-- 2번 화면: 승인 완료 사용자 목록 -->
+    <select id="findApprovedUsers"
+            resultType="com.aio.hospitalsafety.dto.admin.ApprovedUserResponse">
+
+        SELECT
+            e.emp_id AS user_id,
+            e.emp_nm AS user_name,
+            e.auth_st AS auth_status,
+            e.ward_id,
+            w.ward_nm AS ward_name,
+            e.phone_no AS phone_number,
+            <!-- [2026.09.30] 간병인을 TB_CAREGIVER 로 옮겨 tb_emp 에는 간호사만 남아 job_cd·room_no 칸을 지웠다. 간호사는 병실 칸이 없다(담당 병실은 아래 assigned_rooms) -->
+            CAST(NULL AS VARCHAR) AS room_number,
+            <!-- [2026.09.30 추가] 간호사 담당 병실(tb_emp_location → tb_location), 예: '301,302'. 없으면 NULL -->
+            (SELECT string_agg(REGEXP_REPLACE(l.location_nm, '[^0-9]', '', 'g'), ',' ORDER BY l.location_nm)
+               FROM tb_emp_location el
+               JOIN tb_location l
+                 ON l.location_id = el.location_id
+              WHERE el.emp_id = e.emp_id) AS assigned_rooms
+        FROM tb_emp e
+        LEFT JOIN tb_ward w
+          ON w.ward_id = e.ward_id
+         AND w.hosp_div_id = e.hosp_div_id
+        WHERE e.hosp_div_id = #{hospitalDomain}
+          AND e.role_cd = 'USER'
+          AND e.auth_st = 'APPROVED'
+
+        <if test="keyword != null and keyword != ''">
+            AND (
+                LOWER(e.emp_nm)
+                    LIKE CONCAT('%', LOWER(#{keyword}), '%')
+                OR LOWER(e.emp_id)
+                    LIKE CONCAT('%', LOWER(#{keyword}), '%')
+            )
+        </if>
+
+        ORDER BY e.emp_nm, e.emp_id
+    </select>
+
+    <!-- 비활성화된 일반 사용자 목록 조회 -->
+    <select id="findInactiveUsers"
+            resultType="com.aio.hospitalsafety.dto.admin.InactiveUserResponse">
+
+        SELECT
+            e.emp_id AS user_id,
+            e.emp_nm AS user_name,
+            e.auth_st AS auth_status,
+            e.ward_id,
+            w.ward_nm AS ward_name,
+            e.upd_dt AS deactivated_at,
+            CAST(NULL AS VARCHAR) AS room_number
+        FROM tb_emp e
+        LEFT JOIN tb_ward w
+          ON w.ward_id = e.ward_id
+         AND w.hosp_div_id = e.hosp_div_id
+        WHERE e.hosp_div_id = #{hospitalDomain}
+          AND e.role_cd = 'USER'
+          AND e.auth_st = 'INACTIVE'
+        ORDER BY e.upd_dt DESC NULLS LAST, e.emp_id
+    </select>
+
+    <!-- 활성화 시 이전 병동은 유지하고 승인 완료 상태로 복귀한다. -->
+    <update id="activateUser">
+
+        UPDATE tb_emp
+        SET auth_st = 'APPROVED',
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'INACTIVE'
+    </update>
+
+    <!-- 현재 병원의 비활성화 일반 사용자만 실제 삭제한다. -->
+    <delete id="deleteInactiveUser">
+
+        DELETE FROM tb_emp
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'INACTIVE'
+    </delete>
+
+    <!-- 3번 팝업: 현재 병원의 병동 목록 -->
+    <select id="findWardsByHospital"
+            resultType="com.aio.hospitalsafety.dto.WardOption">
+
+        SELECT
+            ward_id,
+            ward_nm AS ward_name
+        FROM tb_ward
+        WHERE hosp_div_id = #{hospitalDomain}
+        ORDER BY ward_id
+    </select>
+
+    <!-- 선택한 병동이 현재 병원 소속인지 확인 -->
+    <select id="existsWardInHospital"
+            resultType="boolean">
+
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_ward
+            WHERE hosp_div_id = #{hospitalDomain}
+              AND ward_id = #{wardId}
+        )
+    </select>
+
+    <!-- 3번 팝업: 담당 병동 변경 -->
+    <update id="updateUserWard">
+
+        UPDATE tb_emp
+        SET ward_id = #{wardId,jdbcType=BIGINT},
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'APPROVED'
+    </update>
+
+    <!-- [2026.09.30 추가] 직원의 지금 병동 ID (병동 변경 시 담당 병실을 지울지 판단) -->
+    <select id="findUserWardId" resultType="java.lang.Long">
+        SELECT ward_id
+        FROM tb_emp
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+    </select>
+
+    <!-- [2026.09.27] 병동 번호로 병동 ID 찾기. 대시보드와 같이 이름이 '3병동'(띄어쓰기 무시) 모양인 병동 -->
+    <select id="findWardIdByNumber" resultType="java.lang.Long">
+        SELECT ward_id
+        FROM tb_ward
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND REPLACE(ward_nm, ' ', '') = CONCAT(#{wardNumber}, '병동')
+        ORDER BY ward_id
+        LIMIT 1
+    </select>
+
+    <!-- [2026.09.27] 직원의 지금 전화번호 (재활성화 전 중복 확인용) -->
+    <select id="findUserPhone" resultType="string">
+        SELECT phone_no
+        FROM tb_emp
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+    </select>
+
+    <!-- [2026.09.27] 이 직원 말고 같은 번호를 쓰는 활성 직원이 있는지 (같은 번호로 SMS 가 두 번 가지 않게) -->
+    <select id="existsOtherUserPhone" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_emp
+            WHERE hosp_div_id = #{hospitalDomain}
+              AND emp_id &lt;&gt; #{userId}
+              AND role_cd = 'USER'
+              AND auth_st = 'APPROVED'
+              AND phone_no = #{phoneNumber}
+        )
+    </select>
+
+    <!-- [2026.09.27] 활성 직원의 전화번호 변경 -->
+    <update id="updateUserPhone">
+        UPDATE tb_emp
+        SET phone_no = #{phoneNumber},
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'APPROVED'
+    </update>
+
+    <!-- 4번 팝업: 계정 비활성화 -->
+    <update id="deactivateUser">
+
+        UPDATE tb_emp
+        SET auth_st = 'INACTIVE',
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'APPROVED'
+    </update>
+
+    <!--
+        관리자 비밀번호 초기화: 활성 직원의 비밀번호를 바꾸고 최초 변경 필요 상태로 변경.
+        비밀번호가 초기화되면 실패 카운트/잠금도 함께 초기화한다.
+    -->
+    <update id="resetUserPassword">
+
+        UPDATE tb_emp
+        SET emp_pw = #{passwordHash},
+            must_change_password = TRUE,
+            failed_login_count = 0,
+            locked_until = NULL,
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND emp_id = #{userId}
+          AND role_cd = 'USER'
+          AND auth_st = 'APPROVED'
+    </update>
+
+</mapper>

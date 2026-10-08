@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- [2026.09.28] 낙상 이벤트 영상(tb_event_media). 젯슨이 올린 영상 파일의 위치와 촬영 구간을 남긴다. -->
+<mapper namespace="com.aio.hospitalsafety.mapper.edge.EventMediaMapper">
+
+    <!--
+        이벤트 종류 + 그 이벤트의 조치(없으면 NULL).
+        조치가 '확인'·오경보 기록인지는 EventActionService.isDismissal 로 판정한다(판정 문구를 한 곳에서만 관리하려고).
+    -->
+    <select id="findMediaEvent" resultType="com.aio.hospitalsafety.dto.edge.MediaEventRow">
+        SELECT
+            e.event_type,
+            a.patient_nm AS patient_name,
+            a.action_content
+        FROM tb_detection_event e
+        LEFT JOIN tb_event_action a
+          ON a.event_id = e.event_id
+        WHERE e.event_id = CAST(#{eventId} AS UUID)
+    </select>
+
+    <select id="existsEventMedia" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_event_media
+            WHERE event_id = CAST(#{eventId} AS UUID)
+        )
+    </select>
+
+    <!-- 파일을 다 쓴 뒤에 부른다. 같은 이벤트의 행이 이미 있으면 아무것도 하지 않는다. -->
+    <insert id="insertReadyEventMedia">
+        INSERT INTO tb_event_media (
+            event_id,
+            storage_uri,
+            media_st,
+            clip_start_at,
+            clip_end_at,
+            size_bytes
+        )
+        VALUES (
+            CAST(#{eventId} AS UUID),
+            #{storageUri},
+            'READY',
+            #{clipStartAt},
+            #{clipEndAt},
+            #{sizeBytes}
+        )
+        ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+    <select id="findStorageUri" resultType="string">
+        SELECT storage_uri
+        FROM tb_event_media
+        WHERE event_id = CAST(#{eventId} AS UUID)
+    </select>
+
+    <!-- [2026.09.29 병합] 관리자 영상 보관함용. 다른 병원 영상은 주소를 알아도 받을 수 없게 병원까지 확인한다. -->
+    <select id="findReadyStorageUriForHospital" resultType="string">
+        SELECT m.storage_uri
+        FROM tb_event_media m
+        JOIN tb_detection_event e
+          ON e.event_id = m.event_id
+        JOIN tb_location l
+          ON l.location_id = e.location_id
+        JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE m.event_id = CAST(#{eventId} AS UUID)
+          AND m.media_st = 'READY'
+          AND w.hosp_div_id = #{hospitalId}
+    </select>
+
+    <!--
+        [2026.09.29] 관리자 영상 보관함에서 처음 재생한 시각과 관리자. 이미 확인된 영상이면 바꾸지 않는다(처음 확인한 사람을 남긴다).
+        그 병원의 READY 영상만 기록한다. 기록한 행 수(0 또는 1)
+    -->
+    <update id="markViewed">
+        UPDATE tb_event_media m
+        SET viewed_at = now(),
+            viewed_by = #{adminId},
+            upd_dt = now()
+        FROM tb_detection_event e
+        JOIN tb_location l
+          ON l.location_id = e.location_id
+        JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE m.event_id = CAST(#{eventId} AS UUID)
+          AND e.event_id = m.event_id
+          AND m.media_st = 'READY'
+          AND m.viewed_at IS NULL
+          AND w.hosp_div_id = #{hospitalId}
+    </update>
+
+    <delete id="deleteEventMedia">
+        DELETE FROM tb_event_media
+        WHERE event_id = CAST(#{eventId} AS UUID)
+    </delete>
+
+</mapper>

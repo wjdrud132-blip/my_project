@@ -1,0 +1,127 @@
+@charset "UTF-8";
+
+/* 관리자 상단 메뉴는 별도의 배경·테두리 없이 글자 중심으로 표시합니다. */
+.admin-topbar { z-index: 20; }
+.admin-page-nav {
+  z-index: 1;
+  align-items: center;
+  gap: 38px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.admin-nav-group { position: relative; display: flex; align-items: center; }
+.admin-topbar .admin-page-nav > a,
+.admin-topbar .admin-page-nav .admin-nav-trigger {
+  display: inline-flex;
+  align-items: center;
+  min-height: 35px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #29343d;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color .16s ease;
+}
+.admin-topbar .admin-page-nav > a:hover,
+.admin-topbar .admin-page-nav > a:focus-visible,
+.admin-topbar .admin-page-nav .admin-nav-trigger:hover,
+.admin-topbar .admin-page-nav .admin-nav-trigger:focus-visible { background: transparent; color: #29343d; }
+.admin-topbar .admin-page-nav > a.active,
+.admin-topbar .admin-page-nav .admin-nav-trigger.active {
+  background: transparent;
+  color: #29343d;
+  font-weight: 900;
+  font-size: 13px;
+  text-decoration: underline;
+  text-decoration-color: #29343d;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 7px;
+  box-shadow: none;
+}
+.admin-page-nav a:focus-visible,
+.admin-nav-trigger:focus-visible { outline: 2px solid #66849a; outline-offset: 2px; }
+
+.admin-nav-submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  display: none;
+  width: 190px;
+  padding: 6px;
+  border: 1px solid #d8e3eb;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 14px 32px #29343d25;
+}
+.admin-nav-click-group:hover .admin-nav-submenu,
+.admin-nav-click-group.is-open .admin-nav-submenu,
+.admin-nav-hover-group:hover .admin-nav-submenu,
+.admin-nav-hover-group.is-open .admin-nav-submenu { display: block; }
+.admin-nav-submenu a {
+  display: flex;
+  align-items: center;
+  min-height: 39px;
+  padding: 0 12px;
+  border-radius: 7px;
+  color: #29343d;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.admin-nav-submenu a:hover,
+.admin-nav-submenu a:focus-visible,
+.admin-nav-submenu a.active { background: #edf3f7; color: #294b62; }
+.admin-nav-submenu a.active { color: #243d50; font-weight: 900; }
+@media (prefers-reduced-motion: no-preference) {
+  .admin-nav-group.is-open .admin-nav-submenu,
+  .admin-nav-click-group:hover .admin-nav-submenu,
+  .admin-nav-hover-group:hover .admin-nav-submenu { animation: admin-nav-enter .16s ease-out; }
+}
+@keyframes admin-nav-enter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 801px) and (max-width: 1450px) {
+  :root { --admin-topbar-height: 112px; }
+  .admin-topbar { height: 112px; min-height: 112px; align-items: flex-start; padding-top: 14px; }
+  .admin-page-nav { top: 63px; left: 24px; max-width: calc(100% - 48px); transform: none; }
+}
+@media (max-width: 800px) {
+  .admin-page-nav { flex-wrap: wrap; max-width: calc(100vw - 32px); white-space: normal; }
+  .admin-nav-submenu { width: min(190px, calc(100vw - 40px)); }
+}
+
+/* [2026.09.29 변경] 일반 노트북 이상에서는 동일한 한 줄 상단 메뉴 높이를 사용해 화면 폭에 따른 본문 시작 위치 변화를 없앱니다. */
+@media (min-width:1000px) {
+  :root { --admin-topbar-height:80px; }
+  .admin-topbar { height:80px; min-height:80px; align-items:center; padding-top:0; }
+  .admin-page-nav { top:50%; left:50%; max-width:calc(100% - 48px); transform:translate(-50%,-50%); }
+}
+
+/* [2026.10.01 변경] 관리자 상단 메뉴 문구만 더 잘 보이도록 키웁니다. */
+.admin-topbar .admin-page-nav > a,
+.admin-topbar .admin-page-nav .admin-nav-trigger {
+  font-size: 14px;
+}
+.admin-topbar .admin-page-nav > a.active,
+.admin-topbar .admin-page-nav .admin-nav-trigger.active {
+  font-size: 14px;
+}
+
+/* [2026.10.01 변경] 관리자 상단 메뉴 문구 사이 간격을 넓혀 가독성을 높입니다. */
+.admin-page-nav { gap: 38px; }
+.admin-topbar .admin-page-nav > a,
+.admin-topbar .admin-page-nav .admin-nav-trigger {
+  padding-left: 12px;
+  padding-right: 12px;
+}

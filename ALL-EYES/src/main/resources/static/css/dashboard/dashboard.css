@@ -1,0 +1,2180 @@
+/* [09.13]수정내용: 연속해서 중복된 병실 스타일 규칙을 제거해 CSS 적용 흐름을 단순화했습니다. */
+/* =========================================================
+   CareGuard 병동 통합 관제 대시보드 CSS
+   각 영역을 구분해서 작성했습니다.
+   ========================================================= */
+
+/* [09.13]수정내용: 파일 앞부분에 반복된 스타일 묶음을 제거하고 뒤의 동일한 규칙을 사용한다. */
+/* [09.13]수정내용: 프로필 이름의 늘어나는 여백을 없애고 아이콘과 이름을 오른쪽 화살표 가까이 정렬합니다. */
+/* [09.13]수정내용: 프로필 hover·메뉴 열림 배경을 제거하고 최소 너비를 줄여 날짜를 프로필 가까이 배치합니다. */
+.profile-toggle{display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:0;padding:5px 7px;border:0;border-radius:8px;background:transparent;color:#fff;text-align:left}.profile-toggle:hover,.profile-toggle[aria-expanded="true"]{background:transparent}.profile-toggle:focus-visible{outline:2px solid #d3e3d7;outline-offset:3px}.profile-avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#f0f3ec;color:#6e8378;font-size:19px;line-height:1}.profile-copy{display:flex;flex:0 0 auto;flex-direction:column;gap:1px}.profile-copy strong{font-size:11px;font-weight:600;white-space:nowrap}.profile-copy small{font-size:9px;color:#d3dfd7}.profile-chevron{font-size:18px;line-height:1;transform:translateY(-2px)}
+/* 공통 색상과 서체: 별도 설치 없이 시스템의 한글 글꼴을 사용합니다. */
+:root {
+  --ink:#29343d;
+  --muted:#647581;
+  --green:#526d82;
+  --border:#d5dfe7;
+  --red:#bc4945;
+  --amber:#a97423}
+* {
+  box-sizing:border-box}
+body {
+  margin:0;
+  background:#e9f0f5;
+  color:var(--ink);
+  font-family:'Segoe UI','Malgun Gothic',sans-serif;
+  font-size:13px}
+button,a {
+  font:inherit}
+button {
+  cursor:pointer}
+/* [2026.09.28 변경] 실제 클릭 동작이 있는 병실·상태 필터·알림 제어 요소에 손가락 커서를 표시합니다. */
+.room,
+.page-heading .counts .count,
+.alerts-panel .locate-room,
+.corridor > .corridor-alert-marker,
+.cross-page-alert-location,
+.cross-page-alert-row button,
+.room-filters button,
+.filter-info button {
+  cursor: pointer;
+}
+header {
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  background:#526d82;
+  color:white;
+  box-shadow:0 3px 14px #203f3420}
+.brand {
+  display:flex;
+  align-items:center;
+  gap:14px}
+.brand-icon {
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border:1px solid #ffffff50;
+  border-radius:10px;
+  font-size:24px}
+.brand strong {
+  font-size:20px;
+  letter-spacing:.3px}
+.brand span {
+  color:#d3dfd7;
+  font-size:12px}
+.header-actions {
+  display:flex;
+  align-items:center;
+  /* [09.13]수정내용: 날짜와 프로필 간격을 줄여 날짜를 오른쪽으로 붙입니다. */
+  gap:12px}
+.header-actions a {
+  color:white;
+  text-decoration:none}
+.header-actions a:hover {
+  text-decoration:underline}
+.header-actions time {
+  font-size:12px;
+  font-variant-numeric:tabular-nums;
+  color:#dbe6df}
+/* [2026.09.17] 추가한 내용: 대시보드 내부 조치 이력이 상단 바 아래 화면을 온전히 사용하게 합니다. */
+#dashboard-record-view { height:calc(100dvh - 72px); background:#e9f0f5; }
+#dashboard-record-frame { display:block; width:100%; height:100%; border:0; background:#e9f0f5; }
+/* [2026.09.17] 고친 내용: 조치 이력 전환 중에는 대시보드 본문이 아래에 함께 표시되지 않게 합니다. */
+#dashboard-main[hidden] { display:none !important; }
+#dashboard-record-view[hidden] { display:none !important; }
+/* [2026.09.17] 고친 내용: 조치 이력 화면에서만 왼쪽 상단에 대시보드 복귀 버튼을 표시합니다. */
+.dashboard-back-link { display:none; align-items:center; flex:0 0 auto; margin-left:24px; padding:0; color:#fff; font-size:13px; font-weight:700; text-decoration:none; }
+body[data-dashboard-view="records"] .dashboard-back-link { display:inline-flex; }
+/* [2026.09.17] 고친 내용: 대시보드 복귀는 테두리 없는 텍스트 링크로 표시합니다. */
+.dashboard-back-link:hover,.dashboard-back-link:focus-visible { color:#dbe6df; text-decoration:none; outline:0; }
+/* [2026.09.17] 고친 내용: 조치 이력에서는 중복되는 CareGuard 브랜드와 아이콘을 숨깁니다. */
+body[data-dashboard-view="records"] .brand { display:none; }
+.demo {
+  font-size:11px;
+  padding:5px 9px;
+  border:1px solid #ffffff40;
+  border-radius:5px}
+
+
+/* PC에서는 화면 높이 안에 평면도와 경보 패널을 배치합니다. */
+main {
+  height:calc(100dvh - 72px);
+  padding:22px 28px;
+  display:flex;
+  flex-direction:column;
+  gap:18px}
+.page-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center}
+.page-heading h1 {
+  font-size:22px;
+  margin:0 0 5px}
+.page-heading p {
+  margin:0;
+  color:var(--muted);
+  font-size:12px}
+.ward-label {
+  padding:9px 14px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:8px}
+.layout {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 340px;
+  gap:20px;
+  flex:1;
+  min-height:0}
+.panel {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 5px 18px #2b4b3910}
+.floor-panel {
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  min-height:0}
+.panel-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px}
+.panel-heading h2 {
+  font-size:16px;
+  margin:0}
+.legend {
+  display:flex;
+  gap:14px;
+  color:var(--muted);
+  font-size:11px}
+.legend span:before {
+  content:'';
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:#63967a;
+  margin-right:5px}
+.legend .caution:before {
+  background:#c48c35}
+.legend .urgent:before {
+  background:#c45a52}
+.floor-toolbar {
+  display:flex;
+  justify-content:space-between;
+  margin:14px 0;
+  color:var(--muted);
+  font-size:11px}
+
+
+/* 동일한 10열 그리드로 위아래 병실의 폭과 높이를 맞춥니다. */
+.floor {
+  flex:1;
+  min-height:0;
+  padding:32px 18px;
+  display:grid;
+  grid-template-rows:1fr .85fr 1fr;
+  background:radial-gradient(ellipse at center,#f8faf7,#edf2ed);
+  border:1px solid #dbe4dc;
+  border-radius:12px;
+  position:relative}
+.room-row {
+  display:grid;
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:6px;
+  min-height:0;
+  z-index:1}
+.room {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:6px;
+  padding:10px 6px;
+  background:linear-gradient(135deg,#f2f7ed,#e4eddf);
+  border:1px solid #b3c5b3;
+  border-top:5px solid #b9cbb9;
+  border-left:4px solid #bfd0bf;
+  box-shadow:3px 5px 0 #91a48f25,inset 0 0 0 2px #ffffff80;
+  border-radius:3px;
+  color:var(--ink);
+  text-align:left;
+  min-width:0}
+.room:hover {
+  filter:brightness(1.025);
+  box-shadow:0 0 0 2px #71917b,3px 5px 8px #526d8225}
+.room:focus-visible {
+  outline:3px solid #526d82;
+  outline-offset:3px}
+.room strong {
+  font-size:13px;
+  white-space:nowrap}
+.room small {
+  font-size:10px;
+  color:#58745f;
+  white-space:nowrap}
+.room.urgent {
+  background:linear-gradient(135deg,#fff1ee,#f4d9d5);
+  border-color:#cf8b81}
+.room.caution {
+  background:linear-gradient(135deg,#fff8e9,#f6e8c7);
+  border-color:#cbaa69}
+.room.urgent small {
+  color:var(--red)}
+.room.caution small {
+  color:var(--amber)}
+
+
+/* 침대는 CSS 도형으로 표현하여 이미지 파일이 필요 없습니다. */
+.beds {
+  display:flex;
+  justify-content:space-around;
+  gap:4px;
+  margin:auto 0}
+.bed {
+  height:34px;
+  width:19px;
+  max-width:42%;
+  border:1px solid #a5b7aa;
+  background:#ffffffc9;
+  border-radius:3px;
+  box-shadow:2px 3px 2px #526d8215;
+  position:relative}
+.bed:before {
+  content:'';
+  position:absolute;
+  top:3px;
+  left:2px;
+  right:2px;
+  height:7px;
+  border:1px solid #d0dad1;
+  border-radius:2px;
+  background:#fff}
+.bed:after {
+  content:'';
+  position:absolute;
+  top:14px;
+  bottom:3px;
+  left:2px;
+  right:2px;
+  background:#cbdcd0;
+  border-radius:1px}
+
+
+/* 문은 모두 중앙 복도를 향합니다. */
+.door {
+  position:absolute;
+  bottom:-5px;
+  left:50%;
+  width:20px;
+  height:16px;
+  background:#eff4ef;
+  border-top:1px dashed #8b9f8f;
+  border-right:2px solid #7f9483;
+  border-radius:0 100% 0 0;
+  transform:translateX(-50%)}
+.room-row.bottom .door {
+  top:-5px;
+  bottom:auto;
+  transform:translateX(-50%) rotate(180deg)}
+.corridor {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  background:linear-gradient(#e1eae3,#edf3ec 40%,#e1eae3);
+  border:1px solid #bbcdbf;
+  box-shadow:inset 0 5px 9px #526d5010;
+  position:relative}
+.corridor:after {
+  content:'';
+  position:absolute;
+  left:15%;
+  right:15%;
+  top:50%;
+  border-top:1px dashed #becfc0}
+.corridor span {
+  position:relative;
+  z-index:1;
+  color:#7c9180;
+  background:#eaf1e9;
+  padding:4px 9px;
+  font-size:11px;
+  letter-spacing:2px}
+.facility {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid #c5d0c9;
+  background:linear-gradient(135deg,#fbfcfa,#e9eee9);
+  border-top:5px solid #c6d2c8;
+  border-radius:3px;
+  font-size:11px;
+  text-align:center}
+.facility .symbol {
+  font-size:23px;
+  color:#688571}
+.station {
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-weight:650;
+  background:linear-gradient(135deg,#e4eee6,#cfdfd1);
+  border-color:#9db8a3}
+.floor-footer {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding-top:14px;
+  font-size:11px;
+  color:var(--muted)}
+
+
+/* 오른쪽 패널: 긴급 상태와 최근 간호 조치를 구분합니다. */
+.side {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-height:0}
+.summary {
+  padding:18px}
+.summary h2 {
+  font-size:16px;
+  margin:0 0 16px}
+.counts {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px}
+.count {
+  padding:10px;
+  background:#f2f6f1;
+  border-radius:9px}
+.count span {
+  font-size:11px;
+  color:var(--muted)}
+.count b {
+  display:block;
+  margin-top:5px;
+  font-size:25px;
+  color:#487658}
+.count.caution {
+  background:#fbf5e8}
+.count.caution b {
+  color:var(--amber)}
+.count.urgent {
+  background:#fbefed}
+.count.urgent b {
+  color:var(--red)}
+.alerts-panel {
+  padding:18px;
+  flex:1;
+  min-height:0}
+.alert-heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px}
+.alert-heading h2 {
+  font-size:16px;
+  margin:0}
+.alert-heading span {
+  color:var(--red);
+  font-size:11px}
+.alert-card {
+  padding:15px;
+  border:1px solid #e5b5ae;
+  border-left:4px solid #c45c52;
+  border-radius:10px;
+  background:#fff8f6;
+  margin-bottom:12px}
+.alert-card.caution {
+  background:#fffcf4;
+  border-color:#dfcba1;
+  border-left-color:#c69444}
+.alert-top {
+  display:flex;
+  justify-content:space-between;
+  font-size:10px;
+  color:var(--red);
+  margin-bottom:10px}
+.caution .alert-top {
+  color:var(--amber)}
+.alert-card h3 {
+  font-size:15px;
+  margin:0 0 7px}
+.alert-card p {
+  font-size:11px;
+  line-height:1.6;
+  margin:0;
+  color:var(--muted)}
+.response {
+  border-top:1px solid #eadbd5;
+  margin-top:12px;
+  padding-top:9px;
+  font-size:11px;
+  color:#8f5c50}
+.recent {
+  display:none;
+  padding:18px}
+.recent h2 {
+  font-size:13px;
+  margin:0 0 12px}
+.recent p {
+  font-size:11px;
+  margin:9px 0;
+  color:var(--muted)}
+.recent time {
+  margin-right:10px;
+  font-variant-numeric:tabular-nums}
+.selection {
+  color:#526d82;
+  font-weight:600}
+@media(max-height:760px) and (min-width:1101px) {
+  main {
+  padding-top:14px;
+  gap:12px}
+.floor {
+  padding:22px 12px}
+.recent {
+  display:none}
+.alert-card {
+  padding:12px}
+.bed {
+  height:26px}
+.room {
+  gap:4px}
+.summary {
+  padding:14px}
+}
+/* 대응 등록 버튼 */ 
+.response-open{
+    background:#FFFFFF;
+    color:#355B45;
+    border:1px solid #B8CDBD
+}
+.response-open:hover{
+    background:#E6F1E9;
+    border-color:#B8CDBD
+}
+.response-open:focus-visible{
+    outline:2px solid #547B60
+    ;outline-offset:3px
+}
+
+/* 알림 카드는 내용 높이에 맞추고 외부 패널만 평면도 높이를 유지합니다. */
+.alerts-panel .alert-card{flex:0 0 auto;min-height:0;padding:18px;gap:12px}
+.alerts-panel .alert-card .response{margin-top:0}
+.alerts-panel .alert-card .locate-room{margin-top:4px}
+@media(max-height:760px) and (min-width:1101px){.alerts-panel .alert-card{padding:12px;gap:8px}}
+
+.response-open{height:32px;padding:0 14px;background:#526d82;color:white;border:0;border-radius:6px;font-size:12px;font-weight:600}
+.response-dialog{width:min(460px,calc(100vw - 32px));max-height:90dvh;overflow:auto;border:1px solid #d8e0d9;border-radius:16px;padding:26px;color:#293e34;font:inherit;box-shadow:0 20px 60px #24392d40}
+.response-dialog::backdrop{background:#20332d80}
+.response-dialog h2{font-size:22px;margin:0 0 10px}
+.response-dialog p{font-size:12px;color:#68776e;line-height:1.7}
+.response-event{padding:14px;border:1px solid #e3bbb5;border-radius:10px;background:#faf0ee;margin:18px 0}
+.response-dialog label.field{display:block;font-size:12px;margin:14px 0 7px}
+.response-dialog input[type=text],.response-dialog textarea{width:100%;border:1px solid #ced8d0;border-radius:8px;padding:11px;background:#f8faf7;color:#293e34;font:inherit}
+.response-dialog textarea{resize:vertical;min-height:65px}
+.response-dialog fieldset{border:0;margin:16px 0;padding:0}
+.response-dialog legend{font-size:12px;margin-bottom:9px}
+.response-options{display:flex;gap:10px}.response-options label{flex:1;padding:12px;border:1px solid #cad5cc;border-radius:8px;font-size:12px}.response-options label:has(input:checked){background:transparent;border-color:#5e8068}
+.response-actions{display:flex;gap:10px;margin-top:18px}.response-actions button{flex:1;padding:12px;border:1px solid #c8d4cb;border-radius:8px;background:#f6f8f4}.response-actions button[type=submit]{background:#526d82;color:white}
+@media(max-width:1100px) {
+  main {
+  height:auto}
+.layout {
+  grid-template-columns:1fr}
+.floor {
+  min-height:410px}
+.side {
+  display:grid;
+  grid-template-columns:1fr 1fr}
+.recent {
+  display:none}
+}
+@media(max-width:700px) {
+  header {
+  padding:0 14px}
+.brand span,.header-actions time {
+  display:none}
+.header-actions {
+  gap:10px}
+main {
+  padding:14px}
+.layout {
+  gap:14px}
+.floor-panel {
+  overflow:auto;
+  padding:12px}
+.floor {
+  min-width:780px}
+.panel-heading,.floor-toolbar,.floor-footer {
+  min-width:780px}
+.side {
+  grid-template-columns:1fr}
+.ward-label {
+  display:none}
+}
+
+.response-open{background:#FFFFFF;color:#355B45;border:1px solid #B8CDBD}.response-open:hover{background:#E6F1E9;border-color:#B8CDBD}.response-open:focus-visible{outline:2px solid #547B60;outline-offset:3px}
+
+/* 알림 유형별로 동일한 정보 순서와 간격을 사용합니다. */
+.alerts-panel .alert-card{padding:18px;gap:12px;border-radius:10px}
+.alerts-panel .alert-top{margin:0;min-height:22px}
+.alerts-panel .alert-top strong{font-size:12px;font-weight:650}
+.alerts-panel .alert-top time{background:transparent;padding:0;color:#7c817b;font-size:12px}
+.alerts-panel .alert-card h3{display:flex;align-items:center;gap:8px;font-size:23px;line-height:1.4;margin:0}
+.alerts-panel .event-label{font-size:14px;color:#4c6054;font-weight:600}
+.alerts-panel .event-label:before{content:"·";margin-right:8px;color:#8b948c}
+.alerts-panel .alert-card p{margin:0;font-size:13px;line-height:1.7}
+.alerts-panel .locate-room{display:block;text-align:center;min-height:38px;background:#fff;margin-top:4px;border-radius:7px}
+.alerts-panel .locate-room:hover{background:#fff;border-color:#d9e1da;color:inherit}
+/* 위치 확인 버튼은 상태에 따라 별도 배경색을 넣지 않습니다. */
+.alerts-panel .locate-room[aria-pressed="true"]{background:#fff;border-color:#d9e1da;color:inherit;font-weight:600}
+.alerts-panel .locate-room[aria-pressed="true"]:hover{background:#fff;border-color:#d9e1da}
+
+/* 창문과 상태 표시를 보강한 병동 도면입니다. */
+.floor {
+  background:radial-gradient(ellipse at center,#fafcf9,#e8efe8);
+  box-shadow:inset 0 1px 12px #4463430a}
+.room:before {
+  content:'';
+  position:absolute;
+  top:-4px;
+  left:25%;
+  width:50%;
+  height:3px;
+  background:#e3f4f3;
+  border:1px solid #9ebbb6}
+.room-row.bottom .room:before {
+  top:auto;
+  bottom:-1px}
+.room:after {
+  content:'';
+  position:absolute;
+  right:7px;
+  top:11px;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:#618c6f}
+.room.urgent:after {
+  background:#bf554b}
+.room.caution:after {
+  background:#bf8d3f}
+/* [09.13]수정내용: 병실 클릭 또는 위치 확인으로 선택한 병실의 테두리를 2px에서 3px로 두껍게 표시한다. */
+.room[aria-pressed="true"] {
+  outline:3px solid #526d82;
+  outline-offset:3px;
+  z-index:3;
+  box-shadow:0 8px 18px #526d8235}
+.bed {
+  height:42px;
+  width:23px;
+  box-shadow:3px 4px 3px #526d8220}
+.floor-footer {
+  padding:14px;
+  background:#f4f7f3;
+  border:1px solid #dce5db;
+  border-radius:9px;
+  margin-top:14px;
+  align-items:center;
+  min-height:52px}
+.selection {
+  line-height:1.7}
+.locate-room {
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:8px;
+  border:1px solid #dbc9c2;
+  border-radius:6px;
+  background:#ffffffa0;
+  color:#724c43;
+  font-size:11px;
+  text-align:left}
+.locate-room:hover {
+  background:#fff}
+.locate-room:focus-visible {
+  outline:2px solid #526d82;
+  outline-offset:2px}
+.summary h2 {
+  display:flex;
+  align-items:center;
+  justify-content:space-between}
+.summary h2:after {
+  content:'총 17실';
+  font-size:11px;
+  font-weight:400;
+  color:#647581}
+.alerts-panel {
+  position:relative}
+.panel {
+  box-shadow:0 6px 20px #2946340c,0 1px 2px #29463408}
+@media(max-height:850px) and (min-width:1101px) {
+  .alert-card {
+  padding:12px;
+  margin-bottom:10px}
+.alert-heading {
+  margin-bottom:12px}
+.alert-top {
+  margin-bottom:7px}
+.response {
+  margin-top:8px;
+  padding-top:7px}
+.locate-room {
+  margin-top:8px;
+  padding:6px}
+.bed {
+  height:32px}
+}
+.page-heading {
+  justify-content:flex-end}
+
+
+/* 상단 요약은 평면도와 경보 위에서 오늘의 현황을 가로로 보여줍니다. */
+.page-heading {
+  gap:18px;
+  align-items:stretch}
+.page-heading .summary {
+  flex:1;
+  display:flex;
+  align-items:center;
+  gap:28px;
+  padding:12px 20px}
+.page-heading .summary h2 {
+  margin:0;
+  min-width:175px;
+  gap:18px;
+  font-size:15px}
+.page-heading .counts {
+  display:flex;
+  gap:12px;
+  flex:1}
+.page-heading .count {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  flex:1;
+  padding:9px 16px}
+.page-heading .count b {
+  margin:0;
+  font-size:23px}
+.page-heading .ward-label {
+  display:flex;
+  align-items:center;
+  white-space:nowrap}
+@media(max-width:700px) {
+  .page-heading .summary {
+  flex-direction:column;
+  align-items:stretch;
+  gap:12px;
+  padding:14px}
+.page-heading .counts {
+  gap:6px}
+.page-heading .count {
+  gap:8px;
+  padding:8px}
+.page-heading .ward-label {
+  display:none}
+}
+
+
+/* 관제 화면의 정보 계층과 패널 표면을 정리합니다. */
+body {
+  background:#edf1ed}
+header {
+  background:linear-gradient(105deg,#304e41,#3f6051);
+  border-bottom:1px solid #ffffff20}
+main {
+  gap:16px}
+.layout {
+  gap:18px}
+.panel {
+  border-color:#d1ddd4;
+  box-shadow:0 5px 20px #2449320a,0 1px 2px #24493208}
+.page-heading .summary {
+  padding:14px 22px;
+  border-radius:12px;
+  gap:34px}
+.page-heading .summary h2 {
+  font-size:15px;
+  min-width:195px}
+.page-heading .count {
+  border:1px solid #dfe9df;
+  background:linear-gradient(110deg,#f1f6ef,#f9fbf7);
+  padding:10px 20px}
+.page-heading .count.caution {
+  background:linear-gradient(110deg,#fcf5e5,#fffdf6);
+  border-color:#eee2c7}
+.page-heading .count.urgent {
+  background:linear-gradient(110deg,#fbefeb,#fff9f7);
+  border-color:#eed8d2}
+.page-heading .count b {
+  font-size:26px;
+  letter-spacing:-1px}
+.page-heading .count span {
+  font-size:12px;
+  font-weight:600}
+.floor-panel {
+  padding:20px}
+.panel-heading h2:before {
+  content:'';
+  display:inline-block;
+  width:4px;
+  height:15px;
+  background:#5b8b70;
+  border-radius:3px;
+  margin-right:9px;
+  vertical-align:-2px}
+.floor-toolbar {
+  margin:15px 0 12px}
+.floor {
+  border:1px solid #ccdacf;
+  box-shadow:inset 0 2px 12px #355c3510;
+  background:linear-gradient(145deg,#f4f7f1,#e8eee7)}
+.corridor {
+  background:linear-gradient(#dce7de,#edf3e9 48%,#dce7de);
+  box-shadow:inset 0 4px 8px #526d820d}
+.room {
+  box-shadow:3px 5px 0 #91a48f25,inset 0 0 0 2px #ffffff90}
+.room strong {
+  letter-spacing:-.25px}
+.alerts-panel {
+  background:linear-gradient(#fff,#fbfcfa);
+  padding:20px}
+.alert-heading {
+  padding-bottom:15px;
+  border-bottom:1px solid #e4eae4;
+  margin-bottom:18px}
+.alert-heading h2 {
+  font-size:15px}
+.alert-total {
+  background:#f8e9e4;
+  border:1px solid #eed6ce;
+  padding:4px 9px;
+  border-radius:20px;
+  font-weight:600}
+.alert-card {
+  border-radius:11px;
+  box-shadow:0 3px 8px #70463806;
+  padding:17px}
+.alert-card h3 {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:21px;
+  letter-spacing:-.6px}
+.event-label {
+  font-size:11px;
+  font-weight:400;
+  color:#7d6a62;
+  letter-spacing:0}
+.alert-card p {
+  line-height:1.8}
+.alert-top {
+  font-variant-numeric:tabular-nums}
+.response {
+  font-size:11px}
+.locate-room {
+  font-weight:600;
+  display:flex;
+  justify-content:space-between;
+  background:#fff;
+  border-color:#e4d3cb}
+.alert-card.caution .locate-room {
+  border-color:#e6d9bd;
+  color:#8a692f}
+.floor-footer {
+  background:#f6f8f4;
+  border-color:#dce5db}
+@media(max-height:850px) and (min-width:1101px) {
+  .alert-card {
+  padding:15px}
+.page-heading .summary {
+  padding:11px 20px}
+.page-heading .count {
+  padding:8px 18px}
+}
+@media(max-width:700px) {
+  .page-heading .summary {
+  gap:12px}
+.page-heading .count {
+  padding:8px}
+.page-heading .counts {
+  width:100%}
+}
+
+
+/* 상단 현황 패널은 전체 너비를 사용합니다. */
+.page-heading {
+  display:block}
+.page-heading .summary {
+  width:100%;
+  margin:0}
+
+
+/* 필터 드롭다운과 같은 아이보리·세이지 색상의 상단 메뉴 */
+.header-menu {
+  position:relative}
+.menu-toggle {
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  padding:0;
+  background:transparent;
+  border:0;
+  border-radius:7px;
+  color:white}
+.menu-toggle:hover,.menu-toggle[aria-expanded="true"] {
+  background:#ffffff18}
+.menu-toggle:focus-visible {
+  outline:2px solid #d3e3d7;
+  outline-offset:3px}
+.header-menu-list {
+  position:absolute;
+  right:0;
+  top:calc(100% + 10px);
+  width:154px;
+  padding:5px;
+  background:#ffffff;
+  border:1px solid #d4d9cd;
+  border-radius:9px;
+  box-shadow:0 8px 22px #203c3426;
+  z-index:20}
+.header-menu-list[hidden] {
+  display:none}
+.header-menu-list a,.header-menu-list button {
+  display:block;
+  width:100%;
+  padding:12px;
+  text-align:left;
+  border:0;
+  border-radius:5px;
+  background:transparent;
+  color:#526d82;
+  font-size:13px;
+  text-decoration:none}
+.header-menu-list a:hover,.header-menu-list button:hover,.header-menu-list a:focus-visible,.header-menu-list button:focus-visible {
+  background:#e3eee5;
+  color:#294937;
+  text-decoration:none;
+  outline:none}
+.settings-dialog {
+  width:min(360px,90vw);
+  padding:24px;
+  border:1px solid #d4ddd3;
+  border-radius:13px;
+  color:#293e34;
+  font:inherit;
+  box-shadow:0 12px 40px #203c3426}
+.settings-dialog::backdrop {
+  background:#203c3450}
+.settings-dialog h2 {
+  font-size:18px;
+  margin:0 0 14px}
+.settings-dialog p {
+  color:#647581;
+  line-height:1.7}
+.settings-dialog button {
+  float:right;
+  padding:8px 18px;
+  background:#526d82;
+  border:0;
+  border-radius:6px;
+  color:white}
+
+
+/* 상태별 강조: 병실 위치는 유지하고 해당 병실을 선명하게 보여줍니다. */
+.room-filters {
+  display:flex;
+  gap:3px;
+  padding:3px;
+  border:1px solid #dbe3d9;
+  background:#eff3ed;
+  border-radius:7px}
+.room-filters button {
+  border:0;
+  background:transparent;
+  color:#63776a;
+  border-radius:5px;
+  font-size:11px;
+  padding:6px 10px}
+.room-filters button[aria-pressed="true"] {
+  background:#fff;
+  color:#355b45;
+  box-shadow:0 1px 4px #243b3420;
+  font-weight:600}
+.room-filters button:focus-visible {
+  outline:2px solid #526d82}
+.room.dimmed {
+  opacity:.32}
+.room {
+  transition:opacity .15s,box-shadow .15s}
+.floor-toolbar {
+  align-items:center;
+  min-height:32px}
+.response-badge {
+  display:inline-block;
+  padding:3px 7px;
+  background:#e5eee5;
+  border:1px solid #c9d9cb;
+  color:#466b50;
+  border-radius:4px;
+  margin-right:5px;
+  font-size:10px}
+.response-badge.pending {
+  background:#f6ead3;
+  border-color:#e5d1aa;
+  color:#986b26}
+.page-heading .summary {
+  position:relative;
+  overflow:hidden;
+  border-radius:14px}
+.page-heading .summary:before {
+  content:'';
+  position:absolute;
+  left:0;
+  top:18px;
+  bottom:18px;
+  width:3px;
+  background:#688f76;
+  border-radius:3px}
+.count {
+  box-shadow:inset 0 1px 0 #fff}
+.count b {
+  font-variant-numeric:tabular-nums}
+.room strong {
+  font-weight:650}
+.room small {
+  font-weight:400}
+.floor {
+  background-image:linear-gradient(#e0e8dd35 1px,transparent 1px),linear-gradient(90deg,#e0e8dd35 1px,transparent 1px),linear-gradient(145deg,#f5f8f1,#e8eee7);
+  background-size:20px 20px,20px 20px,100% 100%}
+.alert-card {
+  position:relative;
+  background:linear-gradient(110deg,#fff5f1,#fffcfa)}
+.alert-card.caution {
+  background:linear-gradient(110deg,#fff9ec,#fffdfa)}
+.alert-top time {
+  padding:3px 6px;
+  border-radius:4px;
+  background:#ffffffa0;
+  color:#8b766e}
+.alert-heading h2 {
+  letter-spacing:-.3px}
+.locate-room {
+  min-height:31px;
+  transition:background .15s}
+.locate-room:hover {
+  background:#edf3ec}
+.header-menu-list {
+  padding:6px;
+  box-shadow:0 12px 28px #1c382b24}
+@media(prefers-reduced-motion:reduce) {
+  .room,.locate-room {
+  transition:none}
+}
+
+
+/* 낙상 감지 시 1초 주기로 병실 배경과 테두리를 부드럽게 점멸합니다. */
+@keyframes fall-alert-pulse {
+  0%,100% {
+  background:#fff0ec;
+  border-color:#d49b90;
+  box-shadow:0 0 0 1px #cf716333,inset 0 0 0 2px #ffffff80}
+50% {
+  background:#e77f74;
+  border-color:#a93630;
+  box-shadow:0 0 0 3px #b9433955,0 0 14px #b9433940,inset 0 0 0 2px #ffffff60}
+}
+.room.urgent {
+  animation:fall-alert-pulse 1s ease-in-out infinite}
+.room.urgent[aria-pressed="true"] {
+  outline:2px solid #8f3832}
+.layout {
+  grid-template-columns:minmax(0,1fr) 350px}
+.alerts-panel {
+  display:flex;
+  flex-direction:column;
+  padding:20px;
+  gap:16px}
+.alert-heading {
+  margin:0;
+  padding:0 0 16px;
+  flex:none;
+  min-height:40px}
+.alert-card {
+  margin:0;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  flex:1;
+  min-height:0}
+.alert-top {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:0;
+  min-height:22px;
+  gap:8px}
+.alert-card h3 {
+  margin:0;
+  min-height:28px}
+.alert-card p {
+  margin:0;
+  font-size:12px;
+  line-height:1.8}
+.response {
+  margin-top:auto;
+  padding-top:12px;
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  gap:5px}
+.response-badge {
+  margin:0;
+  flex:none}
+.locate-room {
+  margin:0;
+  padding:9px 12px;
+  min-height:35px;
+  width:100%;
+  align-items:center}
+@media(max-height:760px) and (min-width:1101px) {
+  .alerts-panel {
+  padding:16px;
+  gap:12px}
+.alert-card {
+  padding:12px;
+  gap:8px}
+.alert-card p {
+  font-size:11px;
+  line-height:1.6}
+.response {
+  padding-top:8px;
+  min-height:30px}
+.locate-room {
+  padding:6px 10px;
+  min-height:30px}
+}
+@media(max-width:1100px) {
+  .layout {
+  grid-template-columns:1fr}
+.alerts-panel {
+  min-height:560px}
+}
+
+
+/* 움직임 최소화 설정에서는 점멸 대신 고정된 붉은 경고를 표시합니다. */
+@media(prefers-reduced-motion:reduce) {
+  .room.urgent {
+  animation:none;
+  background:#eeb1a8;
+  border-color:#bd5149}
+}
+
+
+/* 평면도를 중심으로 유지하면서 알림창의 가독성을 높입니다. */
+@media(min-width:1101px) {
+  .layout {
+  grid-template-columns:minmax(0,1fr) 400px}
+.floor {
+  grid-template-rows:129px minmax(64px,1fr) 129px}
+}
+.alerts-panel,.alerts-panel button {
+  font-family:'Segoe UI','Malgun Gothic',sans-serif}
+.alert-heading h2 {
+  font-size:17px;
+  font-weight:700;
+  letter-spacing:-.3px}
+.alert-heading .alert-total {
+  font-size:12px}
+.alert-top {
+  font-size:12px;
+  line-height:1.5}
+.alert-top strong {
+  font-weight:600}
+.alert-top time {
+  font-size:11px;
+  font-weight:400}
+.alert-card h3 {
+  font-size:25px;
+  font-weight:700;
+  line-height:1.3;
+  letter-spacing:-.5px}
+.alert-card .event-label {
+  font-size:12px;
+  line-height:1.5}
+.alert-card p {
+  font-size:13px;
+  line-height:1.8;
+  color:#586d61;
+  word-break:keep-all}
+.alert-card .response {
+  font-size:12px;
+  line-height:1.6;
+  color:#685c52}
+.alert-card .response-badge {
+  font-size:11px}
+.alert-card .locate-room {
+  font-size:12px;
+  font-weight:600;
+  min-height:37px}
+@media(max-height:760px) and (min-width:1101px) {
+  .floor {
+  grid-template-rows:110px minmax(48px,1fr) 110px}
+.alert-card {
+  gap:7px}
+.alert-card p {
+  font-size:12px;
+  line-height:1.6}
+.alert-card h3 {
+  font-size:23px}
+}
+
+/* 알림 카드는 내용 높이에 맞추고 외부 패널만 평면도 높이를 유지합니다. */
+.alerts-panel .alert-card {
+  flex:0 0 auto;
+  min-height:0;
+  padding:18px;
+  gap:12px}
+.alerts-panel .alert-card .response {
+  margin-top:0}
+.alerts-panel .alert-card .locate-room {
+  margin-top:4px}
+@media(max-height:760px) and (min-width:1101px) {
+  .alerts-panel .alert-card {
+  padding:12px;
+  gap:8px}
+}
+.response-open {
+  height:32px;
+  padding:0 14px;
+  background:#526d82;
+  color:white;
+  border:0;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:600}
+.response-dialog {
+  width:min(460px,calc(100vw - 32px));
+  max-height:90dvh;
+  overflow:auto;
+  border:1px solid #d8e0d9;
+  border-radius:16px;
+  padding:26px;
+  color:#293e34;
+  font:inherit;
+  box-shadow:0 20px 60px #24392d40}
+.response-dialog::backdrop {
+  background:#20332d80}
+.response-dialog h2 {
+  font-size:22px;
+  margin:0 0 10px}
+.response-dialog p {
+  font-size:12px;
+  color:#68776e;
+  line-height:1.7}
+.response-event {
+  padding:14px;
+  border:1px solid #e3bbb5;
+  border-radius:10px;
+  background:#faf0ee;
+  margin:18px 0}
+.response-dialog label.field {
+  display:block;
+  font-size:12px;
+  margin:14px 0 7px}
+.response-dialog input[type=text],.response-dialog textarea {
+  width:100%;
+  border:1px solid #ced8d0;
+  border-radius:8px;
+  padding:11px;
+  background:#f8faf7;
+  color:#293e34;
+  font:inherit}
+.response-dialog textarea {
+  resize:vertical;
+  min-height:65px}
+.response-dialog fieldset {
+  border:0;
+  margin:16px 0;
+  padding:0}
+.response-dialog legend {
+  font-size:12px;
+  margin-bottom:9px}
+.response-options {
+  display:flex;
+  gap:10px}
+.response-options label {
+  flex:1;
+  padding:12px;
+  border:1px solid #cad5cc;
+  border-radius:8px;
+  font-size:12px}
+.response-options label:has(input:checked) {
+  background:transparent;
+  border-color:#5e8068}
+.response-actions {
+  display:flex;
+  gap:10px;
+  margin-top:18px}
+.response-actions button {
+  flex:1;
+  padding:12px;
+  border:1px solid #c8d4cb;
+  border-radius:8px;
+  background:#f6f8f4}
+.response-actions button[type=submit] {
+  background:#526d82;
+  color:white}
+.response-open {
+  background:#FFFFFF;
+  color:#355B45;
+  border:1px solid #B8CDBD}
+.response-open:hover {
+  background:#E6F1E9;
+  border-color:#B8CDBD}
+.response-open:focus-visible {
+  outline:2px solid #547B60;
+  outline-offset:3px}
+
+
+/* 알림 유형별로 동일한 정보 순서와 간격을 사용합니다. */
+.alerts-panel .alert-card {
+  padding:18px;
+  gap:12px;
+  border-radius:10px}
+.alerts-panel .alert-top {
+  margin:0;
+  min-height:22px}
+.alerts-panel .alert-top strong {
+  font-size:12px;
+  font-weight:650}
+.alerts-panel .alert-top time {
+  background:transparent;
+  padding:0;
+  color:#7c817b;
+  font-size:12px}
+.alerts-panel .alert-card h3 {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:23px;
+  line-height:1.4;
+  margin:0}
+.alerts-panel .event-label {
+  font-size:14px;
+  color:#4c6054;
+  font-weight:600}
+.alerts-panel .event-label:before {
+  content:"·";
+  margin-right:8px;
+  color:#8b948c}
+.alerts-panel .alert-card p {
+  margin:0;
+  font-size:13px;
+  line-height:1.7}
+.alerts-panel .locate-room {
+  display:block;
+  text-align:center;
+  min-height:38px;
+  background:#fff;
+  margin-top:4px;
+  border-radius:7px}
+.alerts-panel .locate-room:hover {
+  background:#fff;
+  border-color:#d9e1da;
+  color:inherit}
+
+
+/* 위치 확인 버튼은 상태에 따라 별도 배경색을 넣지 않습니다. */
+.alerts-panel .locate-room[aria-pressed="true"] {
+  background:#fff;
+  border-color:#d9e1da;
+  color:inherit;
+  font-weight:600}
+.alerts-panel .locate-room[aria-pressed="true"]:hover {
+  background:#fff;
+  border-color:#d9e1da}
+
+/* [추가] 현황 카드 선택, 음성 설정 및 긴급 병실 우선 표시 */
+.counts button.count{font:inherit;text-align:left;color:inherit;cursor:default}
+.counts .count[aria-pressed="true"]{outline:0;outline-offset:0}
+.filter-info,.audio-controls{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 0;font-size:12px;color:#536a5c}
+.filter-info button{font:inherit;border:0;background:transparent;color:#526d82;text-decoration:underline;cursor:pointer}
+.audio-controls label{white-space:nowrap}
+.room.filtered-out{opacity:.5;background:transparent;box-shadow:none}
+.room.filtered-out small{visibility:hidden}
+/* [수정] 배경은 유지하고 테두리만 천천히 강조합니다. */
+@keyframes careguard-ring{0%,100%{box-shadow:0 0 0 1px #aa4036}50%{box-shadow:0 0 0 4px #aa40365c}}
+.room.urgent{background:#f2c8c0;border-color:#b14f43;animation:careguard-ring 1.8s ease-in-out infinite}
+.room.urgent.acknowledged{animation:none}
+.alerts-panel{overflow-y:auto}
+@media(prefers-reduced-motion:reduce){.room.urgent{animation:none;box-shadow:0 0 0 3px #aa4036}}
+/* [추가] 전체·정상·주의·긴급 네 카드를 같은 너비로 배치합니다. */
+.page-heading .counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%}
+.page-heading .count{min-width:0;gap:12px}
+.page-heading .count.all{background:#eef2f5;border-color:#d4dde3}
+.page-heading .count.all b{color:#50667a}
+@media(max-width:900px){.page-heading .summary{flex-wrap:wrap}.page-heading .counts{flex-basis:100%}}
+@media(max-width:520px){.page-heading .counts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* [수정] 전체 카드에서 병실 수를 표시하므로 제목 옆 총 17실은 제거합니다. */
+.page-heading .summary h2::after{content:none;display:none}
+/* [수정] 네 현황 카드의 너비·높이·여백을 동일하게 맞춥니다. */
+.page-heading .counts{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+.page-heading .counts .count{width:100%;height:64px;min-height:64px;margin:0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box}
+@media(max-width:520px){.page-heading .counts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* [수정] 병실과 화장실이 평면도 밖으로 넘쳐 하단 안내 영역과 겹치지 않게 합니다. */
+main{height:auto;min-height:calc(100dvh - 72px)}
+.floor-panel{min-height:0}
+.floor{
+  flex:0 0 auto;
+  min-height:390px;
+  padding:24px 18px;
+  grid-template-rows:minmax(129px,auto) minmax(80px,1fr) minmax(129px,auto);
+  background-image:linear-gradient(145deg,#f4f7f1,#e8eee7);
+  background-size:100% 100%;
+}
+/* [수정] 선택 안내는 통합 평면도 아래에 별도 배경 없이 표시합니다. */
+.floor-footer{
+  flex:0 0 auto;
+  margin-top:12px;
+  padding:8px 0;
+  min-height:32px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+@media(max-width:700px){.floor{padding:24px 12px}}
+
+/* [수정] 안내 문구를 제거한 뒤 대응 등록이 없을 때 빈 줄도 제거합니다. */
+.floor-toolbar{justify-content:flex-end}
+/* [수정] 버튼이 숨겨져도 영역 높이를 유지하여 평면도 이동을 방지합니다. */
+.floor-toolbar,.floor-toolbar:has(.response-open:disabled){display:flex;flex:0 0 32px;height:32px;min-height:32px}
+.floor-panel > .floor{margin-top:14px}
+
+/* [수정] 병실 선택 결과를 표시하는 하단 안내 상자를 복원합니다. */
+.floor-footer{
+  display:flex;
+  align-items:center;
+  flex:0 0 auto;
+  gap:12px;
+  min-height:52px;
+  margin-top:14px;
+  padding:14px;
+  border:1px solid #dce5db;
+  border-radius:9px;
+  background:#f6f8f4;
+}
+
+/* [추가] 알림이 많아져도 관제 화면 높이를 늘리지 않고 패널 내부에서 스크롤합니다. */
+.side{min-height:0;overflow:hidden}
+.alerts-panel{min-height:0;max-height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#a3b3a6 #eef2ec}
+/* [추가] 스크롤 중 제목과 알림 건수는 고정합니다. */
+.alerts-panel .alert-heading{position:sticky;top:-20px;z-index:4;background:#fff;padding-top:12px;padding-bottom:12px;box-shadow:0 4px 8px #ffffffcc}
+.alerts-panel .alert-card{flex:0 0 auto}
+/* PC에서는 평면도 높이를 기준으로 오른쪽 패널을 제한합니다. */
+@media(min-width:1101px){
+ .side{position:relative;align-self:stretch}
+ .side .alerts-panel{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+}
+/* 세로로 쌓이는 화면에서도 알림 영역만 스크롤합니다. */
+@media(max-width:1100px){.side .alerts-panel{min-height:0;max-height:480px}}
+@media(prefers-reduced-motion:no-preference){.alerts-panel{scroll-behavior:smooth}}
+
+/* [수정] 알림 카드의 여백과 문구 간격을 줄여 더 많은 알림을 표시합니다. */
+.alerts-panel{gap:10px}
+.alerts-panel .alert-card{padding:12px 14px;gap:7px;border-radius:9px}
+.alerts-panel .alert-top{min-height:18px}
+.alerts-panel .alert-card h3{min-height:0;font-size:21px;line-height:1.35}
+.alerts-panel .alert-card .event-label{font-size:12px}
+.alerts-panel .alert-card p{font-size:12px;line-height:1.5}
+/* [수정] 전체 폭 버튼 대신 오른쪽에 작은 위치 확인 버튼을 표시합니다. */
+.alerts-panel .alert-card .locate-room{
+ display:inline-flex;align-items:center;justify-content:center;
+ align-self:flex-end;width:auto;min-width:88px;min-height:30px;
+ margin:2px 0 0;padding:5px 10px;font-size:11px;border-radius:6px;
+}
+@media(pointer:coarse){.alerts-panel .alert-card .locate-room{min-height:44px}}
+
+/* [수정] 안내 문구와 위치 확인 버튼을 같은 줄에 배치해 카드 높이를 더 줄입니다. */
+.alerts-panel .alert-card{
+ display:grid;grid-template-columns:minmax(0,1fr) auto;
+ gap:5px 8px;padding:10px 12px;
+}
+.alerts-panel .alert-card .alert-top,
+.alerts-panel .alert-card h3{grid-column:1 / -1}
+.alerts-panel .alert-card .alert-top{min-height:16px}
+.alerts-panel .alert-card h3{font-size:19px;line-height:1.3}
+.alerts-panel .alert-card p{grid-column:1;align-self:center;font-size:12px;line-height:1.4}
+.alerts-panel .alert-card .locate-room{
+ grid-column:2;align-self:center;min-width:78px;min-height:26px;
+ margin:0;padding:4px 8px;font-size:11px;
+}
+@media(pointer:coarse){.alerts-panel .alert-card .locate-room{min-height:44px}}
+
+/* [수정] 선택된 위치 확인 버튼은 상태 색상과 구분되는 연한 청회색으로 표시합니다. */
+.alerts-panel .alert-card .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover{
+ background:#e8edf5;
+ border-color:#b8c6da;
+ color:#455b78;
+}
+
+/* [수정] 낙상 병실 전체 배경을 점멸시켜 경고를 명확하게 표시합니다.
+   글자와 병실 자체는 숨기지 않으며, 대응 등록 시 점멸을 중지합니다. */
+@keyframes careguard-room-pulse{
+  0%,100%{background:#fbe4df;border-color:#cd8578;box-shadow:0 0 0 1px #b74c3b30}
+  50%{background:#e99b8d;border-color:#a64032;box-shadow:0 0 0 3px #b74c3b55}
+}
+.floor .room.urgent:not(.acknowledged){
+  animation:careguard-room-pulse 1.8s ease-in-out infinite;
+  color:#452c27;
+}
+.floor .room.urgent:not(.acknowledged) small{color:#642d24}
+.floor .room.urgent.acknowledged{
+  animation:none;
+  background:#f2c8c0;
+  border-color:#b14f43;
+}
+/* 움직임 최소화 설정에서는 고정된 경고 색으로 표시합니다. */
+@media(prefers-reduced-motion:reduce){
+ .floor .room.urgent:not(.acknowledged){animation:none;background:#e99b8d;border-color:#a64032}
+}
+
+/* [수정] 상단 긴급 현황 카드를 핑크 계열에서 선명한 빨간 계열로 변경합니다. */
+.page-heading .count.urgent{
+  background:linear-gradient(110deg,#fff0ed,#ffe2dd);
+  border-color:#e5a39a;
+}
+
+.page-heading .count.urgent span{color:#8f3a31;}
+.page-heading .count.urgent b{color:#b52f24;}
+
+/* [수정] 오른쪽 낙상 감지 알림 카드도 같은 빨간 계열을 사용합니다. */
+.alerts-panel .alert-card:not(.caution){
+  background:linear-gradient(110deg,#fff1ee,#ffe4df);
+  border-color:#df9b91;
+  border-left-color:#b94339;
+}
+
+.alerts-panel .alert-card:not(.caution) .alert-top,
+.alerts-panel .alert-card:not(.caution) h3{color:#8f3028;}
+
+.alerts-panel .alert-card:not(.caution) .event-label,
+.alerts-panel .alert-card:not(.caution) p{color:#75453f;}
+
+/* [수정] 긴급 상황임을 더 분명하게 전달하도록 점멸 대비와 외곽광을 강화합니다. */
+@keyframes careguard-emergency-pulse{
+  0%,100%{
+    background:#f8d8d1;
+    border-color:#bd5b4d;
+    box-shadow:0 0 0 2px #b9433940,0 0 8px #b9433930,inset 0 0 0 2px #ffffff70;
+  }
+  50%{
+    background:#df6256;
+    border-color:#8e2d25;
+    box-shadow:0 0 0 5px #b52f2470,0 0 22px #b52f2465,inset 0 0 0 2px #ffffff45;
+  }
+
+}
+
+/* [추가] 낙상 병실 오른쪽 상태 점도 깜빡여 시선을 유도합니다. */
+@keyframes careguard-emergency-dot{
+  0%,100%{background:#b94339;transform:scale(1)}
+  50%{background:#7c211b;transform:scale(1.45)}
+}
+
+.floor .room.urgent:not(.acknowledged){
+  animation:careguard-emergency-pulse 1.15s ease-in-out infinite;
+  z-index:4;
+}
+
+.floor .room.urgent:not(.acknowledged)::after{
+  animation:careguard-emergency-dot 1.15s ease-in-out infinite;
+  transform-origin:center;
+}
+
+/* 움직임 최소화 설정에서는 강한 고정 경고색으로 표시합니다. */
+@media(prefers-reduced-motion:reduce){
+  .floor .room.urgent:not(.acknowledged){
+    animation:none;
+    background:#df6256;
+    border-color:#8e2d25;
+    box-shadow:0 0 0 4px #b52f2465;
+  }
+  .floor .room.urgent:not(.acknowledged)::after{animation:none;background:#7c211b;}
+}
+
+/* [수정] 위치 확인 버튼은 흰 배경을 유지하고 선택 테두리만 변경합니다. */
+.alerts-panel .alert-card .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover{
+ background:#fff;
+ border-color:#7c91ad;
+ box-shadow:inset 0 0 0 1px #7c91ad;
+ color:#724c43;
+}
+.alerts-panel .alert-card.caution .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card.caution .locate-room[aria-pressed="true"]:hover{
+ color:#8a692f;
+}
+
+/* [수정] 선택 상태에는 강조를 남기지 않고 기본 흰색 버튼을 유지합니다. */
+.alerts-panel .alert-card .locate-room,
+.alerts-panel .alert-card .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover{
+ background:#fff;box-shadow:none;border-color:#e4d3cb;
+}
+.alerts-panel .alert-card.caution .locate-room,
+.alerts-panel .alert-card.caution .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card.caution .locate-room[aria-pressed="true"]:hover{
+ border-color:#e6d9bd;
+}
+/* [추가] 커서를 올렸을 때만 연한 검정 테두리로 변경합니다. */
+.alerts-panel .alert-card .locate-room:hover:not(.hover-suppressed),
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover:not(.hover-suppressed){
+ border-color:#888;box-shadow:none;
+}
+
+/* [수정] 대응 등록 버튼이 나타나도 평면도가 아래로 밀리지 않도록 고정된 자리를 사용합니다. */
+.floor-panel{position:relative}
+.floor-toolbar{height:32px;min-height:32px;margin:15px 0 12px;display:flex;align-items:center;justify-content:flex-end}
+.floor-toolbar .response-open{visibility:hidden;flex:0 0 auto;width:auto;min-width:100px;height:30px;margin:0;padding:5px 10px}
+
+/* [수정] 대응 등록 버튼을 위치 확인 버튼과 같은 흰색·테두리 디자인으로 맞춥니다. */
+.response-open,
+.response-open:hover,
+.response-open:focus-visible{
+  background:#fff;
+  border:1px solid #e4d3cb;
+  border-radius:6px;
+  color:#724c43;
+  box-shadow:none;
+}
+.response-open:hover{border-color:#888}
+.response-open:focus-visible{outline:2px solid #888;outline-offset:2px}
+
+/* [수정] 대응 등록 버튼을 숨겨도 레이아웃 공간은 그대로 유지합니다. */
+.floor-toolbar .response-open[disabled]{visibility:hidden}
+
+/* [추가] 정상·주의·긴급 범례 옆에 대응 등록 버튼을 배치합니다. */
+.floor-panel .panel-heading{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px}
+.heading-response{display:flex;align-items:center;justify-content:center;width:110px;height:32px}
+.heading-response .response-open{visibility:hidden;width:100%;height:30px;margin:0;padding:5px 10px}
+.heading-response .response-open:not([disabled]){visibility:visible}
+.floor-panel .panel-heading .legend{white-space:nowrap}
+/* 기존 toolbar의 버튼 영역은 비워 두어 평면도 위치가 변하지 않게 합니다. */
+.floor-toolbar .response-open{visibility:hidden!important}
+
+/* [수정] 등록 버튼을 제목 줄로 옮겼으므로 아래의 빈 toolbar 여백을 제거합니다. */
+.floor-toolbar{display:none!important;height:0;min-height:0;margin:0;padding:0}
+.floor-panel > .floor{margin-top:0}
+
+/* [수정] 관제 화면을 제목 아래에서 살짝만 내려 자연스러운 간격을 만듭니다. */
+.floor-panel > .floor{margin-top:8px}
+
+/* [추가] 침대 이탈 대응 등록 안내를 주의 색상으로 표시합니다. */
+.response-event.caution-event{background:#fff9ec;border-color:#e6d9bd;color:#8a692f}
+/* 낙상 대응 등록 안내는 기존 빨간색 계열을 유지합니다. */
+.response-event.urgent-event{background:#faf0ee;border-color:#e3bbb5;color:#8f3028}
+
+/* [수정] 조치 상태 선택지는 흰 배경을 유지하고 테두리만 표시합니다. */
+.response-options label,
+.response-options label:has(input:checked){
+  background:#fff;
+  border:1px solid #cad5cc;
+  color:#293e34;
+}
+/* [수정] 현재 선택된 조치 상태의 테두리만 강조합니다. */
+.response-options label:has(input[value="checking"]:checked){
+  border-color:#c59a4c;
+  box-shadow:inset 0 0 0 1px #c59a4c;
+}
+.response-options label:has(input[value="complete"]:checked){
+  border-color:#7b93a5;
+  box-shadow:inset 0 0 0 1px #7b93a5;
+}
+.response-options label:hover{background:#fff}
+
+/* 조치 상태 버튼의 테두리를 연한 회색으로 통일합니다. */
+.response-options label,
+.response-options label:has(input:checked){
+  border-color:#d7d7d7;
+  box-shadow:none;
+  background:#fff;
+}
+/* 선택된 버튼은 회색 테두리를 한 겹 더 선명하게 표시합니다. */
+.response-options label:has(input:checked){
+  border-color:#d7d7d7 !important;
+  box-shadow:inset 0 0 0 1px #d7d7d7 !important;
+}
+
+/* [추가] 선택하지 않은 조치 상태 버튼은 더 옅은 테두리로 표시합니다. */
+.response-options label:not(:has(input:checked)){
+  border-color:#eeeeee;
+  box-shadow:none;
+}
+
+/* [수정] 대응 등록 버튼은 연한 회색 테두리로 표시합니다. */
+.heading-response .response-open,
+.heading-response .response-open:hover,
+.heading-response .response-open:focus-visible{
+  background:#fff;
+  border:1px solid #d7d7d7;
+  color:#555;
+  box-shadow:none;
+}
+.heading-response .response-open:hover{border-color:#999}
+.heading-response .response-open:focus-visible{outline:2px solid #999;outline-offset:2px}
+
+/* [추가] 환자 이름·간호사 이름·조치 내용 입력칸을 조치 상태 버튼과 같은 스타일로 맞춥니다. */
+.response-dialog input[type="text"],
+.response-dialog textarea{
+  background:#fff;
+  border:1px solid #eeeeee;
+  box-shadow:none;
+  outline:none;
+}
+/* [추가] 클릭한 입력칸만 연한 회색 테두리로 강조합니다. */
+.response-dialog input[type="text"]:focus,
+.response-dialog input[type="text"]:focus-visible,
+.response-dialog textarea:focus,
+.response-dialog textarea:focus-visible{
+  background:#fff;
+  border-color:#d7d7d7;
+  box-shadow:inset 0 0 0 1px #d7d7d7;
+  outline:none;
+}
+
+/* [2026.09.16] 고친 내용: 선택된 오늘의 안전 현황 카드는 예시처럼 얇은 초록 테두리와 연한 바깥 강조선으로 표시합니다. */
+.counts .count[aria-pressed="true"]{
+  border-color:#6f9275 !important;
+  outline:none !important;
+  box-shadow:0 0 0 2px #6f927580 !important;
+}
+.counts .count:focus,
+.counts .count:focus-visible { outline:none !important; }
+
+/* [2026.10.01 변경] 병동 안전 현황 카드는 필터 버튼이 아니라 통계 표시용이므로 클릭 가능한 표시를 제거합니다. */
+.page-heading .counts .count {
+  cursor: default;
+  user-select: none;
+}
+
+
+/* [수정] 조치 이력 등록 버튼을 연한 회색 계열로 변경합니다. */
+.response-actions button[type="submit"]{
+  background:#eeeeee;
+  border-color:#c8c8c8;
+  color:#444;
+}
+.response-actions button[type="submit"]:hover{
+  background:#e2e2e2;
+  border-color:#b5b5b5;
+}
+.response-actions button[type="submit"]:focus-visible{
+  outline:2px solid #999;
+  outline-offset:2px;
+}
+
+/* 대응 등록 창 전체에 연한 회색 테두리를 적용합니다. */
+#response-dialog,
+#response-dialog .response-event,
+#response-dialog input[type="text"],
+#response-dialog textarea,
+#response-dialog .response-options label,
+#response-dialog .response-actions button {
+  border-color: #d7d7d7;
+}
+#response-dialog .response-options label:has(input:checked) {
+  border-color: #bfc3c7 !important;
+  box-shadow: inset 0 0 0 1px #bfc3c7 !important;
+}
+/* 입력칸 클릭 및 키보드 포커스의 기본 검정 외곽선을 연한 회색으로 대체합니다. */
+#response-dialog input[type="text"]:focus,
+#response-dialog input[type="text"]:focus-visible,
+#response-dialog textarea:focus,
+#response-dialog textarea:focus-visible {
+  border: 1px solid #d7d7d7;
+  outline: 1px solid #d7d7d7;
+  outline-offset: 0;
+  box-shadow: none;
+}
+#response-dialog .response-actions button:hover {
+  border-color: #bfc3c7;
+}
+/* [2026.09.16] 고친 내용: 조치 이력 등록 버튼은 기본 회색을 유지하고 마우스를 올렸을 때만 초록색으로 강조합니다. */
+#response-dialog .response-actions button[type="submit"]:hover {
+  /* [2026.09.17] 고친 내용: 조치 이력 등록 버튼은 배경을 바꾸지 않고 초록 테두리만 표시합니다. */
+  background: #eeeeee;
+  border-color: #526d82;
+  color: #444;
+}
+/* [2026.09.17] 고친 내용: 낙상 감지와 침대 이탈 대응 등록 창의 외곽선을 진한 회색으로 통일합니다. */
+#response-dialog { border: 2px solid #5f6361; }
+#response-dialog .response-actions button:focus-visible {
+  outline: 2px solid #bfc3c7;
+  outline-offset: 2px;
+}
+/* 조치 상태는 선택하거나 커서를 올려도 배경 없이 테두리로만 구분합니다. */
+#response-dialog .response-options label,
+#response-dialog .response-options label:hover,
+#response-dialog .response-options label:active,
+#response-dialog .response-options label:has(input:checked) {
+  background: transparent;
+}
+/* [2026.09.16] 고친 내용: 복도 전체를 칠하지 않고 사람이 찾기 쉬운 위치명 지점만 연한 원으로 점멸시킵니다. */
+.corridor { font:inherit; cursor:default; }
+/* [2026.09.20] 실제 알림 마커만 클릭·키보드 선택 대상으로 표시합니다. */
+.corridor > .corridor-alert-marker { padding:0; border:0; margin:0; cursor:pointer; font:inherit; }
+.corridor > .corridor-alert-marker:focus-visible { outline:2px solid #36566f; outline-offset:7px; }
+/* [2026.09.17] 고친 내용: 위치 확인 시 복도 전체 대신 실제 감지 원에만 선택 표시를 남깁니다. */
+.corridor.urgent[aria-pressed="true"] { outline:none; }
+/* [2026.09.16] 고친 내용: 감지 지점을 중앙이 아닌 좌측 화장실 앞 구간으로 옮깁니다. */
+/* [2026.09.17] 고친 내용: 테스트한 화장실 앞 위치에 맞춰 복도 마커의 좌표를 이동합니다. */
+/* [2026.09.19] 수정: JS 좌표가 없어도 감지 마커는 311호 앞이 아닌 서쪽 화장실 앞에 표시합니다. */
+.corridor-alert-marker { display:none; position:absolute; z-index:2; left:var(--camera-x,5%); top:50%; width:16px; height:16px; border-radius:50%; transform:translate(-50%,-50%); background:#cf5f53; box-shadow:0 0 0 5px #cf5f5350; }
+.corridor-alert-marker::after { content:var(--camera-label); position:absolute; left:50%; bottom:calc(100% + 6px); transform:translateX(-50%); padding:3px 6px; border-radius:5px; background:#8f3028; color:#fff; font-size:10px; font-style:normal; font-weight:700; letter-spacing:0; white-space:nowrap; }
+.corridor.urgent[aria-pressed="true"] .corridor-alert-marker::before { content:""; position:absolute; inset:-5px; border:2px solid #4f8061; border-radius:50%; }
+.corridor.urgent .corridor-alert-marker { display:block; animation:corridor-alert-pulse 1.15s ease-in-out infinite; }
+/* [2026.09.17] 고친 내용: 복도 감지 위치가 눈에 띄되 과하지 않도록 점멸과 확장 원 효과를 완화합니다. */
+@keyframes corridor-alert-pulse { 0%,100% { opacity:.65; transform:translate(-50%,-50%) scale(.85); background:#c9564b; box-shadow:0 0 0 4px #cf5f5344,0 0 6px 1px #cf5f5355; } 50% { opacity:1; transform:translate(-50%,-50%) scale(1.18); background:#df6a5e; box-shadow:0 0 0 10px #df6a5e45,0 0 10px 2px #df6a5e77; } }
+@media (prefers-reduced-motion:reduce) { .corridor.urgent .corridor-alert-marker { animation:none; opacity:1; } }
+.alert-card.corridor-alert { background:linear-gradient(110deg,#fff1ee,#ffe4df); border-color:#df9b91; border-left-color:#b94339; }
+.alert-card.corridor-alert .alert-top, .alert-card.corridor-alert h3 { color:#8f3028; }
+.alert-card.corridor-alert .event-label, .alert-card.corridor-alert p { color:#75453f; }
+/* [2026.09.16] 고친 내용: 확인이 필요한 알림은 낙상 감지를 먼저, 침대 이탈을 그 아래에 표시합니다. */
+.alerts-panel .alert-card:not(.caution) { order:1; }
+.alerts-panel .alert-card.caution { order:2; }
+/* 선택 병실의 오늘 이벤트 요약을 좁은 화면에서도 자연스럽게 줄바꿈합니다. */
+#room-detail { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px; line-height: 1.6; }
+#room-detail strong { color: #293e34; font-size: 13px; font-weight: 600; }
+#room-detail > span { color: #68776e; font-size: 13px; }
+/* [9.15] 수정내용: 오늘의 기록은 알림 유형·단위와 숫자 색을 구분합니다. */
+#room-detail .room-history-urgent { color: #8f3028; }
+#room-detail .room-history-caution { color: #a97423; }
+#room-detail .room-history-number { color: #222; font-weight: 700; }
+#room-detail .room-history-unit { color: inherit; }
+
+/* [2026.09.16] 고친 내용: 데스크톱·노트북에서 화면 높이에 맞춰 여백과 평면도를 조절합니다.
+   글자나 화면 전체를 확대·축소하지 않고 실제 사용 가능한 CSS 화면 크기를 기준으로 배치합니다. */
+@media (min-width: 1000px) {
+  :root {
+    /* [2026.09.17] 고친 내용: 관리자 화면과 같은 전체화면 비율을 위해 간호사 상단 바 높이를 늘립니다. */
+    --dashboard-header-height: 88px;
+    --dashboard-gap: clamp(12px, 1.8dvh, 20px);
+    --dashboard-padding: clamp(12px, 1.5vw, 28px);
+  }
+  body > header {
+    height: var(--dashboard-header-height);
+    padding-inline: var(--dashboard-padding);
+  }
+  body > main {
+    height: calc(100dvh - var(--dashboard-header-height));
+    min-height: 510px;
+    /* [2026.09.17] 고친 내용: 전체화면에서 대시보드 본문을 조금 아래에 배치해 상단 여백 비율을 맞춥니다. */
+    padding: calc(var(--dashboard-gap) + 10px) var(--dashboard-padding) var(--dashboard-gap);
+    gap: var(--dashboard-gap);
+  }
+  #dashboard-record-view { height:calc(100dvh - var(--dashboard-header-height)); }
+  /* [2026.09.16] 고친 내용: 전체화면에서는 본문 상단 여백을 조금 늘려 화면 요소가 위에 몰리지 않게 합니다. */
+  html:fullscreen body > main {
+    /* [2026.09.17] 고친 내용: 전체화면에서 안전 현황과 병실 배치가 위에 몰리지 않게 본문을 더 아래로 배치합니다. */
+    padding-top: clamp(40px, 5dvh, 56px);
+  }
+  .page-heading { flex: 0 0 auto; }
+  .page-heading .summary {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: clamp(16px, 2vw, 32px);
+    padding: clamp(10px, 1.5dvh, 18px) var(--dashboard-padding);
+  }
+  .page-heading .summary h2 {
+    flex: 0 0 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: clamp(14px, 1.05vw, 18px);
+    white-space: nowrap;
+  }
+  .page-heading .counts { min-width: 0; flex: 1; gap: clamp(8px, 1vw, 14px); }
+  .page-heading .counts .count {
+    height: clamp(48px, 7dvh, 64px);
+    min-height: 48px;
+    padding: 8px clamp(10px, 1vw, 16px);
+  }
+  /* [2026.09.29 변경] 오른쪽 확인 알림 영역을 조금 넓혀 긴 위치명과 두 개의 버튼도 안정적으로 표시합니다. */
+  main > .layout {
+    flex: 0 0 auto;
+    min-height: 0;
+    grid-template-columns: minmax(0, 70fr) minmax(300px, 30fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--dashboard-gap);
+  }
+  .layout > .floor-panel {
+    min-width: 0;
+    min-height: 0;
+    padding: clamp(12px, 1.5dvh, 20px);
+  }
+  /* [2026.09.16] 고친 내용: 대응 등록 버튼을 상태 범례 아래에 오른쪽 정렬하고 제목은 상단에 맞춥니다. */
+  .layout > .floor-panel > .panel-heading { align-items: flex-start; gap: 12px; }
+  .floor-panel > .panel-heading h2 {
+    font-size: clamp(14px, 1.05vw, 18px);
+    white-space: nowrap;
+  }
+  .layout > .floor-panel > .panel-heading .room-heading-actions {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .floor-panel > .panel-heading .legend { gap: 10px; }
+  .floor-panel > .panel-heading .legend-response { min-height: 30px; }
+  .floor-panel > .panel-heading .response-open { min-width: 80px; }
+  /* [2026.09.16] 고친 내용: 병실을 화면 높이만큼 늘리지 않고 원래 평면도의 가로세로 비율을 유지합니다. */
+  .layout > .floor-panel > .floor {
+    flex: 0 0 auto;
+    min-height: 0;
+    margin-top: var(--dashboard-gap);
+    padding: clamp(12px, 2dvh, 24px) clamp(10px, 1vw, 18px);
+    grid-template-rows: auto auto auto;
+  }
+  .floor .room-row { gap: clamp(3px, .4vw, 6px); aspect-ratio: 7.6 / 1; min-height: 90px; }
+  .floor .corridor { aspect-ratio: 12 / 1; min-height: 48px; }
+  .floor .room { min-width: 0; padding-inline: clamp(3px, .4vw, 6px); }
+  .floor .room strong { font-size: clamp(11px, .85vw, 14px); white-space: nowrap; }
+  .floor .room small { font-size: clamp(10px, .75vw, 12px); white-space: nowrap; }
+  .floor-panel > .floor-footer {
+    min-height: 42px;
+    margin-top: var(--dashboard-gap);
+    padding: 8px 12px;
+  }
+  /* [2026.09.16] 고친 내용: 알림이 늘어나도 전체 화면 비율은 유지하고 알림 목록 안에서 스크롤합니다. */
+  .layout > .side { display: flex; min-width: 0; min-height: 0; overflow: hidden; }
+  .layout > .side > .alerts-panel {
+    position: static;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    padding: clamp(12px, 1.2vw, 20px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: auto;
+  }
+  .alerts-panel .alert-heading { top: -12px; margin-bottom: 0; padding-block: 8px; }
+  .alerts-panel .alert-heading h2 { font-size: clamp(14px, 1.05vw, 18px); }
+  .alerts-panel .alert-card { padding: clamp(10px, 1vw, 16px); }
+  .alerts-panel .alert-card h3 { flex-wrap: wrap; font-size: clamp(17px, 1.3vw, 23px); }
+  .alerts-panel .alert-card p { overflow-wrap: anywhere; }
+}
+/* [2026.10.01 변경] 오늘의 기록은 하단 고정 카드 대신 선택한 병실·복도 옆에 뜨는 작은 팝업으로 표시합니다. */
+.dashboard-history-card {
+  position: fixed;
+  z-index: 45;
+  width: min(320px, calc(100vw - 24px));
+  min-width: 0;
+  padding: 14px 16px;
+  border-color: #c7d6e1;
+  background: #ffffff;
+  box-shadow: 0 14px 36px #263c4d24;
+}
+.dashboard-history-card[hidden] { display: none !important; }
+.dashboard-history-card::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  width: 12px;
+  height: 12px;
+  border-left: 1px solid #c7d6e1;
+  border-bottom: 1px solid #c7d6e1;
+  background: #ffffff;
+  transform: translateY(-50%) rotate(45deg);
+}
+.dashboard-history-card.is-left::before {
+  right: -7px;
+  left: auto;
+  border: 0;
+  border-top: 1px solid #c7d6e1;
+  border-right: 1px solid #c7d6e1;
+}
+.dashboard-history-card #room-detail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 12px; align-items:start; min-height:0; }
+#room-detail .history-heading, #room-detail .history-recent { display:flex; flex-direction:column; gap:4px; min-width:0; }
+#room-detail .history-heading { grid-column:1 / -1; padding-bottom:8px; border-bottom:1px solid var(--border); }
+#room-detail .history-heading > strong { font-size:16px; }
+#room-detail .history-heading > span, #room-detail .history-recent > span, #room-detail .history-recent time { color:var(--muted); font-size:12px; }
+#room-detail .history-metric { border-left:0; padding-left:0; }
+#room-detail .history-metric > span { display:block; font-size:12px; white-space:nowrap; }
+#room-detail .history-metric > div { display:flex; align-items:baseline; gap:4px; }
+#room-detail .history-metric strong { font-size:22px; line-height:1.25; font-variant-numeric:tabular-nums; }
+#room-detail .history-metric > div > span { color:var(--muted); font-size:11px; }
+#room-detail .history-recent { grid-column:1 / -1; border-left:0; border-top:1px solid var(--border); padding:9px 0 0; }
+#room-detail .history-recent strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+/* [2026.09.16] 추가한 내용: 좁은 창에서는 카드 내용을 두 줄로 나누어 글씨 겹침을 방지합니다. */
+@media(max-width:999px) {
+  .dashboard-history-card #room-detail { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  #room-detail .history-heading { grid-column:1 / -1; }
+  #room-detail .history-metric { border:0; padding-left:0; }
+  #room-detail .history-recent { grid-column:1 / -1; border-left:0; border-top:1px solid var(--border); padding:12px 0 0; }
+}
+/* [2026.09.16] 추가한 내용: 작은 창에서는 글씨를 과도하게 줄이지 않고 세로 배치와 스크롤로 내용을 보존합니다. */
+@media (max-width: 999px) {
+  .layout > .side { display: flex; }
+  .layout > .side > .alerts-panel { max-height: 480px; overflow-y: auto; }
+}
+/* [2026.09.17] 추가한 내용: 테스트 모드에만 패널을 표시하고 본문이 눌리지 않도록 스크롤을 허용합니다. */
+.alert-test-panel[hidden] { display:none !important; }
+.alert-test-panel { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:16px 20px; flex-shrink:0; border:1px dashed #658573; }
+.alert-test-panel label { display:flex; align-items:center; gap:8px; }
+.alert-test-panel select,.alert-test-panel button { padding:8px 12px; border:1px solid #8aa694; border-radius:8px; background:#fff; color:#294b3c; font:inherit; }
+.alert-test-panel button { cursor:pointer; }
+.alert-test-panel button:hover { background:#eaf2ed; }
+.alert-test-panel p,.alert-test-panel output,.alert-test-panel [role="status"] { margin:0; flex-basis:100%; font-size:13px; }
+.alert-test-mode #dashboard-main { height:auto; min-height:calc(100dvh - 88px); }
+.test-alert-badge { display:inline-block; margin-left:8px; padding:2px 8px; border:1px solid currentColor; border-radius:5px; font-size:12px; }
+/* [2026.09.28 변경] 침대 이탈은 상단 상태 카드와 같은 밝은 골드색으로 표시합니다. */
+.corridor.caution .corridor-alert-marker { display:block; background:#e2b816; box-shadow:0 0 0 5px #e2b81650; }
+.corridor.caution .corridor-alert-marker::after { background:#7b6400; }
+.corridor.acknowledged .corridor-alert-marker { animation:none; }
+.alert-card.corridor-alert.caution { background:#fff9dd; border-color:#ead37b; border-left-color:#e2b816; }
+.alert-card.corridor-alert.caution .alert-top,.alert-card.corridor-alert.caution h3 { color:#7b6400; }
+.floor .room.caution,.corridor.caution .corridor-alert-marker { animation:none; opacity:1; }
+/* [2026.09.17] 추가한 내용: 공통 상단 바 아래에 감지 배너를 내려서 표시하며 대시보드에서는 반드시 숨깁니다. */
+.cross-page-alert[hidden],body:not([data-dashboard-view="records"]) .cross-page-alert { display:none !important; }
+/* [2026.09.17] 고친 내용: 상단 바 높이와 관계없이 화면 위에서 8px 위치에 감지 배너를 고정합니다. */
+.cross-page-alert { position:fixed; z-index:1100; top:8px; left:50%; transform:translateX(-50%); width:min(760px,calc(100% - 32px)); border:1px solid #da8f85; border-radius:14px; background:#fff8f6; box-shadow:0 8px 28px #243f3429; overflow:hidden; color:#80372e; }
+.cross-page-alert.caution { border-color:#d4ad60; background:#fffaf0; color:#805f21; }
+.cross-page-alert-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; }
+.cross-page-alert button { flex-shrink:0; padding:7px 12px; border:1px solid #b8c9c0; border-radius:7px; background:white; color:#294b3c; font:inherit; cursor:pointer; }
+.cross-page-alert button:hover { border-color:#66849a; background:#edf5ef; }
+#cross-page-alert-items { max-height:35dvh; overflow-y:auto; }
+#cross-page-alert-items[hidden] { display:none; }
+.cross-page-alert-row { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:12px 16px; border-top:1px solid #edd6d1; background:#fff0ec; }
+/* [2026.09.17] 고친 내용: 알림 내용 전체에 이동 커서를 표시하고 위치 문구는 기존 제목 모양을 유지합니다. */
+.cross-page-alert-row { cursor:pointer; }
+.cross-page-alert-row .cross-page-alert-location { flex:1 1 240px; min-width:0; padding:0; border:0; border-radius:0; background:transparent; color:inherit; font-size:16px; font-weight:700; text-align:left; }
+.cross-page-alert-row .cross-page-alert-location:hover { background:transparent; color:inherit; }
+.cross-page-alert-location:focus-visible { outline:2px solid #66849a; outline-offset:4px; }
+/* [2026.09.17] 고친 내용: 접힌 알림 제목과 창 여백도 대시보드 이동 영역임을 커서로 표시합니다. */
+.cross-page-alert { cursor:pointer; }
+.cross-page-alert #cross-page-alert-summary { flex:1; border:0; background:transparent; color:inherit; font-weight:700; text-align:left; padding:0; }
+.cross-page-alert-row.caution { background:#fff8e9; color:#805f21; border-color:#ecdfc4; }
+
+/* [2026.09.28 변경] 낙상 의심은 상단 상태 카드와 같은 선명한 오렌지색으로 표시합니다. */
+.page-heading .count.suspected {
+  background:linear-gradient(110deg,#fff0e3,#fff8f1);
+  border-color:#e7a263;
+  color:#8c3d00;
+}
+.legend .suspected:before { background:#d86b18; }
+.room.suspected {
+  border-color:#e18a45;
+  background:#fff0e3;
+  color:#8c3d00;
+}
+.room.suspected small { color:#b34a00; }
+.room.suspected:after { background:#d86b18; }
+.corridor.suspected .corridor-alert-marker {
+  border-color:#d86b18;
+  background:#fff0e3;
+  color:#8c3d00;
+}
+.alert-card.suspected {
+  border-color:#e7a263;
+  background:#fff8f1;
+  color:#8c3d00;
+}
+.alert-card.suspected .alert-top strong,
+.alert-card.suspected .event-label { color:#8c3d00; }
+.alert-card.suspected .locate-room {
+  border-color:#e7a263;
+  color:#8c3d00;
+}
+/* [2026.09.22 변경] 낙상 의심 카드의 두 버튼을 정렬하고 버튼 문구를 검정색으로 통일합니다. */
+.alert-card-actions { display:flex; justify-content:flex-end; gap:8px; }
+.alert-card.suspected .alert-card-actions .locate-room { color:#111; }
+.response-event.suspected-event {
+  border-color:#e7a263;
+  background:#fff0e3;
+  color:#8c3d00;
+}
+#room-detail .room-history-suspected { color:#b34a00; }
+.cross-page-alert.suspected {
+  border-color:#e18a45;
+  background:#fff8f1;
+  color:#8c3d00;
+}
+.cross-page-alert-row.suspected {
+  border-color:#e7a263;
+  background:#fff0e3;
+  color:#8c3d00;
+}
+@keyframes cross-page-alert-enter { from { opacity:0; transform:translate(-50%,-20px); } to { opacity:1; transform:translate(-50%,0); } }
+@media (prefers-reduced-motion:no-preference) { .cross-page-alert { animation:cross-page-alert-enter .25s ease-out; } }
+/* [2026.09.17] 추가한 내용: 페이지 이동 없이 사용할 비밀번호 변경 팝업의 테두리·크기·닫기 버튼입니다. */
+/* [2026.09.17] 고친 내용: 대응 등록 창과 어울리도록 팝업 폭과 안쪽 여백을 줄입니다. */
+.password-change-dialog { width:min(520px,calc(100vw - 32px)); max-width:none; max-height:calc(100dvh - 32px); padding:0; border:2px solid #5f6361; border-radius:14px; background:#fff; color:#294438; overflow:hidden; box-sizing:border-box; }
+.password-change-dialog::backdrop { background:rgba(25,44,35,.45); }
+.password-popup-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 24px; border-bottom:1px solid #dce5df; }
+.password-popup-heading h2 { margin:0; font-size:20px; }
+.password-popup-heading button { border:0; border-radius:6px; padding:6px 10px; background:transparent; color:#486053; font-size:20px; cursor:pointer; }
+.password-popup-heading button:hover { background:#edf3ef; }
+#password-change-frame { display:block; width:100%; height:min(410px,calc(100dvh - 112px)); border:0; background:white; }
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */
+
+/* [2026.10.01 변경] 간호사 대시보드 전체는 스크롤되게 하고, 스크롤바는 UI에 보이지 않게 숨깁니다. */
+body[data-dashboard-view="dashboard"] > main#dashboard-main {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body[data-dashboard-view="dashboard"] > main#dashboard-main::-webkit-scrollbar {
+  display: none;
+}
+
+/* [2026.10.01 변경] 커서 위치와 관계없이 대시보드 전체가 스크롤되도록 오른쪽 알림 패널의 내부 스크롤을 해제합니다. */
+body[data-dashboard-view="dashboard"] .layout > .side,
+body[data-dashboard-view="dashboard"] .layout > .side > .alerts-panel {
+  overflow: visible;
+}
+body[data-dashboard-view="dashboard"] .layout > .side > .alerts-panel {
+  max-height: none;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+body[data-dashboard-view="dashboard"] .layout > .side > .alerts-panel::-webkit-scrollbar {
+  display: none;
+}
+
+/* [2026.10.01 변경] 간호사 대시보드의 주요 텍스트를 눈에 잘 보이도록 한 단계 키웁니다. */
+body[data-dashboard-view="dashboard"] .page-heading .summary h2,
+body[data-dashboard-view="dashboard"] .floor-panel .panel-heading h2,
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-heading h2 {
+  font-size: clamp(16px, 1.15vw, 20px);
+}
+body[data-dashboard-view="dashboard"] .page-heading .counts .count span {
+  font-size: 13px;
+}
+body[data-dashboard-view="dashboard"] .page-heading .counts .count b {
+  font-size: clamp(26px, 1.8vw, 32px);
+}
+body[data-dashboard-view="dashboard"] .floor .room strong {
+  font-size: clamp(13px, .95vw, 15px);
+}
+body[data-dashboard-view="dashboard"] .floor .room small {
+  font-size: clamp(12px, .85vw, 13px);
+}
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-top strong,
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-top time {
+  font-size: 13px;
+}
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-card h3 {
+  font-size: clamp(21px, 1.45vw, 25px);
+}
+body[data-dashboard-view="dashboard"] .alerts-panel .event-label,
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-card p {
+  font-size: 14px;
+}
+body[data-dashboard-view="dashboard"] .alerts-panel .locate-room {
+  font-size: 13px;
+}
+body[data-dashboard-view="dashboard"] #room-detail .history-heading > strong {
+  font-size: 20px;
+}
+body[data-dashboard-view="dashboard"] #room-detail .history-heading > span,
+body[data-dashboard-view="dashboard"] #room-detail .history-metric > span,
+body[data-dashboard-view="dashboard"] #room-detail .history-recent > span,
+body[data-dashboard-view="dashboard"] #room-detail .history-recent time {
+  font-size: 13px;
+}
+body[data-dashboard-view="dashboard"] #room-detail .history-metric strong {
+  font-size: 32px;
+}
+
+/* [2026.10.01 변경] PC 화면에서 관제 도면과 알림 패널이 아래 여백을 남기지 않도록 같은 높이로 확장합니다. */
+@media (min-width: 1101px) {
+  body[data-dashboard-view="dashboard"] > main#dashboard-main {
+    min-height: calc(100dvh - 78px);
+    display: flex;
+    flex-direction: column;
+  }
+
+  body[data-dashboard-view="dashboard"] > main#dashboard-main > .page-heading {
+    flex: 0 0 auto;
+  }
+
+  body[data-dashboard-view="dashboard"] > main#dashboard-main > .layout {
+    flex: 1 1 auto;
+    min-height: clamp(600px, calc(100dvh - 288px), 760px);
+    align-items: stretch;
+  }
+
+  body[data-dashboard-view="dashboard"] .layout > .floor-panel,
+  body[data-dashboard-view="dashboard"] .layout > .side {
+    min-height: 0;
+    align-self: stretch;
+  }
+
+  body[data-dashboard-view="dashboard"] .layout > .floor-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  body[data-dashboard-view="dashboard"] .floor-panel > .panel-heading {
+    flex: 0 0 auto;
+  }
+
+  body[data-dashboard-view="dashboard"] .floor-panel > .floor {
+    flex: 1 1 auto;
+    min-height: 520px;
+    max-height: none;
+    display: grid;
+    grid-template-rows: minmax(160px, 1fr) minmax(92px, .58fr) minmax(160px, 1fr);
+    gap: 0;
+  }
+
+  body[data-dashboard-view="dashboard"] .floor .room-row {
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  body[data-dashboard-view="dashboard"] .floor .corridor {
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  body[data-dashboard-view="dashboard"] .layout > .side,
+  body[data-dashboard-view="dashboard"] .layout > .side > .alerts-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  body[data-dashboard-view="dashboard"] .layout > .side > .alerts-panel {
+    flex: 1 1 auto;
+    min-height: 100%;
+  }
+}
+
+/* [2026.10.01 변경] 확인이 필요한 알림 카드의 확인·대응등록 버튼 문구를 얇게 표시합니다. */
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-card .locate-room,
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-card .locate-room[aria-pressed="true"],
+body[data-dashboard-view="dashboard"] .alerts-panel .alert-card .alert-card-actions .locate-room {
+  font-weight: 400;
+}

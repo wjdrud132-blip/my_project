@@ -1,0 +1,700 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+/* [2026.09.17] 고친 내용: 전체화면에서 상단 영역의 비율을 안정적으로 유지할 수 있도록 공통 높이를 정의합니다. */
+:root { color-scheme: light; --admin-background: #e9f0f5; --admin-surface: #ffffff; --admin-border: #d5dfe7; --admin-green: #526d82; --admin-text: #29343d; --admin-muted: #6e7d88; --admin-topbar-height: 88px; }
+* { box-sizing: border-box; }
+/* [9.15] 수정내용: 페이지 전체가 아닌 상단 바 아래의 본문 영역만 스크롤하도록 구성한다. */
+html:has(#admin-management-page), body:has(#admin-management-page) { height: 100%; overflow: hidden; background: var(--admin-background); }
+body { margin: 0; overflow-x: hidden; background: var(--admin-background); color: var(--admin-text); font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; }
+button, input, select { font: inherit; border: 1px solid var(--admin-border); border-radius: 7px; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 2px solid #66849a; outline-offset: 3px; }
+[hidden] { display: none !important; }
+/* [9.15] 수정내용: 상단 바는 콘텐츠 너비를 유지하고 우측 여백 색상은 html 배경에서 처리한다. */
+/* [9.15] 수정내용: 가운데 메뉴를 화면 기준으로 정렬할 수 있도록 상단 바를 기준 영역으로 설정한다. */
+.admin-topbar { position: relative; width: 100%; height: var(--admin-topbar-height); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; gap: 24px; background: var(--admin-green); color: #f1f4ed; }
+/* [09.13]수정내용: 상단 공통 정렬과 각 영역의 간격을 분리하여 간격 덮어쓰기를 제거한다. */
+.admin-brand, .admin-topbar-actions { display: flex; align-items: center; }
+.admin-brand { gap: 32px; }
+.admin-brand strong { font-size: 15px; }
+.admin-brand span { font-size: 14px; font-weight: 600; }
+/* [9.15] 추가내용: 직원 관리와 관리 이력 사이를 명확히 이동할 수 있도록 상단 메뉴를 추가한다. */
+/* [9.15] 수정내용: 직원 관리와 관리 이력 메뉴를 상단 바의 정중앙에 배치한다. */
+.admin-page-nav { position: absolute; left: 50%; display: flex; gap: 4px; transform: translateX(-50%); }
+.admin-page-nav a { padding: 8px 10px; border-radius: 6px; color: #dbe5d9; font-size: 12px; font-weight: 600; text-decoration: none; }
+.admin-page-nav a:hover, .admin-page-nav a:focus-visible, .admin-page-nav a.active { background: #ffffff1c; color: #fff; outline: 0; }
+.admin-topbar-actions { gap: 10px; flex-shrink: 0; }
+.admin-topbar-actions form { display: flex; margin: 0; }
+.admin-topbar time { margin-right: 10px; font-size: 11px; color: #e1e9df; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.admin-settings, .admin-logout { display: inline-flex; align-items: center; justify-content: center; height: 36px; background: #526d82; border-color: #74887b; color: #f3f5ee; }
+.admin-settings { width: 36px; padding: 0; border: 1px solid #74887b; border-radius: 7px; text-decoration: none; }
+.admin-settings svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.admin-logout { padding: 0 16px; font-size: 11px; white-space: nowrap; }
+.admin-settings:hover, .admin-logout:hover { background: #617d92; border-color: #a1b4a7; }
+.admin-settings:focus-visible, .admin-logout:focus-visible { outline-color: #f1f4ed; }
+.admin-page { display: flex; flex-direction: column; height: calc(100vh - var(--admin-topbar-height)); min-height: 0; max-width: 1800px; margin: 0 auto; padding: 24px 24px 36px; overflow-y: auto; scrollbar-gutter: stable; scrollbar-width: none; -ms-overflow-style: none; }
+/* [2026.09.17] 추가한 내용: 전체화면을 유지하는 조치 이력 내부 화면이 상단 바 아래 영역을 모두 사용하게 합니다. */
+/* [2026.10.01 변경] 관리자 조치 이력 배경을 간호사 조치 이력과 같은 블루 그레이 배경으로 맞춥니다. */
+.admin-record-view { height: calc(100vh - var(--admin-topbar-height)); background: #e9f0f5; }
+.admin-record-view iframe { display: block; width: 100%; height: 100%; border: 0; background: #e9f0f5; }
+/* [2026.10.01 변경] 관리자 안의 조치 이력 영역도 스크롤 기능은 유지하되 스크롤바 UI는 숨깁니다. */
+.admin-record-view,
+.admin-record-view iframe {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.admin-record-view::-webkit-scrollbar,
+.admin-record-view iframe::-webkit-scrollbar {
+  display: none;
+}
+/* [2026.10.01 변경] 관리자 페이지 스크롤 기능은 유지하되 스크롤바 UI는 보이지 않게 숨깁니다. */
+.admin-page::-webkit-scrollbar { display: none; }
+/* [9.15] 수정내용: 넓은 화면에서 직원 관리 본문을 오른쪽으로 조금 이동해 시각적 여백을 맞춘다. */
+@media (min-width: 801px) {
+    .admin-page { position: relative; left: 16px; }
+}
+.admin-heading { padding: 0 12px; margin-bottom: 20px; }
+.admin-heading h1 { margin: 0 0 8px; font-size: 28px; line-height: 1.35; letter-spacing: -1px; }
+.admin-heading p { margin: 0; font-size: 13px; color: var(--admin-muted); }
+body[data-admin-job-type="GENERAL"] #admin-management-page.is-staff-page > .admin-heading > p,
+#admin-management-page.is-history-page > .admin-heading > p,
+#admin-inactive-view > .admin-heading > p,
+#admin-accident-view > .admin-heading > p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+/* [2026.09.16] 고친 내용: 계정 생성 요약 카드를 제거하고 남은 네 카드의 너비·높이·내용 정렬을 동일하게 맞춥니다. */
+.admin-history-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin: 0 0 18px; }
+/* [2026-09-22 변경] 간병인 이력은 비밀번호 초기화 대신 전화번호 수정 카드를 표시하고 네 칸을 균등 배치합니다. */
+.admin-history-summary.is-caregiver-history { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.admin-history-summary article { display: flex; align-items: center; gap: 12px; min-height: 88px; padding: 17px; border: 1px solid var(--admin-border); border-radius: 12px; background: var(--admin-surface); }
+.admin-history-summary article > div { display: flex; min-width: 0; min-height: 48px; flex: 1; flex-direction: column; justify-content: center; }
+.history-filter-card { cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.history-filter-card:hover, .history-filter-card:focus-visible { border-color: #7d9b87; box-shadow: 0 0 0 3px #6f92751f; outline: 0; transform: translateY(-1px); }
+.history-filter-card:focus { outline: 0; }
+.history-card-icon.all { color: #647581; }
+.history-card-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+/* [09.13]수정내용: 아이콘별 무효한 배경색을 제거하고 공통 투명 배경 한 곳에서 관리한다. */
+.history-card-icon { display: grid; place-items: center; width: 28px; height: 36px; border-radius: 0; background: transparent; font-size: 19px; font-weight: 700; }
+.history-card-icon.create { color: #53846a; }
+.history-card-icon.ward { color: #668594; }
+.history-card-icon.password { color: #bd7a2c; }
+.history-card-icon.phone { color: #526d82; }
+.history-card-icon.disable { color: #b06e6a; }
+.admin-history-summary small, .admin-history-summary strong { display: block; }
+.admin-history-summary small { color: var(--admin-muted); font-size: 10px; }
+.admin-history-summary strong { margin-top: 5px; color: var(--admin-text); font-size: 18px; }
+.admin-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 18px; }
+.admin-stat { min-height: 112px; padding: 24px 16px; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 14px; }
+.admin-stat h2 { margin: 0 0 5px; font-size: 12px; color: var(--admin-muted); font-weight: 500; }
+.admin-stat strong { font-size: 25px; line-height: 1.2; }
+.admin-count-total { color: #b18b4e; }
+.admin-count-approved { color: #4c6855; }
+.admin-count-pending { color: #648794; }
+.admin-panel { flex: 1; padding: 22px 24px 4px; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 14px; }
+.admin-panel-heading h2 { margin: 0 0 8px; font-size: 17px; letter-spacing: -.5px; }
+.admin-panel-heading p { margin: 0; color: var(--admin-muted); font-size: 11px; }
+.admin-panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+/* [09.13]수정내용: 계정 관리 버튼의 반복된 크기와 글꼴을 공통 규칙으로 합치고 색상만 개별 지정한다. */
+.admin-create-account, .admin-inactive-management-link { padding: 10px 14px; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.admin-create-account { border-color: var(--admin-green); background: var(--admin-green); color: #fff; }
+.admin-create-account:hover { filter: brightness(.96); }
+.admin-toolbar { display: flex; align-items: center; justify-content: flex-start; gap: 20px; margin: 18px 0; }
+.admin-search { display: flex; gap: 8px; }
+.admin-search-field { position: relative; border: 1px solid #dfe4da; border-radius: 7px; background: #fff; transition: border-color .18s ease, box-shadow .18s ease; }
+.admin-search-field:hover { border-color: #7d9b87; }
+.admin-search-field:focus-within { border-color: var(--admin-green); box-shadow: 0 0 0 3px #6f92751f; }
+.admin-search-field svg { position: absolute; top: 15px; left: 14px; width: 14px; height: 14px; fill: none; stroke: #a7aea2; stroke-width: 1.7; }
+.admin-search input { width: 200px; height: 44px; padding: 0 12px 0 34px; border: 0; outline: 0; border-radius: 7px; background: #fff; color: var(--admin-text); font-size: 11px; }
+.admin-search input::placeholder { color: #9da498; }
+.admin-search-button { min-width: 80px; border: 1px solid #dfe4da; background: #fff; color: #557e66; font-size: 12px; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
+.admin-search-button:hover, .admin-search-button:focus-visible { border-color: #7d9b87; background: #fff; box-shadow: none; outline: 0; }
+.admin-tabs { display: flex; width: 328px; padding: 4px; border-radius: 8px; background: #f0f0e7; }
+.admin-tabs button { flex: 1; padding: 9px 12px; border: 0; background: transparent; color: #737b6c; font-size: 11px; }
+.admin-tabs button[aria-selected="true"] { background: #fff; color: #4c6353; box-shadow: 0 1px 4px #3943320a; font-weight: 700; }
+.admin-table-wrap { overflow-x: auto; }
+#admin-management-page .admin-table-wrap { min-height: 220px; }
+/* [9.15] 추가내용: 직원 목록이 길어질 때 표 내부에서 스크롤하고 열 제목은 고정한다. */
+/* [2026.10.01 변경] 간호사 관리 목록은 스크롤 기능은 유지하되 스크롤바 UI는 보이지 않게 숨깁니다. */
+#admin-management-page.is-staff-page .admin-table-wrap { max-height: 520px; overflow: auto; margin-right: -14px; padding-right: 14px; scrollbar-width: none; -ms-overflow-style: none; }
+/* [2026.10.01 변경] 직원 관리도 이력 페이지처럼 카드가 목록과 페이지 버튼까지 감싸고 페이지 전체로 스크롤되게 합니다. */
+#admin-management-page.is-staff-page { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+#admin-management-page.is-staff-page .admin-panel { min-height: auto; display: block; flex: 0 0 auto; }
+#admin-management-page.is-staff-page .admin-table-wrap { flex: none; min-height: 0; max-height: none; overflow: visible; margin-right: 0; padding-right: 0; }
+#admin-management-page.is-staff-page .admin-table-wrap::-webkit-scrollbar { display: none; }
+.admin-table { width: 100%; border-collapse: collapse; table-layout: fixed; text-align: center; font-size: 11px; }
+/* [9.15] 추가내용: 직원 목록 스크롤 중에도 각 열의 의미를 확인할 수 있게 헤더를 상단에 고정한다. */
+.admin-table th { position: sticky; top: 0; z-index: 1; height: 46px; background: #f5f5ec; color: #7b8274; font-weight: 600; }
+.admin-table th:first-child { width: 22%; border-radius: 7px 0 0 7px; }
+.admin-table th:nth-child(2) { width: 24%; }
+.admin-table th:nth-child(3) { width: 27%; }
+.admin-table th:last-child { border-radius: 0 7px 7px 0; }
+.admin-table td { height: 49px; border-bottom: 1px solid #e9e9e0; color: #8c9285; padding: 8px; }
+#admin-user-rows td { font-size: 13px; line-height: 1.45; }
+/* [2026-09-22 변경] 간병인 목록은 다섯 열의 폭을 명시해 제목과 데이터의 중심선을 맞춥니다. */
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(1) { width: 18%; }
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(2) { width: 18%; }
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(3) { width: 18%; }
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(4) { width: 26%; }
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(5) { width: 20%; }
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th,
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table td {
+  padding-right: 8px;
+  padding-left: 8px;
+  text-align: center;
+}
+/* [2026-09-22 변경] 담당 병실 제목과 값을 같은 간격으로 우측에 미세 조정합니다. */
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table th:nth-child(3),
+body[data-admin-job-type="CAREGIVER"] #admin-list .admin-table td:nth-child(3) {
+  text-indent: 8px;
+}
+/* [09.13]수정내용: 마지막 행도 공통 td의 동일한 하단 테두리를 사용하도록 중복 규칙을 제거한다. */
+.admin-table td:first-child { font-weight: 400; color: #565d4f; }
+.admin-row-actions { position: relative; display: flex; justify-content: center; gap: 8px; }
+.admin-row-actions button { padding: 5px 13px; border: 0; font-size: 12px; white-space: nowrap; }
+.admin-approve { color: #53846a; background: #e5f2e9; }
+.admin-reject { color: #b06e6a; background: #faeae7; }
+.admin-row-actions button.admin-approve:not(.admin-icon-button),
+.admin-row-actions button.admin-reject:not(.admin-icon-button) { font-weight: 600; }
+/* [9.15] 수정내용: 관리 기능은 사각형 버튼 없이 아이콘 자체로 간결하게 표시한다. */
+.admin-row-actions .admin-icon-button { display: inline-flex; width: 28px; height: 28px; padding: 0; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: transparent; }
+.admin-row-actions .admin-icon-button svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.admin-row-actions .admin-edit-button { color: #39745e; }
+.admin-row-actions .admin-icon-button.admin-approve { color: #39745e; }
+.admin-row-actions .admin-icon-button.admin-reject { color: #c55454; }
+/* [9.15] 추가내용: 비밀번호 초기화와 계정 비활성화 아이콘의 의미를 색상으로도 구분한다. */
+.admin-row-actions .admin-icon-button.admin-password-reset { color: #b7782a; }
+.admin-row-actions .admin-icon-button:hover, .admin-row-actions .admin-icon-button:focus-visible { background: #f1f5ef; outline: 0; }
+/* [9.15] 수정내용: 연필 아이콘을 누르면 중앙 팝업에서 관리 작업을 선택하도록 바꾼다. */
+.admin-management-choice-dialog { width: min(520px, calc(100% - 32px)); }
+/* [9.15] 추가내용: 관리 선택 팝업이 열려 있는 동안 뒤 화면의 스크롤을 고정한다. */
+body.admin-modal-open .admin-page { overflow-y: hidden; }
+.admin-management-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.admin-management-choice-dialog.is-caregiver .admin-management-options { grid-template-columns: repeat(3, 1fr); }
+/* [2026-09-22 변경] 간호사·간병인 관리 카드의 아이콘, 제목, 설명 기준선을 동일하게 맞춥니다. */
+.admin-management-option { display: grid; min-height: 150px; padding: 14px 10px; grid-template-rows: 38px 22px 46px; align-content: center; justify-items: center; row-gap: 7px; border: 1px solid #dfe6dc; border-radius: 11px; background: #fff; color: var(--admin-text); text-align: center; cursor: pointer; }
+.admin-management-option:hover, .admin-management-option:focus-visible, .admin-management-option.is-selected { border-color: #8ea6b8; background: #edf3f7; outline: 0; }
+.admin-management-option-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; background: #edf4ee; }
+.admin-management-option-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.admin-management-option-icon.admin-approve { color: #39745e; }
+.admin-management-option-icon.admin-password-reset { color: #b7782a; background: #fcf5e9; }
+.admin-management-option-icon.admin-phone-edit { color: #526d82; background: #edf3f7; }
+.admin-management-option-icon.admin-reject { color: #c55454; background: #fceeed; }
+.admin-management-option strong { align-self: center; font-size: 13px; line-height: 22px; white-space: nowrap; }
+.admin-management-option small { display: flex; min-height: 46px; align-items: flex-start; justify-content: center; color: #7b8274; font-size: 11px; line-height: 1.4; word-break: keep-all; }
+.admin-management-choice-dialog .admin-primary:disabled { border-color: #e1e6df; background: #e1e6df; color: #9aa69c; cursor: not-allowed; }
+.admin-empty { text-align: center; color: var(--admin-muted); padding: 60px 16px; }
+/* [9.15] 추가내용: 직원 목록과 관리 이력의 페이지 이동 버튼을 공통 스타일로 표시한다. */
+.admin-pagination { display: flex; justify-content: center; align-items: center; gap: 6px; min-height: 42px; margin-top: 14px; }
+.admin-pagination button { min-width: 30px; height: 30px; padding: 0 8px; border: 1px solid transparent; border-radius: 7px; background: transparent; color: #647581; font-size: 12px; }
+.admin-pagination button:hover, .admin-pagination button:focus-visible { border-color: #cfd8ce; background: #f5f8f3; outline: 0; }
+.admin-pagination button[aria-current="page"] { border-color: var(--admin-green); background: var(--admin-green); color: #fff; font-weight: 700; }
+.admin-pagination button:disabled { cursor: default; opacity: .35; }
+.admin-history-panel { margin-top: 0; padding: 24px 0 0; border: 0; border-top: 1px solid var(--admin-border); border-radius: 0; background: transparent; box-shadow: none; }
+/* [9.15] 수정내용: 직원 관리에는 직원 목록만, 관리 이력에는 이력 조회 영역만 노출한다. */
+.admin-page.is-staff-page .admin-history-summary, .admin-page.is-staff-page .admin-history-panel { display: none; }
+.admin-page.is-staff-page .admin-panel > #admin-list { display: block; }
+.admin-page.is-history-page .admin-panel > #admin-list { display: none; }
+.admin-page.is-history-page .admin-account-actions { display: none; }
+.admin-page.is-history-page .admin-history-table th:last-child, .admin-page.is-history-page .admin-history-table td:last-child { display: none; }
+/* [9.15] 수정내용: 관리 이력 화면에서는 직원 목록용 페이지 번호를 숨긴다. */
+.admin-page.is-history-page #admin-user-pagination { display: none; }
+.admin-panel > .admin-history-panel { padding-top: 0; border-top: 0; }
+.admin-panel > .admin-history-panel > header { display: none; }
+/* [2026.10.01 변경] 관리 이력 화면은 표 내부에 갇히지 않도록 페이지 전체 스크롤을 사용합니다. */
+#admin-management-page.is-history-page { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+#admin-management-page.is-history-page .admin-panel { display: block; min-height: 0; }
+#admin-management-page.is-history-page .admin-history-panel { display: block; min-height: 0; }
+#admin-management-page.is-history-page .admin-history-wrap { min-height: 0; max-height: none; flex: none; }
+.admin-history-wrap { max-height: none; overflow: visible; margin-top: 18px; margin-right: 0; padding-right: 0; scrollbar-width: none; -ms-overflow-style: none; }
+.admin-history-wrap::-webkit-scrollbar { display: none; }
+.admin-history-table { width: 100%; min-width: 0; border-collapse: collapse; table-layout: fixed; text-align: center; font-size: 11px; }
+.admin-history-table th { position: sticky; top: 0; z-index: 1; height: 42px; background: #f5f5ec; color: #7b8274; font-weight: 600; }
+.admin-history-table th:first-child { width: 18%; }
+.admin-history-table th:nth-child(2) { width: 15%; }
+.admin-history-table th:nth-child(3) { width: 15%; }
+.admin-history-table th:nth-child(4) { width: 18%; }
+.admin-history-table th:nth-child(5) { width: 18%; }
+.admin-history-table td { height: 46px; padding: 8px; border-bottom: 1px solid #e9e9e0; color: #697165; white-space: normal; word-break: keep-all; }
+.admin-history-table tbody td, .admin-history-table tbody .history-status { font-size: 13px; line-height: 1.45; }
+.admin-history-table td:first-child { color: #8c9285; font-variant-numeric: tabular-nums; }
+.admin-history-table td:nth-child(4) { color: #565d4f; font-weight: 400; }
+.history-status { display: inline-flex; padding: 5px 8px; border-radius: 999px; font-size: 10px; font-weight: 600; }
+.history-status.active { background: #e5f2e9; color: #53846a; }
+.history-status.disabled { background: #faeae7; color: #b06e6a; }
+.history-actions { white-space: nowrap; }
+.history-actions button { width: 24px; height: 30px; margin: 0 3px; padding: 0; border: 0; border-radius: 0; background: transparent; font-size: 16px; line-height: 1; cursor: pointer; }
+.history-actions .history-edit { color: #53846a; }
+.history-actions .history-delete { color: #b06e6a; }
+.history-actions button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.history-actions button:hover { background: transparent; opacity: .7; }
+.admin-dialog { width: min(420px, calc(100% - 32px)); padding: 28px; border: 1px solid var(--admin-border); border-radius: 14px; color: var(--admin-text); background: var(--admin-surface); }
+/* [2026.09.16] 고친 내용: 직원 관리 작업 선택 카드의 가로 폭을 40px 늘려 항목 사이 여백을 자연스럽게 맞춥니다. */
+#admin-management-choice-dialog.admin-management-choice-dialog { width: min(780px, calc(100% - 32px)); }
+/* [2026-09-16 변경] 관리 작업 선택 창의 취소·선택 버튼을 조금 넓혀 누르기 쉽게 만든다. */
+#admin-management-choice-cancel, #admin-management-choice-confirm { min-width: 72px; }
+.admin-dialog::backdrop { background: #1c302666; }
+.admin-dialog h2 { margin: 0 0 12px; font-size: 20px; }
+.admin-dialog p { line-height: 1.7; color: #777f70; }
+.admin-dialog.is-deactivate-action #admin-dialog-description {
+  margin: 0 0 18px;
+  color: var(--admin-text);
+  font-size: 14px;
+  line-height: 1.8;
+  text-align: left;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+}
+.admin-deactivate-details {
+  margin: 0;
+  padding: 14px 16px 14px 32px;
+  border-radius: 8px;
+  background: #f0f1eb;
+  color: #64705e;
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: left;
+  word-break: keep-all;
+}
+.admin-deactivate-details li + li { margin-top: 6px; }
+.admin-dialog label { display: block; margin: 20px 0 8px; }
+.admin-dialog select { width: 100%; padding: 12px; background: white; color: var(--admin-text); }
+.admin-phone-edit-dialog input { box-sizing: border-box; width: 100%; min-height: 52px; padding: 0 14px; border: 1px solid #b8cad8; border-radius: 9px; background: #fff; color: var(--admin-text); font: inherit; }
+.admin-phone-edit-dialog input:focus { border-color: #66849a; outline: 2px solid #b8cad866; }
+#admin-action-dialog.ward-menu-overflow { overflow: visible; }
+.admin-action-ward-dropdown { position: relative; }
+.admin-action-ward-dropdown > button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 54px; padding: 0 16px; border: 1px solid #b8cad8; border-radius: 9px; background: #fff; color: #293b49; font: inherit; text-align: left; cursor: pointer; }
+.admin-action-ward-dropdown > button:hover, .admin-action-ward-dropdown > button[aria-expanded="true"] { border-color: #829eb3; background: #f6faff; }
+.admin-action-ward-dropdown > button:focus-visible { outline: 2px solid #829eb3; outline-offset: 2px; }
+.admin-action-ward-dropdown > button:disabled { cursor: wait; opacity: .7; }
+.admin-action-ward-dropdown svg { width: 18px; height: 18px; flex: none; }
+.admin-action-ward-options { position: absolute; top: calc(100% + 5px); left: 0; z-index: 20; box-sizing: border-box; width: 100%; max-height: 240px; overflow-y: auto; padding: 4px; border: 1px solid #d5dfe7; border-radius: 7px; background: #fff; box-shadow: 0 6px 18px #263c4d26; scrollbar-width: thin; scrollbar-color: #b8cad8 #edf3f7; }
+/* [2026.09.22 변경] 병실 목록은 팝업 크기에 포함하지 않고 선택란 아래에 떠서 표시합니다. */
+.admin-action-ward-options.is-fixed-menu { position: fixed; right: auto; bottom: auto; z-index: 10001; }
+.admin-action-ward-dropdown.open-up .admin-action-ward-options { top: auto; bottom: calc(100% + 5px); }
+.admin-action-ward-options button { display: block; width: 100%; padding: 10px 12px; border: 0; border-radius: 5px; background: transparent; color: #293b49; font: inherit; text-align: left; cursor: pointer; }
+.admin-action-ward-options button:hover, .admin-action-ward-options button:focus-visible, .admin-action-ward-options button[aria-selected="true"] { outline: 0; background: #e8f1f8; color: #36566f; }
+.admin-dialog-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 24px; }
+.admin-dialog-actions button { padding: 10px 16px; background: #f1f1e9; color: #64705e; }
+.admin-dialog-actions .admin-primary { background: var(--admin-green); color: white; border-color: var(--admin-green); }
+.admin-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); max-width: calc(100% - 32px); padding: 14px 24px; border-radius: 10px; background: var(--admin-green); color: white; box-shadow: 0 4px 24px #243b3322; z-index: 2; }
+.admin-account-info { margin: 0; padding: 5px 16px; border-radius: 9px; background: #f5f5ec; text-align: left; }
+.admin-account-info div { display: flex; justify-content: space-between; gap: 20px; padding: 11px 0; border-bottom: 1px solid #e5e6dc; }
+.admin-account-info div:last-child { border-bottom: 0; }
+.admin-account-info dt { color: #7b8274; font-size: 11px; }
+.admin-account-info dd { margin: 0; color: var(--admin-text); font-size: 11px; font-weight: 700; }
+.admin-account-info div:last-child dd { color: #53846a; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em; }
+.admin-password-value { display: inline-flex; align-items: center; gap: 8px; }
+.admin-password-value button { padding: 4px 7px; border: 1px solid #dfe4da; border-radius: 5px; background: #fff; color: #64705e; font-family: inherit; font-size: 9px; cursor: pointer; }
+.admin-password-value button:hover { border-color: #7d9b87; }
+.admin-complete-close { width: 100%; margin-top: 20px; padding: 11px; border: 1px solid #f1f1e9; border-radius: 7px; background: #f1f1e9; color: #64705e; font-size: 12px; font-weight: 600; }
+.admin-complete-close:hover, .admin-complete-close:focus-visible { border-color: #7d9b87; outline: 0; }
+.admin-history-event-dialog { width: min(420px, calc(100% - 32px)); }
+.admin-history-event-dialog > p { margin: 0 0 18px; font-size: 12px; }
+.admin-event-info { margin: 0; padding: 5px 16px; border-radius: 9px; background: #f5f5ec; }
+.admin-event-info div { display: flex; justify-content: space-between; gap: 18px; padding: 11px 0; border-bottom: 1px solid #e5e6dc; }
+.admin-event-info div:last-child { border-bottom: 0; }
+.admin-event-info dt { color: #7b8274; font-size: 11px; }
+.admin-event-info dd { margin: 0; color: var(--admin-text); font-size: 11px; font-weight: 700; }
+.admin-event-info #event-action {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  text-align: right;
+}
+.admin-event-info .event-action-name {
+  color: var(--admin-text);
+  font-weight: 700;
+}
+.admin-event-info .event-action-detail {
+  max-width: 240px;
+  padding: 6px 8px;
+  border-radius: 7px;
+  background: #eef3f6;
+  color: #526d82;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.admin-event-change { width: auto; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; color: #64705e; font-size: 11px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.admin-event-change:hover { background: transparent; color: #39483e; }
+.admin-history-event-dialog .admin-complete-close { margin-top: 8px; }
+.admin-deactivate-dialog { text-align: center; }
+.admin-deactivate-dialog .warning-mark { display: grid; place-items: center; width: 44px; height: 44px; margin: 0 auto 14px; border-radius: 14px; background: #faeae7; color: #b06e6a; font-size: 20px; font-weight: 700; }
+.admin-deactivate-dialog > p { margin: 8px 0 0; font-size: 12px; }
+.admin-deactivate-dialog .admin-deactivate-note { color: #777f70; font-size: 11px; }
+.admin-deactivate-dialog .admin-dialog-actions { justify-content: stretch; }
+.admin-deactivate-dialog .admin-dialog-actions button { flex: 1; }
+.admin-deactivate-confirm { border-color: #b06e6a !important; background: #b06e6a !important; color: #fff !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (max-width: 800px) {
+    .admin-topbar { padding: 16px; height: auto; min-height: 68px; }
+    .admin-brand { gap: 8px; align-items: flex-start; flex-direction: column; }
+    /* [9.15] 수정내용: 작은 화면에서는 메뉴가 겹치지 않도록 브랜드 영역 안에 자연스럽게 배치한다. */
+    .admin-page-nav { position: static; transform: none; }
+    .admin-topbar time { display: none; }
+    .admin-page { padding: 24px 16px; }
+    .admin-heading { padding: 0; }
+    .admin-heading h1 { font-size: 25px; }
+    .admin-summary { gap: 10px; }
+    .admin-stat { min-height: 100px; padding: 20px 14px; }
+    .admin-panel { padding: 20px 16px 4px; }
+    .admin-toolbar { align-items: stretch; flex-direction: column; padding-right: 0; }
+    .admin-search-field { flex: 1; }
+    .admin-search input, .admin-tabs { width: 100%; }
+    .admin-table { min-width: 620px; }
+    .admin-history-summary, .admin-history-summary.is-caregiver-history { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* [2026.10.01 변경] 작은 화면에서도 이력 목록은 페이지 전체 스크롤로 확인합니다. */
+    #admin-management-page.is-history-page { overflow-y: auto; }
+    #admin-management-page.is-history-page .admin-history-wrap { max-height: none; flex: none; }
+    .admin-panel-heading { align-items: stretch; flex-direction: column; }
+    .admin-create-account { align-self: flex-start; }
+    .admin-create-grid { grid-template-columns: 1fr; }
+    .admin-management-options { grid-template-columns: 1fr; }
+    .admin-management-choice-dialog.is-caregiver .admin-management-options { grid-template-columns: 1fr; }
+    .admin-management-option { min-height: 90px; }
+}
+
+/* [09.13]추가내용: 계정 생성 왼쪽의 비활성화 사용자 관리 링크를 흰 배경의 보조 버튼으로 표시하고 좁은 화면에서는 줄바꿈한다. */
+.admin-account-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.admin-inactive-management-link { display: inline-flex; align-items: center; justify-content: center; background: #fff; color: var(--admin-green); text-decoration: none; }
+.admin-inactive-management-link:hover { border-color: var(--admin-green); background: #f5f8f3; }
+.admin-inactive-management-link:focus-visible { outline: 2px solid var(--admin-green); outline-offset: 3px; }
+
+/* [2026.09.29 변경] 관리자 관리·이력·비활성화 화면도 넓은 PC에서 좌우 여백을 줄여 화면 폭을 충분히 사용합니다. */
+@media (min-width:801px) {
+  .admin-page {
+    left:0;
+    box-sizing:border-box;
+    width:100%;
+    max-width:none;
+    margin:0;
+    padding:clamp(18px,1.4vw,28px) clamp(14px,1.4vw,24px) clamp(24px,2vw,36px);
+  }
+}
+
+/* [2026.09.29 변경] PC에서도 목록 카드가 헤더 아래 남은 높이를 채우고, 표만 내부에서 늘어나거나 스크롤되도록 세로 flex 흐름을 명확히 합니다. */
+#admin-management-page {
+  height:calc(100dvh - var(--admin-topbar-height));
+  min-height:0;
+}
+#admin-management-page > .admin-panel {
+  display:flex;
+  min-height:0;
+  flex:1 1 auto;
+  flex-direction:column;
+}
+#admin-management-page > .admin-panel > .admin-table-wrap {
+  flex:1 1 auto;
+  min-height:0;
+}
+#admin-management-page > .admin-panel > #admin-user-pagination {
+  flex:0 0 auto;
+  margin-top:auto;
+}
+
+/* [2026.10.01 변경] 관리 이력 페이지에서는 흰색 카드가 이력 목록과 페이지 버튼까지 모두 감싸도록 높이 고정을 해제합니다. */
+#admin-management-page.is-history-page > .admin-panel,
+#admin-management-page[data-page-mode="history-caregivers"] > .admin-panel {
+  min-height: auto;
+  flex: 0 0 auto;
+}
+
+
+/* 직원 계정 관리 검색창과 결과 안내 */
+#admin-management-page .admin-search { flex-wrap: wrap; }
+#admin-management-page .admin-search-field { flex: 1; min-width: 180px; }
+#admin-management-page .admin-search input { width: 100%; min-width: 240px; font-size: 12px; }
+#admin-management-page .admin-search-button { min-height: 44px; }
+#admin-management-page .admin-search-field,
+#admin-management-page .admin-search-button {
+  border-color: #d5dfe7;
+}
+#admin-management-page .admin-search-button { color: #526d82; }
+#admin-management-page .admin-search-field:hover,
+#admin-management-page .admin-search-button:hover {
+  border-color: #8ea6b8;
+}
+#admin-management-page .admin-search-field:focus-within,
+#admin-management-page .admin-search-button:focus-visible {
+  border-color: #526d82;
+  box-shadow: none;
+}
+.admin-search-result { margin: 0; color: #647581; font-size: 12px; }
+
+/* 관리 이력과 직원 관리의 검색창 및 버튼을 제목 아래 왼쪽에 배치합니다. */
+#admin-management-page .admin-management-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+#admin-management-page .admin-management-heading .admin-search {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: start;
+  width: 100%;
+  max-width: 440px;
+  margin: 0;
+}
+#admin-management-page .admin-management-heading .admin-search input { min-width: 0; }
+@media (max-width: 700px) {
+  #admin-management-page .admin-management-heading { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  #admin-management-page .admin-management-heading .admin-search { max-width: none; }
+}
+
+/* 직원 관리 작업 버튼을 목록 박스 밖의 페이지 제목 오른쪽에 배치합니다. */
+#admin-management-page:not(.is-history-page) > .admin-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 24px;
+  align-items: center;
+}
+#admin-management-page > .admin-heading .admin-account-actions {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  justify-content: flex-end;
+  gap: 12px;
+}
+#admin-management-page > .admin-heading .admin-account-actions > a,
+#admin-management-page > .admin-heading .admin-account-actions > button {
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+@media (max-width: 1000px) {
+  #admin-management-page:not(.is-history-page) > .admin-heading { grid-template-columns: minmax(0, 1fr); }
+  #admin-management-page > .admin-heading .admin-account-actions {
+    grid-column: 1;
+    grid-row: 3;
+    justify-content: flex-start;
+    margin-top: 18px;
+  }
+  #admin-management-page > .admin-heading .admin-account-actions > a,
+  #admin-management-page > .admin-heading .admin-account-actions > button {
+    min-height: 44px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */
+
+/* [2026.10.01 변경] 일반 창 높이가 낮을 때도 관리 이력은 표 내부가 아니라 페이지 전체로 스크롤합니다. */
+@media (max-height: 800px) {
+  html:not(:fullscreen) #admin-management-page.is-history-page { overflow-y: auto; }
+  html:not(:fullscreen) #admin-management-page.is-history-page .admin-panel,
+  html:not(:fullscreen) #admin-management-page.is-history-page .admin-history-panel {
+    flex: none;
+  }
+  html:not(:fullscreen) #admin-management-page.is-history-page .admin-history-wrap {
+    flex: none;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+/* [2026.09.30 추가] 담당 병동 변경 팝업의 간호사 담당 병실(여러 개 선택). 계정 생성 팝업과 같은 표시입니다. */
+#admin-action-dialog.staff-room-menu-open { overflow: visible; }
+.admin-staff-room-options button[aria-selected="true"]::after { content: "✓"; float: right; font-weight: 700; }
+.admin-staff-room-options .admin-staff-room-owner { color: #8a98a3; font-size: .9em; }
+
+/* [2026.10.01 변경] 병실 변경·전화번호 수정은 작업명을 눌러 작은 팝업으로 수정 내용을 확인합니다. */
+.admin-history-table .history-action-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.admin-history-table .history-action-link:hover,
+.admin-history-table .history-action-link:focus-visible {
+  color: #243c4f;
+  font-weight: 700;
+  outline: 0;
+}
+.history-action-popover {
+  position: fixed;
+  z-index: 120;
+  box-sizing: border-box;
+  width: min(280px, calc(100vw - 24px));
+  padding: 12px 14px;
+  border: 1px solid #c7d6e1;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 16px 36px #263c4d2a;
+  color: #29343d;
+}
+.history-action-popover strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #36566f;
+  font-size: 12px;
+}
+.history-action-popover .history-action-detail-lines {
+  display: grid;
+  gap: 7px;
+}
+.history-action-popover p {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #eef3f6;
+  color: #526d82;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.history-action-popover p span {
+  color: #647581;
+  font-weight: 400;
+}
+.history-action-popover p b {
+  color: #36566f;
+  font-weight: 500;
+  word-break: keep-all;
+}
+/* [2026.10.01 변경] 최종 보정: 목록을 감싸는 흰색 카드를 화면 아래까지 내려 하늘색 여백을 줄입니다. */
+#admin-management-page.is-staff-page > .admin-panel {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: calc(100dvh - var(--admin-topbar-height) - 136px) !important;
+  padding: 22px 24px 16px !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 14px !important;
+  background: var(--admin-surface) !important;
+}
+
+#admin-management-page.is-history-page > .admin-panel {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: calc(100dvh - var(--admin-topbar-height) - 218px) !important;
+  padding: 22px 24px 16px !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 14px !important;
+  background: var(--admin-surface) !important;
+}
+
+#admin-management-page.is-history-page .admin-history-wrap {
+  overflow: visible !important;
+}
+
+#admin-management-page .admin-pagination {
+  display: flex !important;
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  min-height: 34px !important;
+  width: 100% !important;
+  margin: 12px auto 0 !important;
+  padding: 0 !important;
+}
+
+#admin-management-page .admin-pagination button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  min-width: 26px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  border: 1px solid #d5dfe7 !important;
+  border-radius: 5px !important;
+  background: #fff !important;
+  color: #586a77 !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+#admin-management-page .admin-pagination button:hover,
+#admin-management-page .admin-pagination button[aria-current="page"] {
+  border-color: #526d82 !important;
+  background: #526d82 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+/* [2026.10.01 변경] 간병인 목록은 데이터가 적어도 페이지 번호가 흰색 카드 하단에 오도록 내립니다. */
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-staff-page > .admin-panel {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-staff-page > .admin-panel > #admin-list {
+  flex: 0 0 auto !important;
+}
+
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-staff-page > .admin-panel > #admin-user-pagination {
+  margin-top: auto !important;
+}
+/* [2026.10.01 변경] 관리 이력 화면에서는 목록용 페이지 번호가 표 위에 겹치지 않게 숨기고, 이력 페이지 번호만 표 아래에 둡니다. */
+#admin-management-page.is-history-page > .admin-panel > #admin-user-pagination {
+  display: none !important;
+}
+
+#admin-management-page.is-history-page #admin-history-pagination {
+  display: flex !important;
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  align-self: stretch !important;
+  margin: 12px auto 0 !important;
+  transform: none !important;
+}
+/* [2026.10.01 변경] 간병인 관리 이력은 페이지 번호가 흰색 카드 하단에 오도록 내립니다. */
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page .admin-history-panel {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page .admin-history-wrap {
+  flex: 0 0 auto !important;
+}
+
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page #admin-history-pagination {
+  margin-top: auto !important;
+}
+/* [2026.10.01 변경] 간병인 관리 이력 페이지 번호를 흰색 카드의 맨 아래로 고정합니다. */
+#admin-management-page[data-page-mode="history-caregivers"] > .admin-panel,
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page > .admin-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: calc(100dvh - var(--admin-topbar-height) - 218px) !important;
+}
+
+#admin-management-page[data-page-mode="history-caregivers"] .admin-history-panel,
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page .admin-history-panel {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+
+#admin-management-page[data-page-mode="history-caregivers"] .admin-history-wrap,
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page .admin-history-wrap {
+  flex: 0 0 auto !important;
+}
+
+#admin-management-page[data-page-mode="history-caregivers"] #admin-history-pagination,
+body[data-admin-job-type="CAREGIVER"] #admin-management-page.is-history-page #admin-history-pagination {
+  margin-top: auto !important;
+  padding-top: 20px !important;
+  margin-bottom: 0 !important;
+}

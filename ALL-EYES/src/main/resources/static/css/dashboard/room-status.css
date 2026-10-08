@@ -1,0 +1,19 @@
+/* [09.13]추가내용: 병실 정상·주의·긴급 상태의 최종 표현을 관리합니다. */
+.floor .room.urgent:not(.acknowledged){background:#e99b8d;border-color:#a64032}
+.floor .room.caution{background:#fff2d9;border-color:#c99537}
+
+/* [09.13]수정내용: 미확인 긴급 병실과 상태 점의 깜빡임 주기를 0.8초로 줄여 경보를 빠르게 표시합니다. */
+@media (prefers-reduced-motion: no-preference){
+  .floor .room.urgent:not(.acknowledged),
+  .floor .room.urgent:not(.acknowledged)::after{
+    animation-duration:0.8s;
+  }
+}
+
+/* [09.13]수정내용: 침대 이탈 대응 등록의 병실 안내를 주의 병실과 같은 노란색 계열로 표시합니다. */
+.response-dialog .response-event.caution-event{
+  background:#fff2d9;
+  border-color:#c99537;
+  color:#8a692f;
+}
+

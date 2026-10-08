@@ -1,0 +1,396 @@
+@charset "UTF-8";
+
+/* [2026.09.29 변경] 사고 기록을 보관 영상 선택·재생 중심의 관리자 영상 보관함으로 구성합니다. */
+.admin-accident-page { box-sizing: border-box; gap: 0; overflow-x: hidden; overflow-y: hidden; }
+.admin-accident-heading { position: relative; flex: 0 0 auto; margin-bottom: 14px; }
+/* [2026.09.29 변경] 비활성화 페이지와 같은 작은 우측 카드로 미확인·완료 영상 수를 빠르게 확인합니다. */
+.admin-accident-overview { display: flex; justify-content: flex-end; gap: 10px; }
+.admin-accident-stat { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--admin-border); border-radius: 12px; background: var(--admin-surface); color: var(--admin-text); cursor: pointer; text-align: left; }
+.admin-accident-stat:hover, .admin-accident-stat.is-selected { border-color: #526d82; background: #f4f8fb; }
+.admin-accident-stat h2 { margin: 0 0 4px; color: #647581; font-size: 11px; font-weight: 400; }
+.admin-accident-stat strong { color: var(--admin-text); font-size: 22px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.admin-accident-stat strong span { margin-left: 4px; color: #647581; font-size: 12px; font-weight: 400; }
+.admin-accident-symbol { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #edf3f7; color: #526d82; }
+.admin-accident-complete-symbol { background: #eef5f0; color: #4f7b62; }
+.admin-accident-symbol svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 801px) { .admin-accident-overview { position: absolute; top: 0; right: 0; } }
+
+.admin-accident-panel { display: flex; min-width: 0; min-height: 0; flex: 1 1 auto; flex-direction: column; padding-bottom: 16px; }
+.admin-accident-filters { display: flex; align-items: end; gap: 8px; flex: 0 0 auto; margin: 18px 0 10px; }
+.admin-accident-filters label { display: grid; gap: 6px; color: var(--admin-muted); font-size: 11px; font-weight: 700; }
+.admin-accident-filters select, .admin-accident-filters input, .admin-accident-filters button { height: 38px; border: 1px solid var(--admin-border); border-radius: 7px; background: #fff; color: var(--admin-text); font-size: 12px; }
+/* [2026.10.01 변경] 사고 영상 조회의 병동 필터를 검색 입력·버튼과 같은 톤의 드롭다운으로 맞춥니다. */
+.admin-accident-filters select {
+  min-width: 122px;
+  padding: 0 34px 0 11px;
+  appearance: none;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #526d82 50%),
+    linear-gradient(135deg, #526d82 50%, transparent 50%);
+  background-position:
+    calc(100% - 17px) 16px,
+    calc(100% - 12px) 16px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.admin-accident-filters select:hover,
+.admin-accident-filters select:focus-visible {
+  border-color: #526d82;
+  background-color: #f8fbfd;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(82, 109, 130, .12);
+}
+.admin-accident-filters select option {
+  background: #fff;
+  color: var(--admin-text);
+}
+.admin-accident-filters select[hidden] {
+  display: none;
+}
+.admin-accident-ward-dropdown {
+  position: relative;
+  min-width: 122px;
+}
+.admin-accident-ward-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  position: relative;
+  width: 100%;
+  padding: 0 11px;
+  border-color: #d5dfe7;
+  background-color: #f7fafc;
+  color: #526d82;
+  text-align: left;
+}
+.admin-accident-ward-trigger::after { content: none; }
+.admin-accident-ward-trigger span { flex: 1 1 auto; min-width: 0; }
+.admin-accident-ward-icon { width: 12px; height: 12px; flex: 0 0 12px; color: currentColor; }
+.admin-accident-ward-trigger:hover,
+.admin-accident-ward-trigger:focus-visible,
+.admin-accident-ward-trigger[aria-expanded="true"] {
+  border-color: #b8cad8;
+  background-color: #e9f0f5;
+  color: #36566f;
+  outline: 0;
+  box-shadow: none;
+}
+.admin-accident-ward-options {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #c8d6e1;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(38, 60, 77, .16);
+}
+.admin-accident-ward-option {
+  width: 100%;
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 10px !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  background: transparent !important;
+  color: var(--admin-text) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-align: left;
+}
+.admin-accident-ward-option:hover,
+.admin-accident-ward-option[aria-selected="true"] {
+  background: #edf3f7 !important;
+  color: #24435b !important;
+}
+/* [2026.10.01 변경] 사고 이력 날짜 필터와 달력을 조치 이력 달력 디자인에 맞춥니다. */
+.admin-accident-date-field { position: relative; min-width: 142px; }
+.admin-accident-date-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 142px;
+  height: 38px;
+  gap: 6px;
+  padding: 0 30px 0 11px;
+  border: 1px solid #d5dfe7;
+  border-radius: 7px;
+  background-color: #f7fafc;
+  color: #526d82;
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23526d82' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 12px;
+}
+.admin-accident-date-trigger > span[aria-hidden="true"] { display: none; }
+.admin-accident-date-icon { width: 15px; height: 15px; flex: 0 0 15px; color: #526d82; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.admin-accident-date-trigger:hover,
+.admin-accident-date-trigger:focus-visible,
+.admin-accident-date-trigger[aria-expanded="true"] { border-color: #b8cad8; background-color: #e9f0f5; color: #36566f; outline: 0; box-shadow: none; }
+.admin-accident-date-popover {
+  position: absolute;
+  z-index: 35;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  padding: 18px;
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: var(--admin-surface);
+  color: var(--admin-text);
+  font-size: 13px;
+  box-shadow: 0 14px 32px rgba(38, 60, 77, .16);
+}
+.admin-accident-date-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.admin-accident-date-header strong { color: var(--admin-text); font-size: 13px; font-weight: 600; text-align: center; }
+.admin-accident-date-header button,
+.admin-accident-date-actions button {
+  min-width: 0 !important;
+  padding: 6px 10px !important;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: #e9f0f5;
+  color: var(--admin-text);
+  font-size: 13px;
+}
+.admin-accident-date-week,
+.admin-accident-date-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.admin-accident-date-week { margin-bottom: 8px; color: #586a77; }
+.admin-accident-date-days span,
+.admin-accident-date-days button {
+  display: grid;
+  place-items: center;
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--admin-text);
+  font-size: 13px;
+}
+.admin-accident-date-days button:hover,
+.admin-accident-date-days button:focus-visible { background: #e0ede5; color: #36566f; outline: 0; }
+.admin-accident-date-days button[aria-pressed="true"] { background: #526d82; color: #fff; }
+.admin-accident-date-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.admin-accident-date-actions button:hover,
+.admin-accident-date-actions button:focus-visible { outline: 0; filter: brightness(.97); }
+.admin-accident-search-field { min-width: 0; flex: 1 1 220px; }
+.admin-accident-filters input { width: 100%; padding: 0 11px; }
+/* [2026.10.01 변경] 사고 이력 검색창 포커스는 입력칸 테두리만 강조되도록 정리합니다. */
+.admin-accident-filters input:focus,
+.admin-accident-filters input:focus-visible {
+  border-color: #b8cad8;
+  outline: 0;
+  box-shadow: none;
+}
+.admin-accident-filters button { min-width: 72px; padding: 0 12px; cursor: pointer; }
+/* [2026.10.01 변경] 사고 이력 필터 버튼을 다른 검색 필터와 같은 색상 체계로 맞춥니다. */
+.admin-accident-filters button[type="submit"] {
+  border-color: #526d82;
+  background: #526d82;
+  color: #fff;
+  font-weight: 700;
+}
+.admin-accident-filters button[type="submit"]:hover,
+.admin-accident-filters button[type="submit"]:focus-visible {
+  border-color: #405a70;
+  background: #405a70;
+  color: #fff;
+  outline: 0;
+  box-shadow: none;
+}
+.admin-accident-filters #admin-accident-reset {
+  border-color: #d5dfe7;
+  background: #f7fafc;
+  color: #526d82;
+  font-weight: 600;
+}
+.admin-accident-filters #admin-accident-reset:hover,
+.admin-accident-filters #admin-accident-reset:focus-visible {
+  border-color: #b8cad8;
+  background-color: #e9f0f5;
+  color: #36566f;
+  outline: 0;
+  box-shadow: none;
+}
+
+.admin-accident-archive { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .55fr); gap: 16px; min-width: 0; min-height: 0; flex: 1 1 auto; width: 100%; }
+.admin-accident-player, .admin-accident-list-column { min-width: 0; min-height: 0; border: 1px solid #dbe4ec; border-radius: 10px; background: #fbfdff; }
+.admin-accident-player { display: flex; flex-direction: column; padding: 16px; }
+.admin-accident-player header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.admin-accident-player h3 { margin: 0; color: var(--admin-text); font-size: 15px; }
+/* [2026.09.29 변경] 선택 영상 영역은 카드 안의 남는 높이를 채우되 일반 창에서 과도하게 커지지 않게 제한합니다. */
+#admin-accident-video, .admin-accident-video-empty { width: 100%; min-height: 260px; max-height: 440px; flex: 1 1 auto; border-radius: 8px; }
+#admin-accident-video { background: #152534; object-fit: contain; }
+/* [2026.09.30 변경] 선택 전·미보관 상태의 단일 안내 문구를 영상 영역 정중앙에 배치합니다. */
+.admin-accident-video-empty { display: grid; place-items: center; padding: 24px; box-sizing: border-box; color: #61788a; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.6; }
+.admin-accident-list-column { display: flex; min-height: 0; flex-direction: column; overflow: hidden; }
+/* [2026.09.29 변경] 오른쪽 목록·페이지 영역을 하나의 카드로 묶어 선택 영상 카드와 상단·높이를 맞춥니다. */
+.admin-accident-list { display: block; min-height: 0; flex: 1 1 auto; overflow-y: auto; padding: 12px; -ms-overflow-style: none; scrollbar-width: none; }
+/* [2026.09.29 변경] 영상 목록은 마우스 휠·터치 스크롤을 유지하고 스크롤바만 숨깁니다. */
+.admin-accident-list::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.admin-accident-list #admin-accident-rows { display: grid; align-content: start; gap: 9px; }
+.admin-accident-video-card { display: grid; gap: 7px; width: 100%; padding: 13px 14px; border: 1px solid #d7e2ea; border-radius: 8px; background: #fff; color: var(--admin-text); cursor: pointer; text-align: left; }
+.admin-accident-video-card:hover { border-color: #8ba7bb; background: #f6faff; }
+.admin-accident-video-card.is-selected { border-color: #526d82; box-shadow: 0 0 0 2px rgba(82, 109, 130, .13); }
+.admin-accident-video-card.is-missing { background: #fcfcfc; }
+.admin-accident-video-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--admin-muted); font-size: 11px; }
+.admin-accident-video-meta strong { font-size: 11px; }
+.admin-accident-video-meta .is-pending { color: #b6453d; }
+.admin-accident-video-meta .is-completed { color: #526d82; }
+.admin-accident-video-title { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.admin-accident-video-subtitle { color: var(--admin-muted); font-size: 11px; }
+.admin-accident-empty { margin: 0; padding: 58px 16px; color: var(--admin-muted); font-size: 12px; text-align: center; }
+.admin-accident-pagination { display: flex; justify-content: center; gap: 6px; flex: 0 0 auto; min-height: 34px; margin: 0; padding: 8px 12px 12px; }
+.admin-accident-pagination button { min-width: 30px; height: 30px; border: 1px solid #d3e0ea; border-radius: 7px; background: #fff; color: #526d82; cursor: pointer; }
+.admin-accident-pagination button[aria-current="page"] { border-color: #526d82; background: #526d82; color: #fff; font-weight: 800; }
+
+@media (max-width: 900px) {
+  .admin-accident-page { overflow-y: auto; }
+  .admin-accident-overview { margin-top: 14px; }
+  .admin-accident-filters { align-items: stretch; flex-wrap: wrap; }
+  .admin-accident-filters label { flex: 1 1 150px; }
+  .admin-accident-filters button { margin-top: 18px; }
+  .admin-accident-panel { min-height: 720px; }
+  .admin-accident-archive { grid-template-columns: 1fr; }
+  .admin-accident-list { max-height: 420px; }
+}
+
+/* [2026.09.29 변경] 일반 창처럼 세로 공간이 낮을 때도 영상 영역을 줄여 화면 아래로 밀리지 않게 합니다. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .admin-accident-archive { grid-template-columns: minmax(0, 1fr) 280px; }
+}
+
+@media (min-width: 901px) and (max-height: 820px) {
+  .admin-accident-page { overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+  .admin-accident-page::-webkit-scrollbar { width: 0; height: 0; display: none; }
+  .admin-accident-panel { min-height: 0; }
+  #admin-accident-video,
+  .admin-accident-video-empty { height: min(29vh, 250px); min-height: 180px; flex: 0 0 auto; }
+}
+
+/* [2026.09.29 변경] documentElement 전체화면에서는 점선 영역을 화면 높이에 맞춘 별도 높이로 고정해 카드 밖으로 밀리지 않게 합니다. */
+html:fullscreen .admin-accident-page { overflow-y: hidden; }
+html:fullscreen #admin-accident-video,
+html:fullscreen .admin-accident-video-empty {
+  height: clamp(300px, 44vh, 520px);
+  min-height: 0;
+  max-height: none;
+  flex: 0 0 auto;
+}
+
+/* [2026.09.29] 영상 가운데 큰 재생 버튼(accident-records.js 가 만든다). 멈춰 있을 때만 보인다. */
+.admin-accident-player { position: relative; }
+.admin-accident-big-play { position: absolute; z-index: 2; width: 72px; height: 72px; padding: 0; border: 0; border-radius: 50%; background: rgba(15, 30, 45, 0.72); color: #fff; cursor: pointer; transform: translate(-50%, -50%); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28); transition: background 0.15s ease, transform 0.15s ease; }
+.admin-accident-big-play:hover, .admin-accident-big-play:focus-visible { background: rgba(15, 30, 45, 0.9); transform: translate(-50%, -50%) scale(1.06); outline: none; }
+.admin-accident-big-play[hidden] { display: none; }
+.admin-accident-big-play svg { width: 34px; height: 34px; margin-left: 4px; fill: currentColor; }
+
+/* [2026.09.29] 영상 틀을 영상 비율(16:9)에 맞춰 위아래 빈 띠가 생기지 않게 한다.
+   기존 높이 제한(일반 440px, 낮은 창 min(29vh, 250px), 전체화면 clamp(300px, 44vh, 520px))은 그대로 두고,
+   그 높이를 넘지 않는 너비(높이 × 16/9)까지만 넓어지게 한 뒤 가로 가운데, 제목 바로 아래에 둔다. */
+#admin-accident-video,
+.admin-accident-video-empty { width: 100%; height: auto; min-height: 0; max-height: none; aspect-ratio: 16 / 9; flex: 0 0 auto; align-self: center; margin-block: 0; max-width: calc(440px * 16 / 9); }
+@media (min-width: 901px) and (max-height: 820px) {
+  #admin-accident-video,
+  .admin-accident-video-empty { height: auto; min-height: 0; max-width: calc(min(29vh, 250px) * 16 / 9); }
+}
+html:fullscreen #admin-accident-video,
+html:fullscreen .admin-accident-video-empty { height: auto; max-width: calc(clamp(300px, 44vh, 520px) * 16 / 9); }
+
+/* [2026.10.01 변경] 사고 기록 날짜 필터의 달력 아이콘을 선형 아이콘으로 또렷하게 표시합니다. */
+.admin-accident-date-icon rect,
+.admin-accident-date-icon path {
+  fill: none;
+  stroke: currentColor;
+}
+
+/* [2026.10.01 변경] 사고 기록 날짜 범위 선택 시 시작일과 종료일 사이를 연하게 표시합니다. */
+.admin-accident-date-days button.is-in-range {
+  background: #eef3f6;
+  color: #36566f;
+}
+
+/* [2026.10.01 변경] 사고 기록 날짜 범위의 시작일과 종료일을 같은 달력 안에서 바로 선택합니다. */
+.admin-accident-date-range-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.admin-accident-date-range-summary button {
+  display: grid;
+  gap: 3px;
+  min-height: 42px;
+  padding: 7px 9px;
+  border: 1px solid #d4e0e8;
+  border-radius: 8px;
+  background: #f7fafc;
+  color: #647581;
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+.admin-accident-date-range-summary button.is-active {
+  border-color: #526d82;
+  background: #e9f0f5;
+  color: #36566f;
+}
+.admin-accident-date-range-summary strong {
+  color: #29343d;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+
+/* [2026.10.01 변경] 사고 기록 날짜 필터를 기본 달력 대신 공통 스타일 버튼과 팝업으로 표시합니다. */
+.admin-accident-date-field .admin-accident-date-trigger {
+  min-width: 142px;
+}
+.admin-accident-date-field .admin-accident-date-trigger[aria-expanded="true"] {
+  border-color: #b8cad8;
+  background-color: #e9f0f5;
+  color: #36566f;
+}
+
+/* [2026.10.01 변경] 사고 기록 날짜를 조치 이력처럼 하나의 달력에서 시작일과 종료일을 이어서 선택합니다. */
+.admin-accident-date-field {
+  min-width: 148px;
+}
+
+.admin-accident-date-field .admin-accident-date-trigger {
+  min-width: 148px;
+}
+
+.admin-accident-calendar-help {
+  min-height: 32px;
+  margin: 0 0 12px;
+  color: #586a77;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.admin-accident-date-actions #admin-accident-date-confirm {
+  background: #526d82;
+  border-color: #526d82;
+  color: #fff;
+}
+
+.admin-accident-date-actions #admin-accident-date-confirm:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}

@@ -1,0 +1,178 @@
+@charset "UTF-8";
+
+.admin-topbar .admin-brand-home {
+    color: #29343d;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.admin-topbar .admin-brand-home:focus-visible { outline: 2px solid #526d82; outline-offset: 4px; border-radius: 4px; }
+
+.admin-home-page { gap: 18px; width: 100%; padding-top: 34px; }
+/* [2026.09.29 변경] 관리자 홈은 넓은 화면에서 좌우 여백을 줄여 현황 카드를 충분한 폭으로 표시합니다. 스크롤은 유지하되 스크롤바는 노출하지 않습니다. */
+@media (min-width: 801px) {
+    .admin-home-page {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: clamp(18px, 1.4vw, 28px) clamp(14px, 1.4vw, 24px) clamp(24px, 2vw, 36px);
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    .admin-home-page::-webkit-scrollbar { display: none; }
+    /* [2026.09.29 변경] 홈 하단의 두 현황 행이 남는 세로 공간을 나누어 사용해 화면 아래 빈 여백을 없앱니다. */
+    .admin-home-overview { flex: 0 0 auto; }
+    .admin-home-content {
+        min-height: 686px;
+        flex: 1 0 686px;
+        grid-auto-rows: minmax(335px, 1fr);
+    }
+    .admin-home-content > section { height: 100%; }
+}
+/* [2026-09-21] 인사말과 인원 현황 카드가 아래 콘텐츠와 같은 열 너비를 사용합니다. */
+.admin-home-overview, .admin-home-content { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr); align-items: stretch; gap: 16px; }
+.admin-home-intro {
+    padding: 28px 34px 30px;
+    border: 1px solid #d5e0e8;
+    border-radius: 20px;
+    background: linear-gradient(112deg, #fff 0%, #f8fbfd 68%, #eef5f9 100%);
+    box-shadow: 0 9px 28px #3d596a0a;
+}
+.admin-home-eyebrow { color: #58758b; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.admin-home-intro h1 { margin: 13px 0 9px; color: #293f50; font-size: clamp(25px, 2.3vw, 34px); line-height: 1.35; letter-spacing: -.04em; }
+.admin-home-intro p { margin: 0; color: #667a89; font-size: 15px; }
+
+.admin-home-stat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 132px;
+    padding: 26px 30px;
+    border: 1px solid #d5e0e8;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 6px 20px #3d596a0a;
+}
+.admin-home-stat-primary { border-color: #b8cad8; background: linear-gradient(115deg, #f5f9fc, #e8f1f7); }
+.admin-home-workforce { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 0; }
+.admin-home-workforce-item { display: flex; align-items: center; justify-content: space-between; min-width: 0; padding: 24px 22px; }
+.admin-home-workforce-item + .admin-home-workforce-item { border-left: 1px solid #cbd9e3; }
+.admin-home-workforce-item strong { margin-left: 12px; font-size: 32px; }
+.admin-home-workforce-item strong small { font-size: 14px; }
+.admin-home-stat span { color: #536a7c; font-size: 16px; font-weight: 700; }
+.admin-home-stat p { margin: 8px 0 0; color: #748797; font-size: 12px; }
+.admin-home-stat strong { color: #36566f; font-size: 40px; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.admin-home-stat strong span { color: inherit; font-size: inherit; }
+.admin-home-stat strong small { margin-left: 5px; font-size: 16px; font-weight: 600; }
+
+/* 시간대별 그래프는 낙상 감지가 집중되는 시간을 가로 막대로 비교합니다. */
+.admin-home-time-summary { min-width: 0; min-height: 335px; padding: 22px 24px; border: 1px solid #d5e0e8; border-radius: 18px; background: #fff; box-shadow: 0 6px 20px #3d596a0a; }
+.admin-home-time-summary .admin-home-section-heading { align-items: center; }
+.admin-home-time-summary .admin-home-section-heading h2 { margin-bottom: 5px; }
+.admin-home-time-chart { display: grid; gap: 16px; margin-top: 32px; }
+.admin-home-time-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) 34px; min-height: 34px; align-items: center; gap: 12px; }
+.admin-home-time-row > span { display: grid; gap: 3px; }
+.admin-home-time-row > span strong { color: #40586a; font-size: 13px; line-height: 1.2; }
+.admin-home-time-row > span small { color: #8293a0; font-size: 10px; line-height: 1.2; }
+.admin-home-time-row > b { color: #36566f; font-size: 12px; text-align: right; white-space: nowrap; }
+.admin-home-time-track { display: flex; align-items: stretch; height: 22px; overflow: hidden; border-radius: 7px; background: #edf3f7; }
+.admin-home-time-track i { display: block; height: 100%; }
+.admin-home-time-track .is-fall { background: #bd7167; }
+.admin-calendar-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 13px; }
+.admin-calendar-header h2 { margin: 0; color: #293f50; font-size: 17px; }
+.admin-calendar-controls { display: flex; align-items: center; gap: 5px; }
+.admin-calendar-controls strong { min-width: 83px; color: #36566f; font-size: 13px; text-align: center; white-space: nowrap; }
+.admin-calendar-controls button { display: grid; place-items: center; width: 27px; height: 27px; padding: 0; border: 1px solid #d5e0e8; border-radius: 8px; background: #f8fbfd; color: #36566f; font-size: 21px; line-height: 1; cursor: pointer; }
+.admin-calendar-controls button:hover, .admin-calendar-controls button:focus-visible { border-color: #9db6c8; background: #e8f1f7; outline: 0; }
+.admin-calendar-weekdays, .admin-calendar-dates { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; }
+.admin-calendar-weekdays { padding-bottom: 8px; border-bottom: 1px solid #e4ebf0; color: #7b8d9b; font-size: 12px; font-weight: 700; }
+.admin-calendar-dates { row-gap: 3px; padding-top: 9px; }
+.admin-calendar-dates time, .admin-calendar-empty { display: grid; place-items: center; min-height: 30px; color: #41596b; font-size: 12px; font-variant-numeric: tabular-nums; }
+.admin-calendar-dates time:nth-child(7n + 1) { color: #ad6562; }
+.admin-calendar-dates time.is-today { width: 28px; min-height: 28px; margin: 1px auto; border-radius: 50%; background: #526d82; color: #fff; font-weight: 700; }
+
+.admin-home-section-heading { display: flex; align-items: baseline; gap: 14px; margin-bottom: 19px; }
+.admin-home-section-heading h2 { margin: 0; color: #293f50; font-size: 19px; }
+.admin-home-section-heading p { margin: 0; color: #7b8d9b; font-size: 12px; }
+
+/* [2026.10.01 변경] 시간대별 낙상 현황 제목과 낙상 범례를 같은 줄 중앙에 맞춥니다. */
+.admin-home-time-summary .admin-home-section-heading {
+  align-items: center;
+}
+
+.admin-home-time-summary .admin-home-section-heading > div:first-child {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.admin-home-time-summary .admin-home-accident-legend {
+  align-self: flex-start;
+  margin-top: 5px;
+  margin-left: 2px;
+}
+
+/* 최근 조치 이력은 발생 순서와 처리 상태를 함께 보여줍니다. */
+.admin-home-recent-records { min-width: 0; padding: 22px 24px; border: 1px solid #d5e0e8; border-radius: 18px; background: #fff; }
+.admin-home-recent-records .admin-home-section-heading { align-items: center; }
+.admin-home-record-list { display: grid; gap: 9px; }
+.admin-home-record-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 70px; padding: 11px 15px; border: 1px solid #e1e9ef; border-radius: 10px; background: #f9fbfd; }
+.admin-home-record-row > div { display: grid; gap: 6px; min-width: 0; }
+.admin-home-record-row strong { color: #354b5b; font-size: 14px; }
+.admin-home-record-row small { color: #778a98; font-size: 12px; font-variant-numeric: tabular-nums; }
+.admin-home-record-row > span { flex: none; padding: 5px 9px; border-radius: 7px; font-size: 11px; font-weight: 700; }
+.admin-home-record-row .is-pending { background: #fff0e8; color: #a95738; }
+.admin-home-record-row .is-complete { background: #eef2f5; color: #687b88; }
+
+/* 실시간 연동 전 예시 알림: 위치·유형·발생 시각이 한 줄에서 읽히도록 구성합니다. */
+.admin-home-alerts { display:flex; flex-direction:column; min-width: 0; min-height: 335px; padding: 22px 24px; border: 1px solid #d5e0e8; border-radius: 18px; background: #fff; }
+.admin-home-alerts .admin-home-section-heading { align-items: center; }
+.admin-home-alert-demo { padding: 5px 9px; border-radius: 7px; background: #f0f4f7; color: #6b7d8b; font-size: 11px; font-weight: 700; }
+/* [2026.09.29 변경] 실시간 알림은 카드 간격을 두고, 알림이 많으면 목록 안에서 스크롤하되 스크롤바는 표시하지 않습니다. */
+.admin-home-alert-list { display:flex; flex:1 1 auto; min-height:0; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:10px; margin-top:2px; padding:1px 4px 1px 0; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; -ms-overflow-style:none; }
+.admin-home-alert-list::-webkit-scrollbar { display:none; }
+/* [2026.10.01 변경] 실시간 알림 카드가 과하게 커 보이지 않도록 카드 안쪽 여백과 글자 크기를 줄입니다. */
+.admin-home-alert-row { display: flex; align-items: flex-start; gap: 10px; padding: 11px 13px; border: 1px solid #ecd4d0; border-left: 4px solid #bd5c50; border-radius: 10px; background: #fff8f7; }
+.admin-home-alert-indicator { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #bd5c50; }
+.admin-home-alert-details { display: grid; gap: 5px; min-width: 0; }
+.admin-home-alert-details strong { color: #354b5b; font-size: 14px; }
+.admin-home-alert-details span { color: #a94339; font-size: 12px; font-weight: 700; }
+.admin-home-alert-row time { margin-left: auto; color: #667b8a; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* 예시 병동별 사고 건수는 세로 막대 높이와 숫자를 함께 표시합니다. */
+.admin-home-ward-summary { min-width: 0; min-height: 335px; padding: 22px 24px; border: 1px solid #d5e0e8; border-radius: 18px; background: #fff; }
+.admin-home-ward-summary .admin-home-section-heading { align-items: center; }
+/* [2026.10.01 변경] 낙상 범례의 원형 표시와 문구를 같은 높이에 정렬합니다. */
+.admin-home-accident-legend { display: flex; align-items: center; gap: 10px; color: #667a89; font-size: 11px; line-height: 1; white-space: nowrap; }
+.admin-home-accident-legend > span { display: inline-flex; align-items: center; gap: 5px; line-height: 1; }
+.admin-home-accident-legend i { display: block; width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; transform: translateY(.5px); }
+.admin-home-accident-legend i.is-fall { background: #bd7167; }
+.admin-home-ward-chart { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: 16px; height: 235px; padding: 4px 6px 0; }
+.admin-home-ward-column { display: flex; flex-direction: column; align-items: center; gap: 9px; min-width: 0; color: #40586a; font-size: 12px; }
+.admin-home-ward-column > strong { color: #36566f; font-size: 13px; font-variant-numeric: tabular-nums; }
+.admin-home-ward-column > small { color: #748797; font-size: 10px; white-space: nowrap; }
+.admin-home-ward-track { display: flex; flex-direction: column; justify-content: flex-end; width: min(100%, 72px); height: 165px; overflow: hidden; border-radius: 9px 9px 0 0; background: #edf3f7; }
+.admin-home-ward-track > span { display: block; width: 100%; flex: 0 0 auto; }
+.admin-home-ward-track > .is-fall { background: #bd7167; }
+
+@media (max-width: 800px) {
+    .admin-home-overview, .admin-home-content { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+    .admin-home-page { gap: 16px; padding: 18px 16px 30px; }
+    .admin-home-intro { padding: 25px 22px; }
+    .admin-home-overview { gap: 12px; }
+    .admin-home-stat { min-height: 110px; padding: 20px 22px; }
+    .admin-home-stat strong { font-size: 34px; }
+    .admin-home-workforce { grid-template-columns: 1fr; }
+    .admin-home-workforce-item + .admin-home-workforce-item { border-top: 1px solid #cbd9e3; border-left: 0; }
+    .admin-home-section-heading { display: block; }
+    .admin-home-section-heading p { margin-top: 5px; }
+    .admin-home-recent-records { padding: 23px 20px; }
+    .admin-home-alerts { padding: 23px 20px; }
+    .admin-home-ward-summary { padding: 23px 20px; }
+    .admin-home-time-summary { padding: 23px 20px; }
+    .admin-home-time-summary .admin-home-section-heading { display: grid; gap: 10px; }
+    .admin-home-time-row { grid-template-columns: 62px minmax(0, 1fr) 32px; gap: 8px; }
+}

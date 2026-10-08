@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- [2026.09.19] 수정: 화면의 서비스 이름을 ALLEYES로 통일합니다. -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- [2026.09.26 추가] 대응등록 저장(POST)에 쓰는 CSRF 토큰입니다. -->
+  <meta name="_csrf" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:content="${_csrf.headerName}">
+  <title>ALLEYES · 병동 통합 관제</title>
+  <!-- [2026.09.17] 고친 내용: 화면 최상단 알림 배너 위치가 반영되도록 CSS 캐시 버전을 갱신합니다. -->
+  <link
+    rel="stylesheet"
+          href="../../../static/css/dashboard/dashboard.css?v=dashboard-alert-button-weight-20261001" th:href="@{/css/dashboard/dashboard.css(v='dashboard-alert-button-weight-20261001')}"
+  >
+  <!-- [09.13]추가내용: 병실 상태와 선택 표시를 기능별 CSS 파일로 연결합니다. -->
+  <link rel="stylesheet" href="../../../static/css/dashboard/room-status.css" th:href="@{/css/dashboard/room-status.css}">
+  <link rel="stylesheet" href="../../../static/css/dashboard/room-selection.css" th:href="@{/css/dashboard/room-selection.css}">
+    <!-- [2026.09.19] 추가: ALLEYES 로고와 서비스 이름의 공통 정렬 스타일입니다. -->
+    <link rel="stylesheet" href="../../../static/css/alleyes-brand.css?v=record-label-20260920" th:href="@{/css/alleyes-brand.css(v='record-label-20260920')}">
+    <!-- [2026.09.19] 공통 블루 그레이 테마를 마지막에 적용합니다. -->
+    <!-- [2026.09.29 변경] 노트북·PC 반응형 레이아웃 CSS가 즉시 반영되도록 캐시 버전을 갱신합니다. -->
+    <!-- [2026.09.29 변경] PC에서도 노트북과 같은 관제 도면 비율을 유지하도록 캐시 버전을 갱신합니다. -->
+    <!-- [2026.09.29 변경] PC 대시보드의 숨김 스크롤 CSS가 즉시 반영되도록 캐시 버전을 갱신합니다. -->
+    <link rel="stylesheet" href="../../../static/css/alleyes-theme.css?v=topbar-font-up-20261001" th:href="@{/css/alleyes-theme.css(v='topbar-font-up-20261001')}">
+</head>
+
+<body data-ward-number="3" th:attr="data-ward-number=${dashboardWard.wardNumber},data-ward-id=${dashboardWard.wardId ?: ''},data-ward-name=${dashboardWard.wardName},data-session-url=@{/api/dashboard/session},data-events-url=@{/api/dashboard/events},data-event-api-base=@{/api/events/},data-ws-url=@{/ws},data-dashboard-view=${recordMode == 'records'} ? 'records' : 'dashboard'">
+  <!-- 상단 헤더 -->
+  <header>
+    <!-- [2026.09.17] 고친 내용: 조치 이력에서 대시보드로 돌아가는 버튼을 왼쪽 상단에 배치합니다. -->
+    <!-- [2026.09.17] 고친 내용: 공통 화면 전환 함수가 상단 감지 알림의 표시 여부도 함께 처리합니다. -->
+    <!-- [2026.09.20] 복귀 링크를 로고로 표시하고 기존 전체화면 유지 전환을 사용합니다. -->
+    <div class="record-brand">
+      <a class="dashboard-back-link" href="dashboard.html" th:href="@{/dashboard}" aria-label="ALLEYES 대시보드로 이동"><span class="alleyes-brand"><img class="alleyes-logo" src="../../../static/image/brand/alleyes-logo-blue-peach-gradient.svg" th:src="@{/image/brand/alleyes-logo-blue-peach-gradient.svg}" alt="" width="44" height="42">ALLEYES</span></a>
+      <span class="record-service-label">병동 통합 관제</span>
+    </div>
+    <div class="brand">
+
+      <strong class="alleyes-brand"><img class="alleyes-logo" src="../../../static/image/brand/alleyes-logo-blue-peach-gradient.svg" th:src="@{/image/brand/alleyes-logo-blue-peach-gradient.svg}" alt="" width="44" height="42">ALLEYES</strong>
+      <span>병동 통합 관제</span>
+    </div>
+
+    <div class="header-actions">
+      <!-- 현재 시간 -->
+      <time id="clock"></time>
+      <!-- [수정완료] 더보기 버튼을 사용자 프로필 드롭다운으로 변경합니다. -->
+      <div class="header-menu">
+        <button
+          type="button"
+          class="profile-toggle"
+          id="profile-toggle"
+          aria-label="사용자 메뉴"
+          aria-expanded="false"
+          aria-controls="header-menu-list"
+        >
+          <!-- [09.13]수정내용: 단순 점을 머리와 어깨가 보이는 사람 모양 SVG 아이콘으로 변경합니다. -->
+          <span class="profile-avatar" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <circle cx="12" cy="8" r="3.5"/>
+              <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+            </svg>
+          </span>
+          <!-- [수정완료] 로그인한 계정 아이디에 따라 프로필 이름을 표시합니다. -->
+          <!-- [수정완료] 로그인에서 입력한 이름을 프로필에 표시합니다. -->
+          <span class="profile-copy"><strong th:text="${displayName + ' 간호사'}">이름 간호사</strong><small th:text="${dashboardWard.wardName}">3병동</small></span>
+          <span class="profile-chevron" aria-hidden="true">▿</span>
+        </button>
+
+        <nav
+          class="header-menu-list"
+          id="header-menu-list"
+          aria-label="대시보드 메뉴"
+          hidden
+        >
+          <!-- [2026.09.17] 고친 내용: 메뉴 클릭 즉시 대시보드 안의 조치 이력 본문으로 전환해 전체화면을 유지합니다. -->
+          <a href="../record/record.html" id="record-open"
+             th:href="@{/Record}">조치 이력</a>
+          <!-- [2026.09.17] 고친 내용: 프로필 메뉴의 설정 항목을 바로 비밀번호 변경 화면으로 교체합니다. -->
+          <a href="../settings/password-change.html" th:href="@{/user/password}" id="password-change-open">비밀번호 변경</a>
+          <!-- [수정완료] 프로필 메뉴의 마지막에 로그아웃을 배치합니다. -->
+          <button
+            type="submit"
+            id="logout-open"
+            form="logout-form"
+          >
+            로그아웃
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- [2026.09.17] 추가한 내용: 대시보드 이외의 공통 화면에서만 새 감지 알림을 내려서 표시합니다. -->
+  <aside id="cross-page-alert" class="cross-page-alert" hidden aria-label="새 감지 알림">
+    <div class="cross-page-alert-heading">
+      <!-- [2026.09.17] 고친 내용: 알림이 접혀 있어도 건수 제목을 눌러 대시보드로 이동합니다. -->
+      <button type="button" id="cross-page-alert-summary" aria-live="polite" title="대시보드로 이동"></button>
+      <button type="button" id="cross-page-alert-toggle" aria-expanded="true" aria-controls="cross-page-alert-items">접기</button>
+    </div>
+    <div id="cross-page-alert-items"></div>
+  </aside>
+
+  <form id="logout-form" action="../auth/index.html" th:action="@{/logout}"
+        method="get" th:method="post" hidden></form>
+
+  <main id="dashboard-main" th:hidden="${recordMode == 'records'}">
+    <!-- [2026.09.17] 추가한 내용: testAlerts=1일 때만 표시하며 DB에 저장하지 않는 감지 테스트 패널입니다. -->
+    <section id="alert-test-panel" class="panel alert-test-panel" hidden aria-label="알림 테스트">
+      <strong>알림 테스트 · DB 저장 없음</strong>
+      <label>발생 위치 <select id="alert-test-location"></select></label>
+      <label>감지 종류 <select id="alert-test-type"><option value="urgent">낙상 감지</option><option value="suspected">낙상 의심</option><option value="caution">침대 이탈</option></select></label>
+      <button type="button" id="alert-test-run">테스트 알림 발생</button>
+      <!-- [2026.09.17] 추가한 내용: 다른 화면으로 이동한 뒤 감지 배너를 확인할 수 있도록 5초 후 테스트를 예약합니다. -->
+      <button type="button" id="alert-test-delayed">5초 후 알림 발생</button>
+      <button type="button" id="alert-test-reset">테스트 초기화</button>
+      <!-- [2026.09.28 변경] 복도 감지는 발생 지점 대신 중앙 복도 전체 알림으로 테스트합니다. -->
+      <p>복도 테스트는 중앙 복도 전체에 알림을 표시합니다.</p>
+      <output id="alert-test-result" aria-live="polite">위치와 감지 종류를 선택해 주세요.</output>
+      <div id="alert-test-audio-status" role="status" aria-live="polite"></div>
+    </section>
+    <!-- [2026.09.28 변경] 현재 표시 중인 병실의 안전 상태를 나타내는 제목으로 변경합니다. -->
+    <div class="page-heading">
+      <section class="panel summary">
+        <h2>병동 안전 현황</h2>
+
+        <div class="counts">
+          <!-- [2026.10.01 변경] 상단 카드는 현재 병실 수가 아니라 오늘 하루 발생한 감지 이벤트 합계를 표시합니다. -->
+          <div class="count all"><span>전체</span><b id="all-count">0</b></div>
+          <div class="count urgent">
+            <span>낙상 감지</span>
+            <b id="urgent-count">0</b>
+          </div>
+          <!-- [2026.09.22 추가] 낙상 감지 전 확인이 필요한 상태를 보라색으로 구분합니다. -->
+          <div class="count suspected"><span>낙상 의심</span><b id="suspected-count">0</b></div>
+          <div class="count caution">
+            <span>침대 이탈</span>
+            <b id="caution-count">0</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="layout">
+      <!-- 병동 평면도 -->
+      <section class="panel floor-panel">
+        <div class="panel-heading">
+          <h2 th:text="${dashboardWard.wardName + ' 안전 상태'}">3병동 안전 상태</h2>
+
+          <!-- [2026.09.30 변경] 위험도 높은 순서로 낙상·의심·이탈·정상을 표시해 현장 확인 우선순위를 맞춥니다. -->
+          <div class="room-heading-actions">
+          <div class="legend">
+            <span class="urgent">낙상</span>
+            <span class="suspected">의심</span>
+            <span class="caution">이탈</span>
+            <span>정상</span>
+          </div>
+          </div>
+        </div>
+
+        <!-- [09.13]수정내용: 버튼 이동 후 남은 빈 도구 모음을 제거해 관제 화면 위 여백을 줄입니다. -->
+
+        <div class="floor">
+          <!-- 위쪽 병실은 JS로 생성됩니다 -->
+          <div
+            class="room-row"
+            id="upper-rooms"
+          ></div>
+
+          <!-- [2026.09.30 변경] 복도도 선택 가능한 위치로 제공해 오늘의 기록을 바로 확인합니다. -->
+          <div class="corridor" id="central-corridor" role="button" tabindex="0">
+            <span>←</span>
+            <span class="corridor-status-label">중앙 복도</span>
+            <span>→</span>
+          </div>
+
+          <!-- 아래쪽 병실은 JS로 생성됩니다 -->
+          <div
+            class="room-row bottom"
+            id="lower-rooms"
+          ></div>
+        </div>
+
+        <!-- [2026.09.16] 고친 내용: 선택 병실의 오늘 기록은 아래 독립 카드 섹션으로 이동합니다. -->
+      </section>
+
+      <!-- 확인이 필요한 알림 -->
+      <aside class="side">
+        <section class="panel alerts-panel">
+          <div class="alert-heading">
+            <h2>확인이 필요한 알림</h2>
+            <span
+              class="alert-total"
+              id="alert-total"
+            >
+              2건
+            </span>
+          </div>
+
+          <!-- [2026.09.22 변경] 제목은 고정하고 알림 카드 목록만 독립적으로 스크롤합니다. -->
+          <div class="alert-list">
+          <!-- 낙상 감지 알림 -->
+          <article
+            class="alert-card"
+            data-alert-room="305"
+          >
+            <div class="alert-top">
+              <!-- [2026.09.28 변경] 낙상 알림의 상태명도 범례와 일치시킵니다. -->
+              <strong>● 낙상</strong>
+              <time>14:28</time>
+            </div>
+
+            <h3>
+              305호
+              <span class="event-label">낙상 감지</span>
+            </h3>
+
+            <p>즉시 확인해 주세요.</p>
+
+            <button
+              type="button"
+              class="locate-room"
+              data-locate="305"
+            >
+              대응등록
+            </button>
+          </article>
+
+          <!-- 침대 이탈 알림 -->
+          <article
+            class="alert-card caution"
+            data-alert-room="312"
+          >
+            <div class="alert-top">
+              <strong>● 주의</strong>
+              <time>14:31</time>
+            </div>
+
+            <h3>
+              312호
+              <span class="event-label">침대 이탈</span>
+            </h3>
+
+            <p>병실을 확인해주세요.</p>
+
+            <button
+              type="button"
+              class="locate-room"
+              data-locate="312"
+            >
+              대응등록
+            </button>
+          </article>
+          </div>
+        </section>
+      </aside>
+    </div>
+    <!-- [2026.09.16] 고친 내용: 하단 전체 너비에 병실명·오늘의 건수·최근 기록을 가로로 배치합니다. -->
+    <section class="panel dashboard-history-card" aria-label="선택 병실의 오늘 기록" hidden>
+      <div id="room-detail" class="selection" role="status">병실을 선택해 주세요.</div>
+    </section>
+  </main>
+
+  <!-- [2026.09.17] 추가한 내용: 조치 이력을 대시보드 안에서 열어 전체화면 상태를 유지합니다. -->
+  <!-- [2026.09.29 변경] 간호사 계정에서 여는 공용 낙상 조치 이력 화면의 접근성 제목을 통일합니다. -->
+  <section id="dashboard-record-view" aria-label="낙상 조치 이력" hidden th:hidden="${recordMode != 'records'}">
+    <iframe id="dashboard-record-frame" title="낙상 조치 이력" src="about:blank" data-src="../record/record.html" th:attr="data-src=@{/Record/content}"></iframe>
+  </section>
+
+  <!-- [2026.09.17] 추가한 내용: 기존 비밀번호 변경 화면을 팝업 안에 열어 현재 페이지와 음성 상태를 유지합니다. -->
+  <dialog id="password-change-dialog" class="password-change-dialog" aria-labelledby="password-popup-title">
+    <div class="password-popup-heading">
+      <h2 id="password-popup-title">비밀번호 변경</h2>
+      <button type="button" id="password-popup-close" aria-label="비밀번호 변경 닫기">✕</button>
+    </div>
+    <iframe id="password-change-frame" title="비밀번호 변경 입력" src="about:blank"></iframe>
+  </dialog>
+
+  <!-- 설정 창 -->
+  <dialog
+    class="settings-dialog"
+    id="settings-dialog"
+  >
+    <h2>설정</h2>
+
+    <!-- [수정완료] 대시보드에서 선택한 필터 내용을 설정 창에 표시합니다. -->
+    <p id="settings-filter">현재 필터: 전체 병실</p>
+    <p id="settings-summary">전체 병실을 표시하고 있습니다.</p>
+
+    <form method="dialog">
+      <button type="submit">
+        닫기
+      </button>
+    </form>
+  </dialog>
+
+  <!-- 대응등록 창 -->
+  <dialog
+    id="response-dialog"
+    class="response-dialog"
+    aria-labelledby="response-title"
+  >
+    <!-- [2026.09.20] 발생 정보 → 대상·담당자 → 조치 내용 → 등록 순서로 입력 영역을 구분합니다. -->
+    <form id="response-form">
+      <div class="response-heading">
+        <h2 id="response-title">경보 대응등록</h2>
+        <p>현장 조치 후 확인한 상태와 조치 내용을 기록해 주세요.</p>
+      </div>
+      <div class="response-body">
+        <div id="response-event" class="response-event"></div>
+        <div class="response-people">
+          <div class="response-field">
+            <label class="field" for="response-patient">환자 이름</label>
+            <input id="response-patient" type="text" required maxlength="50" placeholder="환자 이름을 입력하세요.">
+          </div>
+          <div class="response-field">
+            <label class="field" for="response-user">담당 간호사</label>
+            <input id="response-user" type="text" th:value="${displayName}" readonly placeholder="로그인한 간호사 이름">
+          </div>
+        </div>
+        <div class="response-field response-note-field">
+          <label class="field" for="response-note">조치 내용</label>
+          <textarea id="response-note" maxlength="1000" required placeholder="환자 상태와 시행한 조치를 입력해 주세요."></textarea>
+          <p class="response-note-help">현장에서 확인한 내용을 구체적으로 작성해 주세요.</p>
+        </div>
+      </div>
+      <div class="response-actions">
+        <button type="button" id="response-cancel">취소</button>
+        <button type="submit">조치 이력 등록</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- JS는 body가 모두 만들어진 후 실행합니다 -->
+  <script src="../../../static/JS/dashboard/session.js?v=review-fix-20260927" th:src="@{/JS/dashboard/session.js(v='review-fix-20260927')}"></script>
+  <script src="../../../static/JS/dashboard/room-status.js?v=room-history-20260928" th:src="@{/JS/dashboard/room-status.js(v='room-history-20260928')}"></script>
+  <script src="../../../static/JS/dashboard/room-selection.js" th:src="@{/JS/dashboard/room-selection.js}"></script>
+  <!-- [2026.09.17] 고친 내용: 대응등록 수정본을 불러오도록 스크립트 캐시 버전을 갱신합니다. -->
+  <!-- [2026.09.29 변경] 대응등록 취소·닫기 시 경보 음성과 점멸을 유지하도록 최신 스크립트를 불러옵니다. -->
+  <script src="../../../static/JS/dashboard/dashboard.js?v=action-history-label-20261001" th:src="@{/JS/dashboard/dashboard.js(v='action-history-label-20261001')}"></script>
+  <!-- [2026.09.26 추가] 서버 감지 알림 연결(오늘 이벤트 불러오기 + 실시간 구독). dashboard.js 다음에 불러옵니다. -->
+  <script src="../../../static/JS/dashboard/server-events.js?v=live-reload-20260929" th:src="@{/JS/dashboard/server-events.js(v='live-reload-20260929')}"></script>
+</body>
+</html>

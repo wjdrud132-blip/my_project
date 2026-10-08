@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- [2026.09.19] 수정: 화면의 서비스 이름을 ALLEYES로 통일합니다. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Spring Security CSRF -->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
+    <title>간호사 비활성화 | 병동 통합 관제</title>
+
+    <link rel="stylesheet"
+          href="../../../static/css/admin/dashboard.css?v=action-history-label-20261001"
+          th:href="@{/css/admin/dashboard.css(v='action-history-label-20261001')}">
+
+    <link rel="stylesheet" href="../../../static/css/admin/inactive-users.css?v=inactive-row-text-20260920" th:href="@{/css/admin/inactive-users.css(v='inactive-row-text-20260920')}">
+
+<script src="../../../static/JS/admin/inactive-users.js?v=action-history-label-20261001"
+        th:src="@{/JS/admin/inactive-users.js(v='action-history-label-20261001')}"
+            defer></script>
+    <!-- [2026.09.19] 추가: ALLEYES 로고와 서비스 이름의 공통 정렬 스타일입니다. -->
+    <link rel="stylesheet" href="../../../static/css/alleyes-brand.css?v=admin-brand-align-20260920" th:href="@{/css/alleyes-brand.css(v='admin-brand-align-20260920')}">
+    <!-- [2026.09.19] 공통 블루 그레이 테마를 마지막에 적용합니다. -->
+    <link rel="stylesheet" href="../../../static/css/alleyes-theme.css?v=topbar-font-up-20261001" th:href="@{/css/alleyes-theme.css(v='topbar-font-up-20261001')}">
+    <!-- [2026.09.29 변경] 노트북·PC 공통 상단 메뉴 높이가 즉시 반영되도록 캐시 버전을 갱신합니다. -->
+    <link rel="stylesheet" href="../../../static/css/admin/navigation.css?v=desktop-responsive-layout-20260929" th:href="@{/css/admin/navigation.css(v='desktop-responsive-layout-20260929')}">
+</head>
+
+<body>
+<header class="admin-topbar">
+    <div class="admin-brand">
+        <!-- [2026.09.16] 고친 내용: 왼쪽 상단의 관리자 대시보드 복귀 링크를 삭제합니다. -->
+        <!-- [2026.09.16] 고친 내용: 서비스 이름을 왼쪽에, 병동 통합 관제를 오른쪽에 표시합니다. -->
+        <strong class="admin-service-name alleyes-brand"><img class="alleyes-logo" src="../../../static/image/brand/alleyes-logo-blue-peach-gradient.svg" th:src="@{/image/brand/alleyes-logo-blue-peach-gradient.svg}" alt="" width="44" height="42">ALLEYES</strong>
+        <span class="admin-service-placeholder">병동 통합 관제</span>
+        <nav class="admin-page-nav" aria-label="계정 관리 메뉴">
+            <div class="admin-nav-group">
+                <a href="admin.html?view=staff" th:href="@{/admin(view='staff')}">직원 관리</a>
+                <div class="admin-nav-submenu">
+                    <a href="admin.html?view=caregivers" th:href="@{/admin/caregivers}" aria-label="간병인 관리">
+                        <span class="admin-nav-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.6-3.7 2.8-5.7 6.5-5.7s5.9 2 6.5 5.7"/></svg></span>
+                        <span class="admin-nav-item-copy"><strong>간병인 관리</strong><small>계정과 담당 병동 관리</small></span>
+                        <span class="admin-nav-item-arrow" aria-hidden="true">›</span>
+                    </a>
+                </div>
+            </div>
+            <a href="/admin/history" th:href="@{/admin/history}">관리 이력</a>
+            <div class="admin-nav-group">
+                <a href="admin-inactive-users.html" th:href="@{/admin/admin_de}" class="active" aria-current="page">간호사 비활성화</a>
+                <div class="admin-nav-submenu">
+                    <a href="admin.html?view=inactive-caregivers" th:href="@{/admin/caregivers/inactive}" aria-label="간병인 비활성화">
+                        <span class="admin-nav-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.2"/><path d="M3.5 20c.5-3.7 2.8-5.7 6.5-5.7 1.3 0 2.4.2 3.3.7M16 16l5 5m0-5-5 5"/></svg></span>
+                        <span class="admin-nav-item-copy"><strong>간병인 비활성화</strong><small>사용 상태·재활성화 관리</small></span>
+                        <span class="admin-nav-item-arrow" aria-hidden="true">›</span>
+                    </a>
+                </div>
+            </div>
+            <!-- [2026.09.17] 추가한 내용: 모든 관리자 화면에서 조치 이력 메뉴를 같은 위치로 제공합니다. -->
+            <a href="../record/record.html" th:href="@{/admin/records}">조치 이력</a>
+        </nav>
+    </div>
+
+    <div class="admin-topbar-actions">
+        <time id="admin-clock"></time>
+        <form action="/logout" th:action="@{/logout}" method="post">
+            <button class="admin-logout" id="admin-logout" type="submit">로그아웃</button>
+        </form>
+
+        <!-- [09.13]수정내용: 비활성화 관리 화면의 로그아웃 옆 설정 아이콘을 삭제한다. -->
+
+    </div>
+</header>
+
+<main class="admin-page admin-settings-page" id="admin-settings-page" aria-labelledby="admin-settings-title">
+    <header class="admin-heading admin-settings-heading">
+        <!-- [2026.09.16] 고친 내용: 페이지 제목 위의 관리자 설정·계정 관리 안내 문구를 삭제합니다. -->
+        <h1 id="admin-settings-title" tabindex="-1">간호사 비활성화</h1>
+        <p>직원의 서비스 이용 상태를 확인하고 계정 접근 권한을 관리합니다.</p>
+        <!-- [2026.09.16] 고친 내용: 비활성화 직원 카드를 계정 상태 관리 안내 위로 이동합니다. -->
+        <div class="admin-inactive-overview">
+            <section class="admin-inactive-stat" aria-labelledby="admin-inactive-stat-title">
+                <!-- [09.13]수정내용: 비활성화 직원 아이콘에서 부가 표시를 제거하고 사람 모양만 표시한다. -->
+                <span class="admin-inactive-symbol" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>
+                </span>
+                <div><h2 id="admin-inactive-stat-title">비활성화 직원</h2><strong id="admin-inactive-count">—<span>명</span></strong></div>
+            </section>
+        </div>
+        <!-- [수정] 계정 상태 관리 안내를 설명문 아래의 가로형 영역으로 배치 -->
+        <aside class="admin-account-guide" aria-labelledby="admin-account-guide-title">
+            <div class="admin-guide-heading">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></svg>
+                <strong id="admin-account-guide-title">계정 상태 관리</strong>
+            </div>
+            <p>비활성화된 계정은 서비스에 로그인할 수 없습니다. 서비스 이용을 재개할 직원은 <strong>활성화</strong>로 변경해 주세요.</p>
+        </aside>
+    </header>
+    <section class="admin-panel admin-inactive-panel" aria-labelledby="admin-inactive-list-title">
+        <header class="admin-panel-heading admin-inactive-panel-heading">
+            <!-- [09.13]수정내용: 직원 목록 안내의 이전 배정 병동을 병동으로 표시한다. -->
+            <div><h2 id="admin-inactive-list-title">직원 목록</h2><p>계정 정보와 병동을 확인한 후 상태를 변경해 주세요.</p></div>
+            <!-- [09.13]수정내용: 직원 목록 상단의 관리자 전용 표시를 삭제한다. -->
+        </header>
+        <div class="admin-inactive-toolbar">
+            <form id="admin-inactive-search-form" class="admin-search" role="search" aria-label="비활성화 직원 검색">
+                <div class="admin-search-field">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+                    <label class="visually-hidden" for="admin-inactive-search">이름 또는 아이디 검색</label>
+                    <input type="search" id="admin-inactive-search" placeholder="이름 또는 아이디 검색" autocomplete="off">
+                </div>
+                <button type="submit" class="admin-search-button">검색</button>
+                <!-- [2026-09-18] 초기화 버튼을 검색 버튼 옆에 항상 표시하고 검색어와 병동 조건을 함께 초기화한다. -->
+                <button type="button" id="admin-inactive-reset" class="admin-search-button">초기화</button>
+            </form>
+            <div class="admin-inactive-filter">
+                <div class="admin-ward-dropdown" id="admin-ward-dropdown">
+                    <button type="button" class="admin-ward-trigger" id="admin-ward-trigger"
+                            aria-label="병동 선택" aria-expanded="false" aria-controls="admin-ward-options">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M7 4v6m10-6v6M5 10h14v10H5z"/></svg>
+                        <span id="admin-ward-label">전체 병동</span>
+                        <svg class="admin-ward-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div class="admin-ward-options" id="admin-ward-options" hidden></div>
+                </div>
+                <select id="admin-inactive-ward" aria-label="병동 선택" hidden>
+                    <option value="">전체 병동</option>
+                </select>
+            </div>
+            <!-- [09.13]수정내용: 선택 일괄 작업을 검색·필터 영역 옆에 배치해 목록 확인과 바로 이어지도록 한다. -->
+            <div class="admin-bulk-actions" role="group" aria-label="선택 직원 일괄 관리">
+                <span id="admin-bulk-count" role="status">현재 목록에서 0명 선택</span>
+                <div class="admin-bulk-buttons">
+                    <!-- [09.13]수정내용: 비활성화 직원 일괄 작업 버튼을 계정 활성화·계정 삭제로 간결하게 표시한다. -->
+                    <button type="button" data-bulk-status="ACTIVATE" disabled>계정 활성화</button>
+                    <button type="button" data-bulk-status="DELETE" class="admin-bulk-delete" disabled>계정 삭제</button>
+                </div>
+            </div>
+        </div>
+        <p class="admin-inactive-result" id="admin-inactive-result" role="status">직원 목록을 불러오는 중입니다.</p>
+        <div class="admin-inactive-selection-toolbar" role="group" aria-label="선택한 직원 관리">
+            <button type="button" id="admin-inactive-selected-view" aria-pressed="false">선택한 0명 모아보기</button>
+            <button type="button" id="admin-inactive-clear-selection" disabled>선택 해제</button>
+            <span id="admin-inactive-selection-summary" role="status" aria-live="polite">검색 초기화 후에도 선택한 직원은 유지됩니다.</span>
+        </div>
+        <div id="admin-inactive-error" role="alert" hidden>
+            <p id="admin-inactive-error-message"></p>
+            <button type="button" id="admin-inactive-retry">다시 불러오기</button>
+        </div>
+        <div class="admin-table-wrap" id="admin-inactive-list" aria-busy="true">
+            <table class="admin-table admin-inactive-table">
+                <caption class="visually-hidden">비활성화 직원 목록</caption>
+                <thead><tr><th scope="col"><label class="admin-inactive-selection"><input type="checkbox" id="admin-inactive-select-all" aria-label="현재 목록 전체 선택"></label></th><th scope="col">이름</th><!-- [09.13]수정내용: 비활성화 직원 목록의 열 제목을 로그인 아이디에서 아이디로 간결하게 표시한다. --><th scope="col">아이디</th><!-- [09.13]수정내용: 병동 열 제목을 이전 배정 병동에서 병동으로 변경한다. --><th scope="col">병동</th><th scope="col">비활성화 일자</th><th scope="col">상태</th></tr></thead>
+                <tbody id="admin-inactive-rows"></tbody>
+            </table>
+            <div class="admin-inactive-empty" id="admin-inactive-empty" hidden>
+                <strong id="admin-inactive-empty-title">비활성화 직원이 없습니다</strong>
+                <p id="admin-inactive-empty-description">승인완료 목록에서 비활성화한 직원이 여기에 표시됩니다.</p>
+                
+            </div>
+        </div>
+        <nav class="admin-pagination admin-inactive-pagination" id="admin-inactive-pagination"
+             aria-label="비활성화 직원 목록 페이지" hidden></nav>
+    </section>
+    <footer class="admin-inactive-footer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg>
+        일괄 작업은 선택한 직원 전체에 적용됩니다.
+    </footer>
+</main>
+
+<dialog id="admin-status-dialog" class="admin-dialog" aria-labelledby="admin-status-dialog-title" aria-describedby="admin-status-dialog-description">
+    <form id="admin-status-form">
+        <h2 id="admin-status-dialog-title">상태 변경</h2>
+        <p id="admin-status-dialog-description"></p>
+        <p id="admin-status-dialog-note"></p>
+        <div class="admin-dialog-actions">
+            <button type="button" id="admin-status-cancel" autofocus>취소</button>
+            <button type="submit" id="admin-status-confirm" class="admin-primary">확인</button>
+        </div>
+    </form>
+</dialog>
+
+<p id="admin-feedback"
+   class="admin-toast"
+   role="status"
+   aria-live="polite"
+   hidden></p>
+
+<script src="../../../static/JS/auth/session-history.js"
+        th:src="@{/JS/auth/session-history.js}"></script>
+</body>
+</html>

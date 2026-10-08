@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <!-- [2026.09.19] 밝은 상단바에 맞춰 AE·윗곡선은 진한 초록(#29483D), 손은 샌드 베이지(#E4DCCF)로 표시합니다. -->
+  <filter id="silver-sage" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values="0 1 0 0 0  0 1 0 0 0  0 1 0 0 0  0 0 0 1 0"/>
+    <feComponentTransfer>
+      <feFuncR type="discrete" tableValues="0.16078 0.16078 0.89412 0.89412"/>
+      <feFuncG type="discrete" tableValues="0.28235 0.28235 0.86275 0.86275"/>
+      <feFuncB type="discrete" tableValues="0.23922 0.23922 0.81176 0.81176"/>
+    </feComponentTransfer>
+  </filter>
+</svg>

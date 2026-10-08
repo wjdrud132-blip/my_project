@@ -1,0 +1,177 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+  font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  color: #1f2933;
+  color-scheme: light;
+  font-synthesis: none;
+  --primary: #39576d;
+  --field-border: #d4ddd8;
+  --field-background: #fbfcfb;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Noto Sans KR", "Malgun Gothic", sans-serif; }
+input, button { font: inherit; }
+p, h1 { margin: 0; }
+.login-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 47px 20px 16px;
+  /* 1536×826 기준: 1536×1024 배경의 상단을 약 -69px에 배치. */
+  background: #e9f0f5 url('../../image/login.png') center 34.85% / cover no-repeat;
+}
+.login-content { width: 533px; max-width: 100%; }
+.login-header, .login-content > header { text-align: center; margin-bottom: 30px; }
+.eyebrow, .login-content > header > p:first-child { color: var(--primary); font-size: 18px; font-weight: 700; line-height: 22px; letter-spacing: 1.2px; }
+h1 { margin-top: 8px; font-size: 36px; line-height: 48px; font-weight: 700; }
+.description, .login-content > header > p:last-child { margin-top: 8px; color: #8a9490; font-size: 15px; line-height: 24px; }
+.login-card {
+  min-height: 367px;
+  padding: 55px 47px 28px;
+  border: 1px solid #bfbfbf;
+  border-radius: 16px;
+  background: #fff;
+}
+.field label { display: block; font-size: 13px; font-weight: 700; line-height: 16px; }
+.field input {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 8px;
+  padding: 0 16px;
+  border: 1px solid var(--field-border);
+  border-radius: 10px;
+  background: var(--field-background);
+  color: #1f2933;
+  font-size: 13px;
+}
+.field input::placeholder { color: #8a9490; opacity: 1; }
+/* [09.13]수정내용: 자동완성된 아이디가 브라우저 기본 파란색으로 변하지 않도록 로그인 입력칸 색상을 유지한다. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1f2933;
+  -webkit-box-shadow: 0 0 0 1000px var(--field-background) inset;
+  box-shadow: 0 0 0 1000px var(--field-background) inset;
+  caret-color: #1f2933;
+}
+.password-field { margin-top: 18px; }
+/* [수정완료] 이름 입력칸과 아이디 입력칸 사이에 여백을 둡니다. */
+a { color: #527361; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.forgot-password, .login-card > a { display: block; margin-top: 6px; text-align: right; font-size: 11px; font-weight: 700; line-height: 13px; }
+.login-button {
+  display: block;
+  width: 100%;
+  height: 52px;
+  margin-top: 32px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.login-button:hover { 
+  background: #294f3d; 
+}
+
+.login-button:active { 
+  background: #224333; 
+}
+
+.login-button:disabled,
+.login-button:disabled:hover,
+.login-button:disabled:active {
+  background: #8a9490;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.signup-link, .login-card > p:last-child { 
+  margin-top: 14px; 
+  color: #527361; 
+  text-align: center; 
+  font-size: 11px; 
+  font-weight: 700; 
+  line-height: 13px; 
+}
+
+.signup-link a, .login-card > p:last-child a { 
+  margin-left: 4px; 
+}
+
+input:focus-visible, button:focus-visible, a:focus-visible { 
+  outline: 2px solid var(--primary); 
+  outline-offset: 3px; 
+}
+
+.status {
+  margin-top: 12px; color: var(--primary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.status.success {
+  margin: 0 0 16px;
+  padding: 11px 14px;
+  border: 1px solid #cbd9d1;
+  border-radius: 9px;
+  background: #f0f5f2;
+  color: #294f3d;
+  font-weight: 700;
+}
+
+.status.error {
+  color: #b42318;
+}
+
+/* 병합 메모: park의 로그인 1단계 화면(login.html)이 쓰는 클래스. chae 쪽 CSS에는 없어서 병합 시 누락됐던 것을 park 원본에서 복원. */
+.hospital-card { min-height: 0; padding-bottom: 45px; }
+
+.login-card .forgot-password,
+.login-card a[href*="password"] {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  text-align: right;
+  font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 13px;
+  color: #527361;
+  text-decoration: none;
+}
+
+.login-card .signup-link,
+.login-card > p:last-child {
+  margin-top: 28px;
+}
+
+.login-card > p.admin-contact {
+  /* [2026.09.20] 마지막 문단의 기존 초록색보다 우선 적용하여 도메인 안내와 같은 색으로 맞춥니다. */
+  color: #969c98;
+  line-height: 18px;
+}
+
+[hidden] { 
+  display: none !important; 
+}
+
+@media (max-width: 600px) {
+  .login-page { padding: 32px 20px; }
+  .login-card { padding: 32px 24px; min-height: auto; }
+  h1 { font-size: 28px; line-height: 40px; }
+  .field input { font-size: 16px; }
+}
+@media (max-height: 600px) {
+  .login-page { align-items: flex-start; padding-top: 24px; padding-bottom: 24px; }
+}
+
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */

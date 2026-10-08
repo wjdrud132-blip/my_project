@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.admin.AdminHistoryMapper">
+
+    <!-- 관리자 작업 감사 로그 저장 -->
+    <insert id="insertHistory">
+        INSERT INTO tb_admin_history (
+            hosp_div_id,
+            admin_id,
+            user_id,
+            action_cd,
+            action_detail
+        )
+        VALUES (
+            #{hospitalDomain},
+            #{adminId},
+            #{userId},
+            #{actionCode},
+            #{actionDetail}
+        )
+    </insert>
+
+    <!-- 현재 병원의 최근 감사 로그 조회 -->
+    <select id="findRecentHistories"
+            resultType="com.aio.hospitalsafety.dto.admin.AdminHistoryResponse">
+        SELECT
+            h.history_id AS history_id,
+            h.admin_id AS admin_id,
+            h.user_id AS user_id,
+            COALESCE(c.care_nm, e.emp_nm) AS user_name,
+            w.ward_nm AS ward_name,
+            h.action_cd AS action_code,
+            h.created_at AS created_at,
+            <!-- [2026.09.30] 간병인을 TB_CAREGIVER 로 옮겨 tb_emp 에는 간호사만 남아 job_cd·room_no 칸을 지웠다. -->
+            CASE WHEN c.caregiver_id IS NOT NULL THEN 'CAREGIVER' WHEN e.emp_id IS NOT NULL THEN 'GENERAL' END AS job_type,
+            NULLIF(REGEXP_REPLACE(cl.location_nm, '[^0-9]', '', 'g'), '') AS room_number,
+            h.action_detail
+        FROM tb_admin_history h
+        LEFT JOIN tb_emp e
+          ON e.hosp_div_id = h.hosp_div_id
+         AND e.emp_id = h.user_id
+        <!-- [2026.09.30 추가] 간병인은 TB_CAREGIVER('cg:' + CAREGIVER_ID)와 그 병실 위치 -->
+        LEFT JOIN tb_caregiver c
+          ON c.hosp_div_id = h.hosp_div_id
+         AND CONCAT('cg:', c.caregiver_id) = h.user_id
+        LEFT JOIN tb_location cl
+          ON cl.location_id = c.location_id
+        LEFT JOIN tb_ward w
+          ON w.hosp_div_id = h.hosp_div_id
+         AND w.ward_id = COALESCE(cl.ward_id, e.ward_id)
+        WHERE h.hosp_div_id = #{hospitalDomain}
+        ORDER BY h.created_at DESC, h.history_id DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

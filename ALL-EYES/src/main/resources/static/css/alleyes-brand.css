@@ -1,0 +1,145 @@
+/* [2026.09.19] 추가: 모든 ALLEYES 표기에 같은 로고를 왼쪽으로 배치합니다. */
+.alleyes-brand {
+  color: #36566f;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* [2026.09.20] 독립 비밀번호 화면의 로고를 정렬하고, 팝업은 부모 화면의 로고를 사용합니다. */
+.change-header .change-brand { justify-content: center; margin: 0 0 12px; font-size: 18px; font-weight: 700; }
+.password-popup .change-header .change-brand { display: none; }
+
+.alleyes-logo {
+  display: block;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 50px;
+  object-fit: contain;
+  background: transparent;
+}
+
+/* 모든 화면은 자체 색상이 적용된 투명 로고를 사용합니다. */
+.admin-topbar .alleyes-logo,
+.brand .alleyes-logo,
+.settings-header .alleyes-logo {
+  filter: none;
+}
+
+.domain-eyebrow.alleyes-brand,
+.service-eyebrow.alleyes-brand {
+  display: flex;
+  justify-content: center;
+  color: #36566f;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+/* [2026.09.19] 수정: 상단 로고·서비스명의 중심과 보조 문구의 크기·간격을 통일합니다. */
+/* [2026.09.19] 수정: 첨부 이미지 색보다 조금 진한 #b8cad8 배경에 진한 초록 글자와 버튼으로 대비를 맞춥니다. */
+.admin-topbar,
+body[data-dashboard-view] > header,
+.settings-header {
+  background: #b8cad8;
+  color: #29343d;
+}
+
+.admin-topbar .admin-brand > span,
+.admin-topbar .admin-page-nav a,
+.admin-topbar time,
+body[data-dashboard-view] > header .brand > span,
+body[data-dashboard-view] > header .header-actions time,
+body[data-dashboard-view] > header .profile-copy small {
+  color: #29343d;
+}
+
+.admin-topbar .admin-page-nav a:hover,
+.admin-topbar .admin-page-nav a:focus-visible,
+.admin-topbar .admin-page-nav a.active {
+  background: #29343d14;
+  color: #29343d;
+}
+
+.admin-topbar .admin-logout,
+.admin-topbar .admin-settings {
+  background: #29343d08;
+  border-color: #29343d40;
+  color: #29343d;
+}
+
+.admin-topbar .admin-logout:hover,
+.admin-topbar .admin-settings:hover {
+  background: #29343d14;
+  border-color: #29343d80;
+}
+
+body[data-dashboard-view] > header .profile-toggle,
+body[data-dashboard-view] > header .dashboard-back-link,
+body[data-dashboard-view] > header .header-actions a,
+.settings-header .back-link {
+  color: #29343d;
+}
+
+.admin-topbar :focus-visible,
+body[data-dashboard-view] > header .profile-toggle:focus-visible {
+  outline: 2px solid #29343d;
+  outline-offset: 3px;
+}
+
+.admin-brand,
+header > .brand {
+  align-items: center;
+  column-gap: 16px;
+}
+
+/* 관리자 상단의 브랜드 글꼴과 시작 위치를 간호사 대시보드에 맞춥니다. */
+.admin-topbar .admin-brand { font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; }
+@media (min-width: 801px) {
+  .admin-topbar { padding-inline: 30px; }
+}
+
+.admin-brand > .alleyes-brand,
+.brand > .alleyes-brand,
+.settings-header > .alleyes-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 1.2px;
+  color: #36566f;
+}
+
+.admin-brand > span,
+.brand > span {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.record-brand { display: none; align-items: center; gap: 16px; }
+body[data-dashboard-view="records"] > header .record-brand { display: inline-flex; }
+.record-service-label { color: #29343d; font-size: 11px; font-weight: 400; line-height: 1; white-space: nowrap; }
+
+/* 독립 조치 이력 상단의 로고와 보조 문구를 대시보드와 동일하게 정렬합니다. */
+.page-header .dashboard-link.alleyes-record-link { padding: 0; font-size: 18px; font-weight: 700; line-height: 1; color: #36566f; }
+.page-header .dashboard-link.alleyes-record-link:hover { color: #36566f; }
+.page-header .hospital-name { margin-left: -8px; font-size: 11px; font-weight: 400; line-height: 1; white-space: nowrap; color: #29343d; }
+
+@media (max-width: 800px) {
+  .admin-brand { align-items: flex-start; }
+}
+
+@media (max-width: 600px) {
+  .alleyes-brand { gap: 8px; }
+  .alleyes-logo { width: 42px; height: 40px; }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */

@@ -1,0 +1,54 @@
+/* [09.13]추가내용: 병실 선택 상태와 키보드 포커스 표현을 관리합니다. */
+.floor .room[aria-pressed="true"]{outline:3px solid #526d82;outline-offset:1px}
+.floor .room:focus-visible{outline:3px solid #526d82;outline-offset:2px}
+
+/* [09.13]수정내용: 오늘의 안전 현황 카드 선택 테두리를 연한 회색으로 표시합니다. */
+.page-heading .counts .count[aria-pressed="true"]{
+  outline:2px solid #d0d0d0;
+  outline-offset:2px;
+  box-shadow:none;
+}
+
+/* [09.13]수정내용: 낙상 병실의 위치 확인 버튼에서 파란색 선택 배경과 강조 테두리를 제거합니다. */
+.alerts-panel .alert-card .locate-room,
+.alerts-panel .alert-card .locate-room[aria-pressed="true"],
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover,
+.alerts-panel .alert-card .locate-room:focus-visible{
+  background:#fff;
+  color:inherit;
+  border-color:#e4d3cb;
+  box-shadow:none;
+  outline:none;
+}
+
+/* [09.13]수정내용: 위치 확인 버튼은 선택 여부와 관계없이 커서를 올리면 회색 테두리만 강조합니다. */
+.alerts-panel .alert-card .locate-room:hover,
+.alerts-panel .alert-card .locate-room[aria-pressed="true"]:hover{
+  background:#fff;
+  border-color:#888;
+  box-shadow:none;
+}
+
+/* [09.13]수정내용: 병실 범례와 대응 등록을 오른쪽 위·아래로 정렬하고 버튼이 숨겨져도 공간을 유지합니다. */
+.floor-panel .panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.floor-panel .panel-heading .room-heading-actions{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-left:auto;flex-shrink:0}
+.floor-panel .panel-heading .legend{white-space:nowrap;margin:0}
+.floor-panel .panel-heading .legend-response{display:flex;justify-content:flex-end;min-height:30px}
+.legend-response .response-open{min-width:110px;height:30px;margin:0;padding:5px 10px}
+/* [09.13]수정내용: 대응 등록 버튼은 흰 배경을 유지하고 커서를 올릴 때 회색 테두리만 강조합니다. */
+.legend-response .response-open,
+.legend-response .response-open:hover{
+  background:#fff;
+  color:#555;
+  box-shadow:none;
+}
+.legend-response .response-open{border:1px solid #d7d7d7}
+.legend-response .response-open:hover{border-color:#888}
+
+/* [09.13]수정내용: 등록 버튼 아래 관제 화면의 간격을 12px로 맞춥니다. */
+.floor-panel{justify-content:flex-start;row-gap:0}
+.floor-panel > .panel-heading{flex:0 0 auto;margin-bottom:0;padding-bottom:0}
+.floor-panel > .floor{margin-top:12px}
+
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */

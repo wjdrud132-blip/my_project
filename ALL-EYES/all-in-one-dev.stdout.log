@@ -1,0 +1,278 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.aio:hospital-safety >-----------------------
+[INFO] Building hospital-safety 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ hospital-safety >>>
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ hospital-safety ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 68 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ hospital-safety ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ hospital-safety ---
+[INFO] Not copying test resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ hospital-safety ---
+[INFO] Not compiling test sources
+[INFO] 
+[INFO] <<< spring-boot:4.1.1:run (default-cli) < test-compile @ hospital-safety <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.1:run (default-cli) @ hospital-safety ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T11:35:27.600+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T11:35:27.605+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T11:35:27.670+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-09-17T11:35:27.671+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-09-17T11:35:29.277+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T11:35:29.297+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T11:35:29.297+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T11:35:29.347+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1674 ms
+2026-09-17T11:35:29.954+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T11:35:29.957+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T11:35:30.573+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T11:35:30.582+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 3.725 seconds (process running for 4.416)
+2026-09-17T11:36:06.609+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T11:36:06.611+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T11:36:06.614+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-17T11:36:11.478+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-4] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-17T11:36:12.271+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-4] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@98bed7c
+2026-09-17T11:36:12.274+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-4] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-17T11:39:27.909+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 69 class path changes (69 additions, 0 deletions, 0 modifications)
+2026-09-17T11:39:27.929+09:00  INFO 30712 --- [hospital-safety] [       Thread-1] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T11:39:27.939+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-17T11:39:27.947+09:00  INFO 30712 --- [hospital-safety] [       Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-17T11:39:28.392+09:00  INFO 30712 --- [hospital-safety] [       Thread-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T11:39:28.570+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T11:39:28.570+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T11:39:29.172+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T11:39:29.176+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T11:39:29.176+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T11:39:29.200+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 624 ms
+2026-09-17T11:39:29.481+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T11:39:29.483+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T11:39:29.716+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T11:39:29.720+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 1.207 seconds (process running for 243.554)
+2026-09-17T11:39:29.722+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T11:39:29.732+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T11:39:29.732+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T11:39:29.734+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-17T11:39:29.737+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2026-09-17T11:39:30.216+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection org.postgresql.jdbc.PgConnection@ddd248f
+2026-09-17T11:39:30.217+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2026-09-17T11:39:31.186+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 69 class path changes (0 additions, 69 deletions, 0 modifications)
+2026-09-17T11:39:31.189+09:00  INFO 30712 --- [hospital-safety] [       Thread-5] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T11:39:31.193+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-17T11:39:31.196+09:00  INFO 30712 --- [hospital-safety] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-09-17T11:39:31.361+09:00  INFO 30712 --- [hospital-safety] [       Thread-5] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T11:39:31.519+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T11:39:31.519+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T11:39:31.985+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T11:39:31.988+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T11:39:31.989+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T11:39:32.014+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 492 ms
+2026-09-17T11:39:32.241+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T11:39:32.243+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T11:39:32.427+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T11:39:32.430+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 0.962 seconds (process running for 246.264)
+2026-09-17T11:39:32.433+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T11:39:34.839+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T11:39:34.840+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T11:39:34.841+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-17T11:39:34.858+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Starting...
+2026-09-17T11:39:35.585+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Added connection org.postgresql.jdbc.PgConnection@294b7580
+2026-09-17T11:39:35.587+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Start completed.
+2026-09-17T13:12:59.338+09:00  WARN 30712 --- [hospital-safety] [l-3:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Thread starvation or clock leap detected (housekeeper delta=11m22s347ms561µs300ns).
+2026-09-17T13:49:30.875+09:00  WARN 30712 --- [hospital-safety] [l-3:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-3 - Thread starvation or clock leap detected (housekeeper delta=26m31s358ms855µs500ns).
+2026-09-17T16:29:13.427+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 71 class path changes (71 additions, 0 deletions, 0 modifications)
+2026-09-17T16:29:13.439+09:00  INFO 30712 --- [hospital-safety] [       Thread-9] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T16:29:13.447+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-17T16:29:13.454+09:00  INFO 30712 --- [hospital-safety] [       Thread-9] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-09-17T16:29:13.674+09:00  INFO 30712 --- [hospital-safety] [       Thread-9] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T16:29:13.892+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T16:29:13.893+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T16:29:15.045+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T16:29:15.049+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T16:29:15.050+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T16:29:15.084+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1180 ms
+2026-09-17T16:29:15.475+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T16:29:15.475+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T16:29:15.792+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T16:29:15.799+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 1.995 seconds (process running for 17629.633)
+2026-09-17T16:29:15.802+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T16:29:17.260+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 71 class path changes (0 additions, 71 deletions, 0 modifications)
+2026-09-17T16:29:17.268+09:00  INFO 30712 --- [hospital-safety] [      Thread-13] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T16:29:17.277+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T16:29:17.404+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T16:29:17.405+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T16:29:17.871+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T16:29:17.872+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T16:29:17.873+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T16:29:17.901+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 493 ms
+2026-09-17T16:29:18.097+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T16:29:18.097+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T16:29:18.251+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T16:29:18.253+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 0.879 seconds (process running for 17632.088)
+2026-09-17T16:29:18.255+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T16:29:49.595+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T16:29:49.596+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T16:29:49.598+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-09-17T16:29:49.602+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-09-17T16:29:50.000+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection org.postgresql.jdbc.PgConnection@3e81a7ea
+2026-09-17T16:29:50.002+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-09-17T16:32:40.089+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 71 class path changes (71 additions, 0 deletions, 0 modifications)
+2026-09-17T16:32:40.098+09:00  INFO 30712 --- [hospital-safety] [      Thread-17] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T16:32:40.113+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-17T16:32:40.118+09:00  INFO 30712 --- [hospital-safety] [      Thread-17] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-09-17T16:32:40.313+09:00  INFO 30712 --- [hospital-safety] [      Thread-17] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T16:32:40.514+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T16:32:40.514+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T16:32:41.362+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T16:32:41.366+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T16:32:41.367+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T16:32:41.397+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 875 ms
+2026-09-17T16:32:41.984+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T16:32:41.985+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T16:32:42.380+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T16:32:42.385+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 1.938 seconds (process running for 17836.22)
+2026-09-17T16:32:42.388+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T16:32:43.897+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 71 class path changes (0 additions, 71 deletions, 0 modifications)
+2026-09-17T16:32:43.899+09:00  INFO 30712 --- [hospital-safety] [      Thread-21] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T16:32:43.905+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T16:32:44.055+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T16:32:44.056+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T16:32:44.804+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T16:32:44.805+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T16:32:44.806+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T16:32:44.839+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 779 ms
+2026-09-17T16:32:45.118+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T16:32:45.119+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T16:32:45.321+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T16:32:45.324+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 1.318 seconds (process running for 17839.159)
+2026-09-17T16:32:45.327+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T16:32:45.398+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T16:32:45.399+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T16:32:45.402+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-09-17T16:32:45.406+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-09-17T16:32:45.708+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection org.postgresql.jdbc.PgConnection@5c7c1d79
+2026-09-17T16:32:45.709+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-09-17T17:39:36.168+09:00  INFO 30712 --- [hospital-safety] [   File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 19 class path changes (0 additions, 10 deletions, 9 modifications)
+2026-09-17T17:39:36.171+09:00  INFO 30712 --- [hospital-safety] [      Thread-25] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-09-17T17:39:36.178+09:00  INFO 30712 --- [hospital-safety] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-09-17T17:39:36.181+09:00  INFO 30712 --- [hospital-safety] [      Thread-25] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown initiated...
+2026-09-17T17:39:36.247+09:00  INFO 30712 --- [hospital-safety] [      Thread-25] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Shutdown completed.
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-17T17:39:36.442+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Starting HospitalSafetyApplication using Java 21.0.12.1 with PID 30712 (C:\Users\구예진\Desktop\ALL_IN_ONE\target\classes started by 구예진 in C:\Users\구예진\Desktop\ALL_IN_ONE)
+2026-09-17T17:39:36.443+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : No active profile set, falling back to 1 default profile: "default"
+2026-09-17T17:39:37.123+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-09-17T17:39:37.125+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-09-17T17:39:37.126+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-09-17T17:39:37.147+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 697 ms
+2026-09-17T17:39:37.436+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name userAuthenticationProvider
+2026-09-17T17:39:37.438+09:00  WARN 30712 --- [hospital-safety] [  restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-09-17T17:39:37.642+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-09-17T17:39:37.646+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] c.a.h.HospitalSafetyApplication          : Started HospitalSafetyApplication in 1.275 seconds (process running for 21851.48)
+2026-09-17T17:39:37.648+09:00  INFO 30712 --- [hospital-safety] [  restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-09-17T17:40:03.736+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-17T17:40:03.738+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-17T17:40:03.740+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-09-17T17:40:03.743+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Starting...
+2026-09-17T17:40:04.060+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-6 - Added connection org.postgresql.jdbc.PgConnection@5b8a43fe
+2026-09-17T17:40:04.062+09:00  INFO 30712 --- [hospital-safety] [nio-8081-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-6 - Start completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  06:30 h
+[INFO] Finished at: 2026-09-17T18:05:47+09:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:4.1.1:run (default-cli) on project hospital-safety: Process terminated with exit code: 1073807364 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

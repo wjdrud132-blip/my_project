@@ -1,0 +1,10 @@
+/* [09.13]추가내용: CSV·엑셀·PDF 내보내기 버튼과 팝업 전용 스타일을 분리합니다. */
+.export-button{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.export-dialog .export-form{display:grid;gap:18px}
+.export-dialog .export-formats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+/* [09.13]수정내용: 취소와 내보내기 버튼이 하단 전체 너비를 균등하게 나눠 갖도록 배치합니다. */
+/* [09.13]수정내용: 빈 오류 안내 영역을 접고 버튼의 추가 위 여백을 없애 안내 문구와 버튼 사이 간격을 줄입니다. */
+.export-dialog .export-error:empty{display:none}
+.export-dialog .export-actions{display:flex;width:100%;gap:10px;margin-top:0}
+.export-dialog .export-actions > button{flex:1 1 0;min-width:0;min-height:44px}
+@media(max-width:640px){.export-dialog .export-formats{grid-template-columns:1fr}}

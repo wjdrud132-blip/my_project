@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.sms.SmsMapper">
+
+    <!--
+        해당 병동에 소속된 비활성화되지 않은 간호사.
+        요구사항 AIO_035: "해당 병동에 소속된 비활성화되지 않은 모든 간호사"
+    -->
+    <select id="findWardUsers" resultType="com.aio.hospitalsafety.dto.sms.SmsRecipient">
+        SELECT
+            'EMP' AS user_type,
+            emp_id AS user_id,
+            phone_no AS phone_number
+        FROM tb_emp
+        WHERE hosp_div_id = #{hospitalId}
+          AND ward_id = #{wardId}
+          AND role_cd = 'USER'
+          AND auth_st = 'APPROVED'
+          AND phone_no IS NOT NULL
+          AND TRIM(phone_no) &lt;&gt; ''
+        ORDER BY emp_id
+    </select>
+
+    <!--
+        [2026.09.30 추가] 해당 병실의 담당 간호사 전원(tb_emp_location → tb_location). 여러 명일 수 있고, 담당 병실은 선택 사항이다.
+        없으면(병실 담당을 두지 않는 병원 등) SmsService 가 병동 간호사 전원(findWardUsers)에게 보낸다.
+    -->
+    <select id="findRoomUsers" resultType="com.aio.hospitalsafety.dto.sms.SmsRecipient">
+        SELECT
+            'EMP' AS user_type,
+            e.emp_id AS user_id,
+            e.phone_no AS phone_number
+        FROM tb_emp_location el
+        JOIN tb_location l
+          ON l.location_id = el.location_id
+        JOIN tb_emp e
+          ON e.emp_id = el.emp_id
+        WHERE e.hosp_div_id = #{hospitalId}
+          AND l.ward_id = #{wardId}
+          AND l.location_nm = #{locationName}
+          AND e.role_cd = 'USER'
+          AND e.auth_st = 'APPROVED'
+          AND e.phone_no IS NOT NULL
+          AND TRIM(e.phone_no) &lt;&gt; ''
+        ORDER BY e.emp_id
+    </select>
+
+    <!--
+        [2026.09.30 변경] 해당 병실의 활성 담당 간병인(명세 TB_CAREGIVER). 병실 하나의 활성 간병인은 1명이다.
+        병실은 병동 + 위치 이름('302호')으로 찾는다. SMS 기록의 USER_ID 는 'cg:' + CAREGIVER_ID 다(CaregiverIds).
+    -->
+    <select id="findRoomCaregivers" resultType="com.aio.hospitalsafety.dto.sms.SmsRecipient">
+        SELECT
+            'CAREGIVER' AS user_type,
+            CONCAT('cg:', c.caregiver_id) AS user_id,
+            c.phone_no AS phone_number
+        FROM tb_caregiver c
+        JOIN tb_location l
+          ON l.location_id = c.location_id
+        WHERE c.hosp_div_id = #{hospitalId}
+          AND l.ward_id = #{wardId}
+          AND l.location_nm = #{locationName}
+          AND c.use_yn = 'Y'
+          AND TRIM(c.phone_no) &lt;&gt; ''
+        ORDER BY c.caregiver_id
+    </select>
+
+    <!-- 같은 감지 이벤트로 이 사람에게 보낸 기록이 있으면 true (1인 1회, 재발송 없음, FR-AD-601) -->
+    <select id="existsSmsHistory" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_sms_send_history
+            WHERE event_id = CAST(#{eventId} AS UUID)
+              AND user_type = #{userType}
+              AND user_id = #{userId}
+        )
+    </select>
+
+    <!-- 최근 N분 안에 저장된 확정 낙상 (서버 재시작 뒤 SMS 이어 보내기) -->
+    <select id="findRecentConfirmedFallIds" resultType="string">
+        SELECT CAST(event_id AS VARCHAR)
+        FROM tb_detection_event
+        WHERE event_type = 'FALL'
+          AND decision_st = 'CONFIRMED'
+          AND (event_detail ->> 'duplicate_of') IS NULL
+          AND crt_dt &gt;= NOW() - (#{minutes} * INTERVAL '1 minute')
+        ORDER BY crt_dt
+    </select>
+
+    <!-- 발송 결과 기록. 성공이면 send_dt 에 지금 시각, 실패면 NULL -->
+    <insert id="insertSmsHistory">
+        INSERT INTO tb_sms_send_history (
+            event_id,
+            user_type,
+            user_id,
+            phone_no,
+            message_content,
+            send_status,
+            send_dt
+        )
+        VALUES (
+            CAST(#{eventId} AS UUID),
+            #{userType},
+            #{userId},
+            #{phoneNumber},
+            #{messageContent},
+            #{sendStatus},
+            CASE WHEN #{sendStatus} = 'SUCCESS' THEN NOW() ELSE NULL END
+        )
+    </insert>
+
+</mapper>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.edge.EdgeMapper">
+
+    <!-- 사용 중인 장치를 이름으로 찾기 -->
+    <select id="findEnabledEdgeDeviceIds" resultType="long">
+        SELECT edge_device_id
+        FROM tb_edge_device
+        WHERE device_nm = #{deviceName}
+          AND enabled = TRUE
+        ORDER BY edge_device_id
+    </select>
+
+    <!--
+        장치 마지막 연락 시각 갱신. 실행 세션을 새로 등록할 때(젯슨 프로그램이 켜질 때)만 부른다.
+        이벤트를 받을 때는 바꾸지 않으므로, 명세의 '마지막 통신 시각'보다 좁은 뜻이다(하트비트 없음).
+    -->
+    <update id="updateEdgeDeviceLastSeen">
+        UPDATE tb_edge_device
+        SET last_seen_at = NOW(),
+            upd_dt = NOW()
+        WHERE edge_device_id = #{edgeDeviceId}
+    </update>
+
+    <!-- 장치에 연결된 사용 중인 카메라 찾기 -->
+    <select id="findEnabledCamera" resultType="com.aio.hospitalsafety.dto.edge.EdgeCamera">
+        SELECT
+            camera_id,
+            location_id
+        FROM tb_camera
+        WHERE edge_device_id = #{edgeDeviceId}
+          AND source_ref = #{sourceRef}
+          AND enabled = TRUE
+    </select>
+
+    <!-- 모델 묶음 찾기 -->
+    <select id="findModelBundle" resultType="com.aio.hospitalsafety.dto.edge.ModelBundleRow">
+        SELECT
+            model_bundle_id,
+            pose_model_sha256,
+            fall_model_sha256
+        FROM tb_model_bundle
+        WHERE bundle_nm = #{bundleName}
+    </select>
+
+    <!-- 모델 묶음의 특징 버전과 설정이 같은지 (JSONB 는 키 순서와 상관없이 비교된다) -->
+    <select id="isSameModelSettings" resultType="boolean">
+        SELECT (feature_ver IS NOT DISTINCT FROM #{featureVersion}
+                AND model_config IS NOT DISTINCT FROM CAST(#{modelConfigJson} AS JSONB))
+        FROM tb_model_bundle
+        WHERE model_bundle_id = #{modelBundleId}
+    </select>
+
+    <!-- 모델 묶음 저장 -->
+    <insert id="insertModelBundle">
+        INSERT INTO tb_model_bundle (
+            bundle_nm,
+            pose_model_nm,
+            pose_model_sha256,
+            fall_model_nm,
+            fall_model_sha256,
+            feature_ver,
+            model_config
+        )
+        VALUES (
+            #{bundleName},
+            #{poseModelName},
+            #{poseModelSha256},
+            #{fallModelName},
+            #{fallModelSha256},
+            #{featureVersion},
+            CAST(#{modelConfigJson} AS JSONB)
+        )
+    </insert>
+
+    <!--
+        가장 최근 설정과 이번 설정이 같은지 확인.
+        침대 영역은 NULL 일 수 있어서 IS NOT DISTINCT FROM 으로 비교한다(NULL = NULL 도 같다고 본다).
+    -->
+    <select id="findLatestSameConfigVer" resultType="int">
+        SELECT c.config_ver
+        FROM tb_camera_config c
+        WHERE c.camera_id = #{cameraId}
+          AND c.config_ver = (
+              SELECT MAX(config_ver)
+              FROM tb_camera_config
+              WHERE camera_id = #{cameraId}
+          )
+          AND c.capture_config = CAST(#{captureConfigJson} AS JSONB)
+          AND c.bed_roi IS NOT DISTINCT FROM CAST(#{bedRoiJson} AS JSONB)
+          AND c.bed_exit_config IS NOT DISTINCT FROM CAST(#{bedExitConfigJson} AS JSONB)
+    </select>
+
+    <!-- 카메라 설정의 가장 큰 버전 -->
+    <select id="findMaxConfigVer" resultType="int">
+        SELECT COALESCE(MAX(config_ver), 0)
+        FROM tb_camera_config
+        WHERE camera_id = #{cameraId}
+    </select>
+
+    <!-- 카메라 설정 새 버전 저장 -->
+    <insert id="insertCameraConfig">
+        INSERT INTO tb_camera_config (
+            camera_id,
+            config_ver,
+            capture_config,
+            bed_roi,
+            bed_exit_config
+        )
+        VALUES (
+            #{cameraId},
+            #{configVer},
+            CAST(#{captureConfigJson} AS JSONB),
+            CAST(#{bedRoiJson} AS JSONB),
+            CAST(#{bedExitConfigJson} AS JSONB)
+        )
+    </insert>
+
+    <!-- 실행 세션 저장. 이미 있으면 아무것도 하지 않는다. -->
+    <insert id="insertCameraSession">
+        INSERT INTO tb_camera_session (
+            camera_session_id,
+            camera_id,
+            model_bundle_id,
+            config_ver,
+            started_at
+        )
+        VALUES (
+            CAST(#{cameraSessionId} AS UUID),
+            #{cameraId},
+            #{modelBundleId},
+            #{configVer},
+            #{startedAt}
+        )
+        ON CONFLICT (camera_session_id) DO NOTHING
+    </insert>
+
+    <!-- 실행 세션의 카메라와 위치 -->
+    <select id="findSessionCamera" resultType="com.aio.hospitalsafety.dto.edge.EdgeCamera">
+        SELECT
+            s.camera_id,
+            c.location_id
+        FROM tb_camera_session s
+        JOIN tb_camera c
+          ON c.camera_id = s.camera_id
+        WHERE s.camera_session_id = CAST(#{cameraSessionId} AS UUID)
+    </select>
+
+    <!-- 감지 이벤트 저장. 같은 이벤트 ID 가 이미 있으면 아무것도 하지 않는다. -->
+    <insert id="insertDetectionEvent">
+        INSERT INTO tb_detection_event (
+            event_id,
+            camera_id,
+            camera_session_id,
+            location_id,
+            track_id,
+            event_type,
+            decision_st,
+            event_at,
+            decision_score,
+            event_detail
+        )
+        VALUES (
+            CAST(#{eventId} AS UUID),
+            #{cameraId},
+            CAST(#{cameraSessionId} AS UUID),
+            #{locationId},
+            #{trackId},
+            #{eventType},
+            #{decisionSt},
+            #{eventAt},
+            #{decisionScore},
+            CAST(#{eventDetailJson} AS JSONB)
+        )
+        ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+    <!-- 저장된 이벤트 + 위치·병동·병원 -->
+    <select id="findDetectionAlert" resultType="com.aio.hospitalsafety.dto.edge.DetectionAlert">
+        SELECT
+            CAST(e.event_id AS VARCHAR) AS event_id,
+            e.event_type,
+            e.decision_st,
+            e.event_at,
+            w.hosp_div_id AS hospital_id,
+            w.ward_id,
+            w.ward_nm AS ward_name,
+            l.location_nm AS location_name,
+            l.location_type,
+            e.event_detail ->> 'duplicate_of' AS duplicate_of
+        FROM tb_detection_event e
+        JOIN tb_location l
+          ON l.location_id = e.location_id
+        JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE e.event_id = CAST(#{eventId} AS UUID)
+    </select>
+
+</mapper>

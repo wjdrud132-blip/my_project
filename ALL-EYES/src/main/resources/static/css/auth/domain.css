@@ -1,0 +1,203 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+:root {
+    font-synthesis: none;
+    --green: #526d82;
+    --green-dark: #405a70;
+    --ink: #252d31;
+    --muted: #8a918e;
+    --line: #c5cac6;
+    --mint: #eaf4f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-width: 320px;
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    color: var(--ink);
+    background: #fbfcfb;
+    font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.domain-page {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 4svh, 40px) clamp(16px, 2vw, 32px);
+    min-height: 100vh;
+    min-height: 100svh;
+    background-color: #e9f0f5;
+    background-image: url('../../image/login.png');
+    background-position: center 34.85%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.domain-content {
+    z-index: 2;
+    width: 534px;
+    max-width: 100%;
+}
+
+.domain-heading {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.domain-eyebrow {
+    margin: 0 0 8px;
+    color: var(--green);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.domain-heading h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.25;
+}
+
+.domain-description {
+    margin: 13px 0 0;
+    color: #929894;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+}
+
+.domain-card {
+    width: 100%;
+    padding: 50px 47px 28px;
+    border: 1px solid #bfc5c1;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 7px rgba(31, 55, 44, 0.025);
+}
+
+.domain-card label {
+    display: block;
+    margin-bottom: 11px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.domain-card input {
+    width: 100%;
+    height: 57px;
+    padding: 0 18px;
+    border: 1px solid #b8c0bb;
+    border-radius: 11px;
+    outline: none;
+    background: #fbfcfb;
+    color: var(--ink);
+    font-size: 15px;
+}
+
+.domain-card input::placeholder {
+    color: #a3a8a5;
+    /* [09.13]수정내용: 긴 병원 도메인 주소 안내가 부담스럽지 않도록 placeholder 글씨를 줄인다. */
+    font-size: 13px;
+}
+
+.domain-card input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(53, 110, 85, 0.1);
+}
+
+.domain-card button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 57px;
+    margin-top: 17px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--green);
+    color: #fff;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+}
+
+.button-arrow {
+    margin-left: 11px;
+    font-size: 21px;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.domain-help {
+    margin: 19px 0 0;
+    color: #969c98;
+    font-size: 12px;
+    text-align: center;
+    letter-spacing: -0.025em;
+}
+
+.domain-error {
+    margin: 12px 0 0;
+    color: #b42318;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Keep the title and card visually balanced without clipping short screens. */
+@media (min-width: 701px) and (min-height: 601px) {
+    .domain-page {
+        padding-bottom: calc(clamp(24px, 4svh, 40px) + clamp(0px, calc(20svh - 120px), 80px));
+    }
+}
+
+@media (max-width: 700px) {
+    .domain-card {
+        padding: 36px 24px 21px;
+    }
+    .domain-page {
+        padding: 24px 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .domain-heading h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-height: 600px) {
+    .domain-page {
+        align-items: flex-start;
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */
+
+/* [2026.09.20] 로고·제목·카드의 가로 중앙 정렬을 유지하며 전체 묶음을 약 20px 아래로 이동합니다. */
+@media (min-width: 701px) and (min-height: 601px) {
+    .domain-page {
+        padding-top: calc(clamp(24px, 4svh, 40px) + 40px);
+    }
+}

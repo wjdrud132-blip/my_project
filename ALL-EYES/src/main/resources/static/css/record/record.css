@@ -1,0 +1,1313 @@
+@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+/* ==================================================
+   1. 공통 설정
+   ================================================== */
+
+/* 공통 색상 */
+:root {
+  --page-background: #e9f0f5;
+  --panel-background: #ffffff;
+  --header-background: #526d82;
+  --button-background: #526d82;
+  --border-color: #d5dfe7;
+  --text-color: #29343d;
+}
+
+/* 테두리와 안쪽 여백을 요소 크기에 포함합니다. */
+* {
+  box-sizing: border-box;
+}
+
+/* 페이지 기본 스타일 */
+body {
+  margin: 0;
+  background: var(--page-background);
+  color: var(--text-color);
+  font-family: Inter, "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-size: 9px;
+}
+
+/* 폼 요소도 페이지 글꼴을 사용합니다. */
+button,
+input,
+select {
+  font: inherit;
+}
+
+/* 클릭 가능한 요소 */
+button,
+select {
+  cursor: pointer;
+}
+
+/* 버튼 글자 줄바꿈 방지 */
+button {
+  white-space: nowrap;
+}
+
+/* 숨김 상태 */
+[hidden] {
+  display: none !important;
+}
+
+/* 기본 키보드 포커스 */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.table-scroll:focus-visible {
+  outline: 2px solid #7b93a5;
+  outline-offset: 2px;
+}
+
+/* ==================================================
+   2. 상단 헤더
+   ================================================== */
+
+/* 상단 메뉴 배치 */
+.page-header {
+  /* [2026.09.17] 고친 내용: 간호사 조치 이력도 전체화면에서 관리자와 같은 상단 바 비율을 사용합니다. */
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 23px 0 19px;
+  background: var(--header-background);
+  color: var(--panel-background);
+}
+
+/* [2026.09.17] 고친 내용: 관리자 화면 안에서는 조치 이력의 별도 상단 바를 숨기고 공통 관리자 바를 사용합니다. */
+.admin-record-page .page-header,
+.dashboard-record-page .page-header {
+  display: none;
+}
+
+/* [2026.10.01 변경] 관리자 조치 이력도 간호사 조치 이력과 같은 공통 UI 크기와 간격을 사용합니다. */
+
+/* [2026.10.01 변경] 간호사 대시보드 안의 조치 이력도 관리자 조치 이력처럼 본문 좌우 여백과 카드 간격을 맞춥니다. */
+.dashboard-record-page .page-content {
+  padding: 20px 18px 18px;
+}
+
+.dashboard-record-page .page-intro,
+.dashboard-record-page .search-form,
+.dashboard-record-page .record-panel {
+  border-radius: 9px;
+}
+
+.dashboard-record-page .search-form {
+  margin-top: 18px;
+}
+
+.dashboard-record-page .record-panel {
+  margin-top: 18px;
+}
+
+/* 대시보드 이동 */
+.dashboard-link {
+  color: inherit;
+  text-decoration: none;
+  font-size: 13.77px;
+  font-weight: 700;
+}
+
+/* 시스템 이름 */
+.hospital-name {
+  font-size: 13.08px;
+  font-weight: 500;
+}
+
+/* 현재 시각 */
+.current-time {
+  margin-left: auto;
+  font-size: 10px;
+  white-space: nowrap;
+  padding: 20px;
+}
+
+/* 로그아웃 버튼 */
+/* .logout-button {
+  width: 71.59px;
+  height: 27.53px;
+  border: 1px solid #ffffff73;
+  border-radius: 6.2px;
+  background: #ffffff1f;
+  color: white;
+  font-size: 9.64px;
+} */
+
+.logout-button:hover {
+  background: #ffffff30;
+}
+
+/* ==================================================
+   3. 본문과 제목
+   ================================================== */
+
+/* 본문 여백 */
+.page-content {
+  padding: 18.36px 19px 16px;
+}
+
+/* [9.15] 수정내용: 조치 이력은 본문 전용 스크롤을 사용하지 않고 화면 전체 스크롤을 사용합니다. */
+
+/* 패널 공통 스타일 */
+.page-intro,
+.search-form,
+.record-panel {
+  border: 1px solid var(--border-color);
+  border-radius: 8.26px;
+  background: var(--panel-background);
+}
+
+/* 제목 영역 */
+.page-intro {
+  height: 73.42px;
+  /* [9.15] 수정내용: 조치 이력 제목과 설명이 위쪽에 붙어 보이지 않도록 아래로 내립니다. */
+  padding: 15px 18.59px 8.4px;
+}
+
+/* 화면 제목 */
+.page-title {
+  margin: 0;
+  color: #2d3c34;
+  font-size: 17.9px;
+  line-height: 22px;
+}
+
+/* 제목 아래 설명 */
+.page-intro .page-description {
+  /* 안내 문구를 조금 올려 제목 카드의 아래쪽 여백을 확보합니다. */
+  margin: 4px 0 0;
+  color: #586a77;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ==================================================
+   4. 검색 영역
+   ================================================== */
+
+/* 필터 가로 배치 */
+.search-form {
+  position: relative;
+  min-height: 67.3px;
+  margin-top: 17.92px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8.26px;
+  padding: 14px 13.08px;
+  overflow: visible;
+}
+
+/* 이름 검색창 */
+.search-input {
+  width: 120px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #d1ccba;
+  border-radius: 6px;
+  background: white;
+  color: #494d45;
+}
+
+/* 검색창 안내 */
+.search-input::placeholder {
+  color: #647581;
+  opacity: 1;
+}
+
+/* 클릭 시 갈색 외곽선을 없애고 얇은 녹색 테두리만 표시합니다. */
+.search-form .search-input:focus,
+.search-form .search-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+  border-color: #7b93a5;
+}
+
+/* [2026-09-18] 추가 내용: 검색·초기화·내보내기를 같은 높이와 간격으로 유지합니다. */
+.record-search-actions {
+  display: flex;
+  align-items: center;
+  gap: 8.26px;
+  flex-shrink: 1;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.reset-button {
+  /* [2026-09-18] 고친 내용: 검색 초기화와 선택 해제를 구별하는 문구 공간을 확보합니다. */
+  min-width: 80px;
+  padding-inline: 10px;
+  height: 28px;
+  border: 1px solid #526d82;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #405a70;
+  font-weight: 600;
+}
+
+.reset-button:hover {
+  background: #edf3f7;
+}
+
+/* 검색 버튼 */
+.search-button {
+  width: 63.33px;
+  height: 28px;
+  border: 1px solid #526d82;
+  border-radius: 6px;
+  background: #526d82;
+  color: white;
+  font-weight: 600;
+}
+
+/* 검색 버튼 마우스 올림 */
+.search-button:hover:not(:disabled) {
+  background: #405a70;
+  border-color: #405a70;
+}
+
+/* 검색 버튼 누름 */
+.search-button:active {
+  background: #39576d;
+  border-color: #39576d;
+}
+
+/* 내보내기 버튼 */
+.export-button {
+  min-width: 80px;
+  height: 28px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--button-background);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--button-background);
+  font-weight: 600;
+}
+
+.export-button:hover {
+  background: #edf3f7;
+}
+
+/* 다운로드 아이콘 */
+.download-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+}
+
+/* ==================================================
+   5. 필터 버튼과 펼쳐지는 목록
+   ================================================== */
+
+/*
+ * 각 필터의 바깥 영역입니다.
+ * 버튼 너비만큼 영역이 잡히고,
+ * 펼쳐지는 목록은 이 영역의 100%를 사용합니다.
+ */
+.period-dropdown,
+.choice-dropdown {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+/* 모든 필터 버튼의 공통 디자인 */
+.period-button,
+.choice-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 28px;
+  min-height: 28px;
+  padding: 0 24px 0 9px;
+  border: 1px solid #d1ccba;
+  border-radius: 6px;
+  background-color: var(--page-background);
+  color: #494d45;
+  font: inherit;
+  font-size: 9px;
+  text-align: left;
+  cursor: pointer;
+
+  /* 동일한 아래 방향 화살표 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5 6 7.5 9 4.5' fill='none' stroke='%23494d45' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px 12px;
+}
+
+/* 기간 필터의 이전 문자 화살표는 숨깁니다. */
+.period-button > span[aria-hidden="true"] {
+  display: none;
+}
+
+/*
+ * 각 필터 너비입니다.
+ * 이 값만 바꾸면 해당 필터의 펼쳐지는 목록 너비도 함께 바뀝니다.
+ */
+
+/* 기간 */
+.period-button {
+  width: 94px;
+}
+
+/* 병실 */
+.room-button {
+  width: 90px;
+}
+
+/* 처리 상태 */
+.status-button {
+  width: 102px;
+}
+
+/* 검색 대상 */
+.target-button {
+  width: 108px;
+}
+
+/* [2026-09-18] 고친 내용: 간호사·관리자 공통 필터에서 긴 병실·위치 문구와 화살표가 겹치지 않도록 합니다. */
+.period-button,
+.choice-button {
+  width: max-content;
+  min-width: 108px;
+  height: 32px;
+  min-height: 32px;
+  padding-right: 30px;
+  white-space: nowrap;
+}
+
+.room-button {
+  min-width: 128px;
+}
+
+/* [2026-09-18] 고친 내용: 간호사·관리자 검색창과 검색·초기화·내보내기 버튼 높이를 필터에 맞춥니다. */
+.search-input,
+.record-search-actions > button {
+  height: 32px;
+  min-height: 32px;
+}
+
+/* 클릭·선택 시 추가 외곽선 제거 */
+.period-button:focus,
+.period-button:focus-visible,
+.period-button[aria-expanded="true"],
+.choice-button:focus,
+.choice-button:focus-visible,
+.choice-button[aria-expanded="true"] {
+  border-color: #d1ccba;
+  outline: none;
+  box-shadow: none;
+}
+
+/* 필터 버튼 마우스 올림 */
+.period-button:hover,
+.choice-button:hover {
+  background-color: #eeeade;
+}
+
+/* 키보드 포커스는 배경색으로 표시 */
+.period-button:focus-visible,
+.choice-button:focus-visible {
+  background-color: #e0ede5;
+}
+
+/*
+ * 펼쳐지는 목록
+ * 고정된 130px 대신 각 필터 버튼의 너비에 맞춥니다.
+ */
+.period-options,
+.choice-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  z-index: 20;
+
+  /* 핵심: 각각의 필터 너비와 동일하게 설정 */
+  width: 100%;
+  min-width: 0;
+
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px;
+  border: 1px solid #d1ccba;
+  border-radius: 6px;
+  background: var(--panel-background);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  scrollbar-width: thin;
+  scrollbar-color: #a09988 #e4e0d4;
+}
+
+/* 닫힌 목록 */
+.period-options[hidden],
+.choice-options[hidden] {
+  display: none;
+}
+
+/* 목록 안의 항목 */
+.period-options button,
+.choice-options button {
+  display: block;
+  width: 100%;
+  padding: 9px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #494d45;
+  font: inherit;
+  text-align: left;
+
+  /* 긴 항목은 잘리지 않고 줄바꿈합니다. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+/* 목록 항목의 추가 포커스 테두리 제거 */
+.period-options button:focus,
+.choice-options button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 목록의 마우스·키보드 선택 배경 */
+.period-options button:hover,
+.period-options button:focus-visible,
+.choice-options button:hover,
+.choice-options button:focus-visible {
+  background: #e0ede5;
+}
+
+/* ==================================================
+   6. 조치 이력 표
+   ================================================== */
+
+/* 기록 패널 */
+.record-panel {
+  /* [9.15] 수정내용: 기록 수에 따라 목록 영역이 아래로 자연스럽게 늘어나도록 합니다. */
+  height: auto;
+  min-height: 360px;
+  margin-top: 17.7px;
+  padding: 10px 13.08px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 표 제목 */
+.record-title {
+  /* [9.15] 수정내용: 제목과 조치 이력 목록 사이의 간격을 넓힙니다. */
+  margin: 0 0 10px;
+  color: #2d3c34;
+  font-size: 11.01px;
+  line-height: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 기록 스크롤 영역 */
+.table-scroll {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-right: 6px;
+}
+
+/* [2026.10.01 변경] 조치 이력은 스크롤 기능은 유지하되 스크롤바 UI는 화면에 보이지 않게 숨깁니다. */
+html,
+body,
+.page-content,
+.record-panel,
+.record-panel .table-scroll,
+.table-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.page-content::-webkit-scrollbar,
+.record-panel::-webkit-scrollbar,
+.record-panel .table-scroll::-webkit-scrollbar,
+.table-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* [9.15] 추가내용: 조치 이력 목록을 스크롤 대신 페이지 버튼으로 이동합니다. */
+.record-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  width: 100%;
+  margin: 12px auto 0;
+  padding: 0;
+}
+
+.record-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #d5dfe7;
+  border-radius: 5px;
+  background: #fff;
+  color: #586a77;
+  font-size: 10px;
+  line-height: 1;
+  text-align: center;
+}
+
+.record-pagination button:hover,
+.record-pagination button[aria-current="page"] {
+  border-color: #526d82;
+  background: #526d82;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* 표 */
+.record-table {
+  width: 100%;
+  min-width: 850px;
+  table-layout: fixed;
+  border-spacing: 0 5.51px;
+  font-size: 8.95px;
+  text-align: center;
+}
+
+/* [수정] 기존 비율을 최대한 유지하며 기록 내용까지 총 100%로 배분합니다. */
+.time-column { width: 13.6%; }
+.room-column { width: 6.7%; }
+.patient-column { width: 12.8%; }
+.type-column { width: 15.8%; }
+.staff-column { width: 14.7%; }
+.status-column { width: 9.7%; }
+.complete-column { width: 19.7%; }
+/* 표 머리글 */
+.record-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 30.29px;
+  padding: 4px;
+  background: var(--header-background);
+  color: white;
+  font-weight: 600;
+}
+
+/* 머리글 양쪽 모서리 */
+.record-table th:first-child {
+  border-radius: 5.51px 0 0 5.51px;
+}
+
+.record-table th:last-child {
+  border-radius: 0 5.51px 5.51px 0;
+}
+
+/* 기록 셀 */
+.record-table td {
+  height: 35.79px;
+  padding: 4px;
+  border-top: 1px solid #00000024;
+  border-bottom: 1px solid #00000024;
+  background: white;
+  overflow-wrap: anywhere;
+}
+
+/* 기록 행 양쪽 테두리 */
+.record-table td:first-child {
+  border-left: 1px solid #00000024;
+  border-radius: 5.51px 0 0 5.51px;
+}
+
+.record-table td:last-child {
+  border-right: 1px solid #00000024;
+  border-radius: 0 5.51px 5.51px 0;
+}
+
+/* 완료 여부와 관계없이 기록 배경을 흰색으로 표시합니다. */
+.record-table .completed-row td {
+  background: #fff;
+}
+
+/* 알림 유형 배지 */
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 63.33px;
+  height: 19.27px;
+  border-radius: 999px;
+  font-size: 8.26px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 낙상 감지 */
+.fall-badge {
+  background: #e8bfb8;
+  /* [2026.10.01 변경] 조치 이력의 낙상 감지 글씨는 표의 일반 글씨 색과 동일하게 맞춥니다. */
+  color: var(--text-color);
+}
+
+/* 검색 결과 없음·조회 실패 */
+.record-table .empty-message {
+  height: 100px;
+  color: #586a77;
+}
+
+/* ==================================================
+   7. 기간 검색 달력
+   ================================================== */
+
+/* 달력 팝업 */
+.calendar-dialog {
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--panel-background);
+  color: var(--text-color);
+  font-size: 13px;
+}
+
+/* 달력 뒤 배경 */
+.calendar-dialog::backdrop {
+  background: rgb(0 0 0 / 30%);
+}
+
+/* 월 이동 영역 */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* 달력 공통 버튼 */
+.calendar-dialog button {
+  padding: 6px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--page-background);
+  color: var(--text-color);
+}
+
+/* 선택 안내 */
+#calendar-help {
+  min-height: 32px;
+  margin: 0 0 12px;
+  color: #586a77;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* 요일과 날짜 */
+.calendar-week,
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+}
+
+/* 요일 제목 */
+.calendar-week {
+  margin-bottom: 8px;
+  color: #586a77;
+}
+
+/* 날짜 버튼 */
+.calendar-days button {
+  height: 32px;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+/* 기간 사이 날짜 */
+.calendar-days button.in-range {
+  background: #e0ede5;
+}
+
+/* 시작일과 종료일 */
+.calendar-days button[aria-pressed="true"] {
+  background: var(--button-background);
+  color: white;
+}
+
+/* 하단 버튼 영역 */
+.calendar-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* 확인 버튼 */
+#calendar-confirm {
+  background: var(--button-background);
+  color: white;
+}
+
+/* 확인 불가 상태 */
+#calendar-confirm:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==================================================
+   8. 내보내기 팝업
+   ================================================== */
+
+/* 파일 형식·기간 선택 팝업 */
+.export-dialog {
+  width: 500px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  background: var(--panel-background);
+  color: var(--text-color);
+  font-size: 13px;
+  box-shadow: 0 12px 36px rgb(0 0 0 / 18%);
+}
+
+/* 팝업 뒤 배경 */
+.export-dialog::backdrop {
+  background: rgb(0 0 0 / 30%);
+}
+
+/* 폼 기본 여백 */
+.export-form {
+  margin: 0;
+}
+
+/* 제목과 닫기 버튼 */
+.export-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.export-header h2 {
+  margin: 0;
+  color: #526d82;
+  font-size: 19px;
+}
+
+.export-header p {
+  margin: 7px 0 0;
+  color: #647581;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* 닫기 버튼 */
+.export-close {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #586a77;
+  font-size: 24px;
+}
+
+.export-close:hover {
+  background: #edf3f7;
+}
+
+/* 파일 형식과 기간 구역 */
+.export-section {
+  min-width: 0;
+  margin: 24px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.export-section legend {
+  margin-bottom: 10px;
+  padding: 0;
+  color: #526d82;
+  font-weight: 700;
+}
+
+/* 파일 형식 카드 배치 */
+.export-formats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+/* 파일 형식 카드 */
+.export-format {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 12px 9px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
+
+/* 선택한 파일 형식 */
+.export-format:has(input:checked) {
+  border-color: #526d82;
+  background: #e9f1eb;
+}
+
+/* 라디오 버튼 */
+.export-format input {
+  margin: 2px 0 0;
+  accent-color: #526d82;
+}
+
+.export-format strong,
+.export-format small {
+  display: block;
+}
+
+/* 형식 이름 */
+.export-format strong {
+  color: #526d82;
+  font-size: 13px;
+}
+
+/* 형식 설명 */
+.export-format small {
+  margin-top: 5px;
+  color: #647581;
+  font-size: 10px;
+}
+
+/* 조건과 건수 */
+.export-summary {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #edf3f7;
+}
+
+.export-summary p {
+  margin: 0 0 7px;
+  color: #586a77;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.export-summary strong {
+  color: #526d82;
+}
+
+/* 형식 안내 */
+.export-note {
+  margin: 12px 0 0;
+  color: #647581;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* 오류 안내 */
+.export-error {
+  margin: 8px 0 0;
+  color: #a33b32;
+  font-size: 12px;
+}
+
+/* 하단 취소·내보내기 */
+.export-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.export-cancel,
+.export-submit {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+}
+
+/* 취소 버튼 */
+.export-cancel {
+  background: white;
+  color: #586a77;
+}
+
+/* 실행 버튼 */
+.export-submit {
+  border-color: #526d82;
+  background: #526d82;
+  color: white;
+}
+
+.export-submit:hover:not(:disabled) {
+  background: #405a70;
+}
+
+/* 내보내기 불가 상태 */
+.export-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==================================================
+   9. 접근성
+   ================================================== */
+
+/* 화면에는 숨기고 화면 읽기 프로그램에만 제공합니다. */
+.screen-reader-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ==================================================
+   10. 작은 화면 대응
+   ================================================== */
+
+@media (max-width: 700px) {
+  /* 상단 메뉴 줄바꿈 */
+  .page-header {
+    padding: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-link,
+  .hospital-name {
+    font-size: 12px;
+  }
+
+  .current-time {
+    margin-left: 0;
+  }
+
+  .logout-button {
+    margin-left: auto;
+  }
+
+  /* 본문 여백 */
+  .page-content {
+    padding: 14px 10px;
+  }
+
+  /* 제목 설명 줄바꿈 허용 */
+  .page-intro {
+    height: auto;
+    min-height: 73px;
+  }
+
+  .page-description {
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  /* 필터와 버튼 높이 */
+  .period-button,
+  .choice-button,
+  .search-input,
+  .search-button,
+  .reset-button,
+  .record-search-actions > button,
+  .export-button {
+    height: 36px;
+    min-height: 36px;
+  }
+
+  /* 검색 입력창이 남은 공간 사용 */
+  .search-input {
+    flex: 1;
+    min-width: 130px;
+  }
+
+  /* 표 패널 여백 */
+  .record-panel {
+    padding-inline: 9px;
+  }
+}
+
+@media (max-width: 420px) {
+  /* 내보내기 팝업 여백 */
+  .export-dialog {
+    padding: 18px;
+  }
+
+  /* 파일 형식 카드를 세로로 배치 */
+  .export-formats {
+    grid-template-columns: 1fr;
+  }
+
+  .export-format {
+    align-items: center;
+  }
+
+  .export-format small {
+    margin-top: 3px;
+  }
+}
+/* 추가: 표가 화면보다 넓어지면 가로 스크롤 허용 */
+.table-scroll {
+  overflow-x: auto;
+}
+
+/* [수정] 마지막 7%에 기록 내용 아이콘을 배치합니다. */
+.record-table .content-column {
+  width: 7%;
+}
+
+/* [2026-09-18] 추가 내용: 선택 열을 포함해 너비를 배분하고 두 계정에서 같은 체크박스를 사용합니다. */
+.record-table .selection-column { width: 4%; }
+.record-table .time-column { width: 14%; }
+.record-table .room-column { width: 12%; }
+.record-table .patient-column { width: 10%; }
+.record-table .type-column { width: 13%; }
+.record-table .staff-column { width: 10%; }
+.record-table .status-column { width: 9%; }
+.record-table .complete-column { width: 19%; }
+.record-table .content-column { width: 9%; }
+.record-table .record-selection-cell { text-align: center; vertical-align: middle; }
+.record-checkbox { width: 16px; height: 16px; margin: 0; vertical-align: middle; accent-color: #526d82; cursor: pointer; }
+.record-checkbox:disabled { cursor: default; }
+.record-search-actions > button { flex-shrink: 0; white-space: nowrap; }
+
+/* [2026.10.01 변경] 발생 시각 열은 표 전체와 같은 글꼴을 쓰고, 본문은 부드러운 짙은 회색으로 맞춥니다. */
+.record-table .time-column {
+  font-family: inherit;
+  font-weight: 700;
+  color: #fff;
+}
+
+.record-table td:nth-child(2) {
+  font-family: inherit;
+  font-weight: 400;
+  color: var(--text-color);
+}
+
+/* [2026-09-18] 추가 내용: 검색 조건과 별개로 선택한 기록을 확인하고 해제하는 공통 도구입니다. */
+.record-selection-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #ccd7c9;
+  border-radius: 6px;
+  background: #edf3f7;
+}
+.record-selection-toolbar button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid #7b93a5;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #39576d;
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.record-selection-toolbar button[aria-pressed="true"] { background: #526d82; color: white; }
+.record-selection-toolbar button:disabled { opacity: .5; cursor: default; }
+#record-selection-summary { color: #53634f; font-size: 11px; }
+.search-input { width: 190px; }
+
+/* 추가: 제목과 아이콘을 같은 열의 가운데에 정렬 */
+.record-table .record-content-heading,
+.record-table .record-content-cell {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* [수정] 기존 행 높이 35.79px 안에 들어가도록 버튼을 26px로 조정합니다. */
+.record-content-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  /* [수정] 네모 테두리와 배경을 제거하고 문서 아이콘만 표시합니다. */
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  color: #64748b;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+/* [추가] 버튼 안의 문서 아이콘 크기 */
+.record-content-button svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* [수정] 마우스를 올려도 배경 없이 아이콘 색상만 진하게 표시합니다. */
+.record-content-button:hover {
+  background: transparent;
+  color: #334155;
+}
+
+/* [수정] 키보드로 선택할 때만 포커스 표시를 유지합니다. */
+.record-content-button:focus-visible {
+  outline: 2px solid #64748b;
+  outline-offset: 2px;
+}
+/* 기록 내용이 없는 행 */
+.record-content-empty {
+  color: #94a3b8;
+}
+
+/* 추가: 기록 내용 조회 팝업 */
+.record-content-dialog {
+  box-sizing: border-box;
+  width: min(520px, calc(100% - 32px));
+  max-height: 80vh;
+  margin: auto;
+  padding: 24px;
+  overflow-y: auto;
+  border: none;
+  border-radius: 16px;
+  background: #fff;
+  color: #1e293b;
+  box-shadow: 0 20px 60px rgb(15 23 42 / 20%);
+}
+
+/* 팝업 뒤 배경 */
+.record-content-dialog::backdrop {
+  /* [9.15] 수정내용: 모달은 돋보이되 뒤 화면은 아주 옅게만 흐리게 표시합니다. */
+  background: rgb(15 23 42 / 12%);
+}
+
+.record-content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.record-content-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.record-content-header form {
+  margin: 0;
+}
+
+.record-content-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.record-content-close:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* 작성할 때 입력한 줄바꿈을 유지하고 긴 글도 줄바꿈 */
+.record-content-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* 비활성화 관리 화면 기준으로 돌아가기 링크의 글꼴과 hover 효과를 통일합니다. */
+.page-header .dashboard-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin: 0; padding: 8px 10px; border-radius: 7px;
+  font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+  font-size: 12px; font-weight: 400; line-height: normal;
+  color: #e1e9df; background: transparent;
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+}
+.page-header .dashboard-link:hover { color: #fff; background: transparent; text-decoration: none; }
+.page-header .dashboard-link:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.page-header .dashboard-link svg { flex-shrink: 0; width: 16px; height: 16px; stroke-width: 1.8; }
+@media (max-width: 800px) {
+  .page-header .dashboard-link { padding: 4px 0; font-size: 11px; }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */
+
+/* [2026.09.29 변경] PC·노트북의 세로 해상도 차이에도 조치 이력 패널이 남은 높이를 사용하고, 표 영역에서만 스크롤되도록 구성합니다. */
+@media (min-width:1000px) {
+  html,
+  body { min-height:100%; }
+  /* [2026.09.29 변경] 조치 이력은 휠·터치패드 스크롤을 유지하고, 화면 스크롤바는 표시하지 않습니다. */
+  body { min-height:100dvh; display:flex; flex-direction:column; scrollbar-width:none; -ms-overflow-style:none; }
+  body::-webkit-scrollbar { display:none; }
+  .page-header { flex:0 0 auto; }
+  .page-content {
+    display:flex;
+    min-height:0;
+    flex:1 1 auto;
+    flex-direction:column;
+  }
+  .record-panel {
+    display:flex;
+    min-height:0;
+    flex:1 1 auto;
+    flex-direction:column;
+  }
+  .record-panel .table-scroll {
+    min-height:0;
+    flex:1 1 auto;
+    overflow-y:auto;
+    /* [2026.09.29 변경] 표 영역도 스크롤은 가능하지만 별도 스크롤바 UI는 노출하지 않습니다. */
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+  }
+  .record-panel .table-scroll::-webkit-scrollbar { display:none; }
+  .record-panel .record-pagination { flex:0 0 auto; margin-top:auto; }
+}

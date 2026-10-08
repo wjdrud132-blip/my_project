@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+    [2026.09.30 추가] 간병인(명세 TB_CAREGIVER). 병실은 LOCATION_ID(TB_LOCATION), 사용 여부는 USE_YN(Y/N).
+    관리자 화면의 userId 는 'cg:' + CAREGIVER_ID 다(CaregiverIds). 병실 번호는 위치 이름('302호')의 숫자다.
+-->
+<mapper namespace="com.aio.hospitalsafety.mapper.admin.CaregiverMapper">
+
+    <select id="findCaregiverUsers" resultType="com.aio.hospitalsafety.dto.UserDto">
+        SELECT
+            CONCAT('cg:', c.caregiver_id) AS user_id,
+            c.care_nm AS name,
+            COALESCE(w.ward_nm, '미배정') AS ward,
+            'APPROVED' AS status
+        FROM tb_caregiver c
+        LEFT JOIN tb_location l
+          ON l.location_id = c.location_id
+        LEFT JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE c.hosp_div_id = #{hospitalDomain}
+          AND c.use_yn = 'Y'
+        ORDER BY c.crt_dt DESC, c.caregiver_id DESC
+    </select>
+
+    <select id="findCaregivers" resultType="com.aio.hospitalsafety.dto.admin.ApprovedUserResponse">
+        SELECT
+            CONCAT('cg:', c.caregiver_id) AS user_id,
+            c.care_nm AS user_name,
+            'APPROVED' AS auth_status,
+            l.ward_id,
+            w.ward_nm AS ward_name,
+            c.phone_no AS phone_number,
+            NULLIF(REGEXP_REPLACE(l.location_nm, '[^0-9]', '', 'g'), '') AS room_number,
+            CAST(NULL AS VARCHAR) AS assigned_rooms
+        FROM tb_caregiver c
+        LEFT JOIN tb_location l
+          ON l.location_id = c.location_id
+        LEFT JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE c.hosp_div_id = #{hospitalDomain}
+          AND c.use_yn = 'Y'
+        <if test="keyword != null and keyword != ''">
+          AND LOWER(c.care_nm) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+        </if>
+        ORDER BY c.care_nm, c.caregiver_id
+    </select>
+
+    <select id="findInactiveCaregivers" resultType="com.aio.hospitalsafety.dto.admin.InactiveUserResponse">
+        SELECT
+            CONCAT('cg:', c.caregiver_id) AS user_id,
+            c.care_nm AS user_name,
+            'INACTIVE' AS auth_status,
+            l.ward_id,
+            w.ward_nm AS ward_name,
+            c.upd_dt AS deactivated_at,
+            NULLIF(REGEXP_REPLACE(l.location_nm, '[^0-9]', '', 'g'), '') AS room_number
+        FROM tb_caregiver c
+        LEFT JOIN tb_location l
+          ON l.location_id = c.location_id
+        LEFT JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE c.hosp_div_id = #{hospitalDomain}
+          AND c.use_yn = 'N'
+        ORDER BY c.upd_dt DESC, c.caregiver_id
+    </select>
+
+    <select id="findCaregiver" resultType="com.aio.hospitalsafety.dto.admin.CaregiverRow">
+        SELECT
+            caregiver_id,
+            location_id,
+            phone_no AS phone_number,
+            use_yn
+        FROM tb_caregiver
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND caregiver_id = #{caregiverId}
+    </select>
+
+    <!-- 병동 이름이 '3병동'(띄어쓰기 무시) 모양인 병동의 병실 위치 -->
+    <select id="findRoomLocationId" resultType="java.lang.Long">
+        SELECT l.location_id
+        FROM tb_location l
+        JOIN tb_ward w
+          ON w.ward_id = l.ward_id
+        WHERE w.hosp_div_id = #{hospitalDomain}
+          AND REPLACE(w.ward_nm, ' ', '') = CONCAT(#{wardNumber}, '병동')
+          AND l.location_type = 'ROOM'
+          AND l.location_nm = #{locationName}
+        ORDER BY l.location_id
+        LIMIT 1
+    </select>
+
+    <select id="findLocationName" resultType="java.lang.String">
+        SELECT location_nm
+        FROM tb_location
+        WHERE location_id = #{locationId,jdbcType=BIGINT}
+    </select>
+
+    <select id="findWardIdByLocation" resultType="java.lang.Long">
+        SELECT ward_id
+        FROM tb_location
+        WHERE location_id = #{locationId,jdbcType=BIGINT}
+    </select>
+
+    <select id="existsActiveCaregiverAt" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_caregiver
+            WHERE location_id = #{locationId,jdbcType=BIGINT}
+              AND use_yn = 'Y'
+            <if test="caregiverId != null">
+              AND caregiver_id &lt;&gt; #{caregiverId}
+            </if>
+        )
+    </select>
+
+    <select id="existsActiveCaregiverPhone" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_caregiver
+            WHERE hosp_div_id = #{hospitalDomain}
+              AND phone_no = #{phoneNumber}
+              AND use_yn = 'Y'
+            <if test="caregiverId != null">
+              AND caregiver_id &lt;&gt; #{caregiverId}
+            </if>
+        )
+    </select>
+
+    <insert id="insertCaregiver" useGeneratedKeys="true" keyProperty="caregiverId" keyColumn="caregiver_id">
+        INSERT INTO tb_caregiver (care_nm, hosp_div_id, location_id, phone_no, use_yn, crt_dt, upd_dt)
+        VALUES (#{caregiverName}, #{hospitalDomain}, #{locationId,jdbcType=BIGINT}, #{phoneNumber}, 'Y', NOW(), NOW())
+    </insert>
+
+    <!-- 확정 낙상 SMS 는 이 병실 위치로 담당 간병인을 찾는다(SmsMapper.findRoomCaregivers) -->
+    <update id="updateCaregiverLocation">
+        UPDATE tb_caregiver
+        SET location_id = #{locationId,jdbcType=BIGINT},
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND caregiver_id = #{caregiverId}
+          AND use_yn = 'Y'
+    </update>
+
+    <update id="updateCaregiverPhone">
+        UPDATE tb_caregiver
+        SET phone_no = #{phoneNumber},
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND caregiver_id = #{caregiverId}
+          AND use_yn = 'Y'
+    </update>
+
+    <update id="updateCaregiverUse">
+        UPDATE tb_caregiver
+        SET use_yn = #{toUseYn},
+            upd_dt = NOW()
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND caregiver_id = #{caregiverId}
+          AND use_yn = #{fromUseYn}
+    </update>
+
+    <delete id="deleteInactiveCaregiver">
+        DELETE FROM tb_caregiver
+        WHERE hosp_div_id = #{hospitalDomain}
+          AND caregiver_id = #{caregiverId}
+          AND use_yn = 'N'
+    </delete>
+
+</mapper>

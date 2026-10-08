@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- [2026.09.29 변경] 간호사·관리자 공통 화면 제목을 낙상 조치 이력으로 표시합니다. -->
+  <title th:text="${adminRecordPage} ? '관리자 낙상 조치 이력 | 병동 통합 관제' : '낙상 조치 이력 | 병동 통합 관제'">낙상 조치 이력 | 병동 통합 관제</title>
+
+  <!-- Excel 파일 생성 라이브러리 -->
+  <script
+    src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"
+    defer
+  ></script>
+
+  <!-- [2026.09.20] 독립 조치 이력 화면에도 공통 로고를 표시합니다. -->
+  <link rel="stylesheet" href="../../../static/css/alleyes-brand.css?v=record-label-20260920" th:href="@{/css/alleyes-brand.css(v='record-label-20260920')}">
+  <!-- CSS 연결 -->
+  <link
+    rel="stylesheet"
+    href="../../../static/css/record/record.css?v=record-description-spacing-20261001"
+    th:href="@{/css/record/record.css(v='record-description-spacing-20261001')}"
+  >
+  <!-- [09.13]추가내용: 기록 필터와 내보내기 스타일을 기능별 CSS로 연결합니다. -->
+  <link rel="stylesheet" href="../../../static/css/record/record-filter.css" th:href="@{/css/record/record-filter.css}">
+  <link rel="stylesheet" href="../../../static/css/record/record-export.css" th:href="@{/css/record/record-export.css}">
+
+  <!-- JS 연결 -->
+  <script
+    src="../../../static/JS/record/record-filter.js"
+    th:src="@{/JS/record/record-filter.js}"
+    defer
+  ></script>
+  <script
+    src="../../../static/JS/record/record-export.js"
+    th:src="@{/JS/record/record-export.js}"
+    defer
+  ></script>
+  <script
+    src="../../../static/JS/record/record.js?v=record-pagination-align-20261001"
+    th:src="@{/JS/record/record.js(v='record-pagination-align-20261001')}"
+    defer
+  ></script>
+    <!-- [2026.09.19] 공통 블루 그레이 테마를 마지막에 적용합니다. -->
+    <link rel="stylesheet" href="../../../static/css/alleyes-theme.css?v=topbar-font-up-20261001" th:href="@{/css/alleyes-theme.css(v='topbar-font-up-20261001')}">
+</head>
+
+<!-- [2026.09.17] 고친 내용: 관리자 내부 조치 이력에서는 관리자 공통 상단 바만 보이게 구분합니다. -->
+<body th:classappend="${adminRecordPage} ? ' admin-record-page' : (${embeddedRecordPage} ? ' dashboard-record-page' : '')">
+  <!-- 공통 상단 메뉴 -->
+  <header class="page-header">
+    <!-- 대시보드 이동 -->
+    <a
+      class="dashboard-link alleyes-record-link" aria-label="ALLEYES 대시보드로 이동"
+      href="../dashboard/dashboard.html"
+      th:href="${adminRecordPage} ? @{/admin} : @{/dashboard}"
+      th:target="${adminRecordPage} ? '_top' : null"
+    >
+      <span class="alleyes-brand"><img class="alleyes-logo" src="../../../static/image/brand/alleyes-logo-blue-peach-gradient.svg" th:src="@{/image/brand/alleyes-logo-blue-peach-gradient.svg}" alt="" width="44" height="42">ALLEYES</span>
+    </a>
+
+    <!-- 병동 이름 -->
+    <span class="hospital-name">병동 통합 관제</span>
+
+    <!-- JS에서 현재 시각을 표시합니다. -->
+    <time
+      class="current-time"
+      id="current-time"
+    ></time>
+
+    <!-- [수정] 요청에 따라 로그아웃 버튼을 제거했습니다. -->
+  </header>
+
+  <!--
+    백엔드 API 주소입니다.
+    서버로 연 화면(data-server-mode)은
+    이 주소로 조치 이력을 조회합니다(2026.09.27).
+  -->
+  <main
+    class="page-content"
+    id="history-page"
+    data-api-url="/api/action-history"
+    th:attr="data-api-url=@{/api/action-history},data-server-mode='true'"
+  >
+    <!-- 화면 제목 -->
+    <section
+      class="page-intro"
+      aria-labelledby="page-title"
+    >
+      <h1
+        class="page-title"
+        id="page-title"
+      >
+        낙상 조치 이력
+      </h1>
+
+      <p class="page-description">
+        낙상 감지 알림의 발생부터 대응 완료까지 전체 이력을 확인합니다.
+      </p>
+    </section>
+
+    <!-- 검색 조건 영역 -->
+    <form
+      class="search-form"
+      id="search-form"
+      aria-label="낙상 조치 이력 검색"
+    >
+      <!-- 기간 필터 -->
+      <div
+        class="period-dropdown"
+        id="period-dropdown"
+      >
+        <button
+          class="period-button"
+          id="period-button"
+          type="button"
+          aria-label="조회 기간"
+          aria-expanded="false"
+          aria-controls="period-options"
+        ><svg class="record-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4m8-4v4M4 10h16"/></svg>
+          <span id="period-label">
+            전체 기간
+          </span>
+
+          <span aria-hidden="true">
+            ▾
+          </span>
+        </button>
+
+        <!-- JS에서 검색에 사용하는 실제 기간 값 -->
+        <input
+          type="hidden"
+          id="period-filter"
+          name="period"
+          value="all"
+        >
+
+        <!-- 기간 선택 목록 -->
+        <div
+          class="period-options"
+          id="period-options"
+          hidden
+        >
+          <button
+            type="button"
+            data-period="all"
+          >
+            전체 기간
+          </button>
+
+          <button
+            type="button"
+            data-period="7"
+          >
+            최근 7일
+          </button>
+
+          <button
+            type="button"
+            data-period="30"
+          >
+            최근 30일
+          </button>
+
+          <button
+            type="button"
+            data-period="custom"
+          >
+            직접 설정
+          </button>
+        </div>
+      </div>
+
+      <!-- [2026-09-18] 고친 내용: 복도 감지 위치도 포함하므로 필터를 병실·위치로 표시합니다. -->
+      <div
+        class="choice-dropdown"
+        id="room-dropdown"
+      >
+        <button
+          class="choice-button room-button"
+          type="button"
+          aria-label="병실·위치"
+          aria-expanded="false"
+          aria-controls="room-options"
+        ><svg class="record-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V3h12v18M2 21h20M16 10h4v11M8 7h4m-4 4h4m-4 4h4"/></svg>
+          <span class="choice-label">
+            전체 병실·위치
+          </span>
+        </button>
+
+        <!-- JS에서 선택된 병실 값을 저장합니다. -->
+        <input
+          type="hidden"
+          id="room-filter"
+          name="room"
+          value="all"
+        >
+
+        <!-- JS에서 전체 병실 버튼을 추가합니다. -->
+        <div
+          class="choice-options"
+          id="room-options"
+          hidden
+        ></div>
+      </div>
+
+      <!-- 처리 상태 필터 -->
+      <div
+        class="choice-dropdown"
+        id="status-dropdown"
+      >
+        <button
+          class="choice-button status-button"
+          type="button"
+          aria-label="처리 상태"
+          aria-expanded="false"
+          aria-controls="status-options"
+        ><svg class="record-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H6V3h1m7 0v5h4M9 12h6m-6 4h6"/></svg>
+          <span class="choice-label">
+            처리 상태 전체
+          </span>
+        </button>
+
+        <!-- JS에서 선택된 상태 값을 저장합니다. -->
+        <input
+          type="hidden"
+          id="status-filter"
+          name="status"
+          value="all"
+        >
+
+        <!-- 처리 상태 목록 -->
+        <div
+          class="choice-options"
+          id="status-options"
+          hidden
+        >
+          <button
+            type="button"
+            data-value="all"
+          >
+            처리 상태 전체
+          </button>
+
+          <button
+            type="button"
+            data-value="미확인"
+          >
+            미확인
+          </button>
+
+          <button
+            type="button"
+            data-value="완료"
+          >
+            완료
+          </button>
+        </div>
+      </div>
+
+      <!-- 검색 대상 필터 -->
+      <div
+        class="choice-dropdown"
+        id="target-dropdown"
+      >
+        <button
+          class="choice-button target-button"
+          type="button"
+          aria-label="검색 대상"
+          aria-expanded="false"
+          aria-controls="target-options"
+        ><svg class="record-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="7" r="3"/><path d="M4 20v-2a6 6 0 0 1 12 0v2m2-12h4m-4 4h4"/></svg>
+          <span class="choice-label">
+            검색 대상 · 전체
+          </span>
+        </button>
+
+        <!-- JS에서 선택된 검색 대상을 저장합니다. -->
+        <input
+          type="hidden"
+          id="target-filter"
+          name="target"
+          value="all"
+        >
+
+        <!-- 검색 대상 목록 -->
+        <div
+          class="choice-options"
+          id="target-options"
+          hidden
+        >
+          <button
+            type="button"
+            data-value="all"
+          >
+            검색 대상 · 전체
+          </button>
+
+          <button
+            type="button"
+            data-value="patient"
+          >
+            환자명
+          </button>
+
+          <button
+            type="button"
+            data-value="staff"
+          >
+            담당자
+          </button>
+        </div>
+      </div>
+
+      <!-- 이름 검색 -->
+      <label
+        class="screen-reader-only"
+        for="search-input"
+      >
+        이름 검색
+      </label>
+
+      <input
+        class="search-input"
+        id="search-input"
+        name="keyword"
+        type="text"
+        placeholder="이름 또는 초성 입력 (예: 김, ㄱ)"
+        autocomplete="off"
+      >
+
+      <!-- [2026-09-18] 추가 내용: 검색·초기화·내보내기 버튼을 한 그룹으로 정렬합니다. -->
+      <div class="record-search-actions">
+      <!-- 검색 버튼 -->
+      <button
+        class="search-button"
+        type="submit"
+      >
+        검색
+      </button>
+
+      <button class="reset-button" id="search-reset" type="button">검색 초기화</button>
+
+      <!-- 내보내기 팝업을 여는 버튼 -->
+      <button
+        class="export-button"
+        id="export-button"
+        type="button"
+      >
+        <!-- 별도 이미지 파일이 필요 없는 다운로드 아이콘 -->
+        <svg
+          class="download-icon"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <!-- 아래 방향 화살표 -->
+          <path d="M12 3v12M7 10l5 5 5-5"></path>
+
+          <!-- 다운로드 받침 -->
+          <path d="M5 16v4h14v-4"></path>
+        </svg>
+
+        <!-- [2026-09-18] 추가 내용: 선택한 기록 수를 내보내기 버튼에 표시합니다. -->
+        <span id="export-button-label">내보내기</span>
+      </button>
+      </div>
+    </form>
+
+    <!-- [2026.09.29 변경] 확정 낙상 이력만 다루는 표임을 제목으로 명확히 표시합니다. -->
+    <section
+      class="record-panel"
+      aria-labelledby="record-title"
+    >
+      <h2
+        class="record-title"
+        id="record-title"
+      >
+        전체 낙상 조치 이력
+      </h2>
+
+      <!-- [2026-09-18] 추가 내용: 검색과 별개로 선택을 유지하고 모아보기·선택 해제를 제공합니다. -->
+      <div class="record-selection-toolbar">
+        <button type="button" id="record-selected-view" aria-pressed="false">선택한 0건 모아보기</button>
+        <button type="button" id="record-clear-selection" disabled>선택 해제</button>
+        <span id="record-selection-summary" role="status" aria-live="polite">검색 초기화 후에도 선택한 기록은 유지됩니다.</span>
+      </div>
+      <!-- 기록이 많으면 실제 스크롤이 표시됩니다. -->
+      <div
+        class="table-scroll"
+        tabindex="0"
+        role="region"
+        aria-label="전체 낙상 조치 이력 표"
+      >
+        <table class="record-table">
+          <!-- 각 열의 너비는 CSS에서 지정합니다. -->
+          <colgroup>
+            <!-- [2026-09-18] 추가 내용: 현재 페이지 및 개별 기록 선택 열입니다. -->
+            <col class="selection-column">
+            <col class="time-column">
+            <col class="room-column">
+            <col class="patient-column">
+            <col class="type-column">
+            <col class="staff-column">
+            <col class="status-column">
+            <col class="complete-column">
+            <!-- [추가] 기록 내용 아이콘 열 -->
+            <col class="content-column">
+          </colgroup>
+
+          <!-- 표 머리글 -->
+          <thead>
+            <tr>
+              <th scope="col" class="record-selection-cell"><input type="checkbox" id="record-select-page" class="record-checkbox" aria-label="현재 페이지 전체 선택" title="현재 페이지 전체 선택" disabled></th>
+              <th scope="col">발생 시각</th>
+              <!-- [2026-09-18] 고친 내용: 발생 위치 열 제목을 병실·위치로 변경합니다. -->
+              <th scope="col">병실·위치</th>
+              <th scope="col">환자명</th>
+              <th scope="col">알림 유형</th>
+              <th scope="col">담당자</th>
+              <th scope="col">처리 상태</th>
+              <th scope="col">완료 시각</th>
+              <!-- [추가] 완료 시각 오른쪽 기록 내용 -->
+              <!-- [2026-09-18] 고친 내용: 간호사·관리자 공통 열 제목을 조치 내용으로 변경합니다. -->
+              <th scope="col" class="record-content-heading">조치 내용</th>
+            </tr>
+          </thead>
+
+          <!-- JS에서 기록을 추가합니다. -->
+          <tbody id="record-list"></tbody>
+        </table>
+      </div>
+
+      <!-- [9.15] 추가내용: 조치 이력을 페이지 단위로 이동합니다. -->
+      <nav
+        class="record-pagination"
+        id="record-pagination"
+        aria-label="낙상 조치 이력 페이지"
+      ></nav>
+    </section>
+
+    <!-- 검색 결과 안내 -->
+    <p
+      class="screen-reader-only"
+      id="result-message"
+      role="status"
+      aria-live="polite"
+    ></p>
+
+    <!-- JS가 꺼져 있을 때 표시합니다. -->
+    <noscript>
+      낙상 조치 이력을 표시하려면 JavaScript를 활성화해주세요.
+    </noscript>
+  </main>
+
+  <!-- 화면 검색용 기간 달력 -->
+  <dialog
+    class="calendar-dialog"
+    id="calendar-dialog"
+    aria-label="조회 기간 선택"
+  >
+    <!-- 이전 달·현재 달·다음 달 -->
+    <div class="calendar-header">
+      <button
+        id="previous-month"
+        type="button"
+        aria-label="이전 달"
+      >
+        ‹
+      </button>
+
+      <strong
+        id="calendar-month"
+        aria-live="polite"
+      ></strong>
+
+      <button
+        id="next-month"
+        type="button"
+        aria-label="다음 달"
+      >
+        ›
+      </button>
+    </div>
+
+    <!-- 선택 중인 기간 안내 -->
+    <p
+      id="calendar-help"
+      aria-live="polite"
+    >
+      시작일과 종료일을 차례로 선택하세요.
+    </p>
+
+    <!-- 요일 -->
+    <div
+      class="calendar-week"
+      aria-hidden="true"
+    >
+      <span>일</span>
+      <span>월</span>
+      <span>화</span>
+      <span>수</span>
+      <span>목</span>
+      <span>금</span>
+      <span>토</span>
+    </div>
+
+    <!-- JS에서 날짜 버튼을 추가합니다. -->
+    <div
+      class="calendar-days"
+      id="calendar-days"
+    ></div>
+
+    <!-- 달력 하단 버튼 -->
+    <div class="calendar-actions">
+      <button
+        id="calendar-cancel"
+        type="button"
+      >
+        취소
+      </button>
+
+      <button
+        id="calendar-confirm"
+        type="button"
+        disabled
+      >
+        확인
+      </button>
+    </div>
+  </dialog>
+
+  <!-- 현재 필터 결과의 파일 형식 선택 팝업 -->
+  <dialog
+    class="export-dialog"
+    id="export-dialog"
+    aria-labelledby="export-title"
+  >
+    <form
+      id="export-form"
+      class="export-form"
+    >
+      <!-- 팝업 제목 -->
+      <header class="export-header">
+        <div>
+          <h2 id="export-title">
+            낙상 조치 이력 내보내기
+          </h2>
+
+          <p>
+        <!-- [2026-09-18] 고친 내용: 선택한 기록이 없을 때만 검색 결과 전체를 내보냅니다. -->
+        선택한 기록을 저장합니다. 선택하지 않으면 검색 결과 전체를 저장합니다.
+          </p>
+        </div>
+
+        <!-- 팝업 닫기 -->
+        <button
+          class="export-close"
+          id="export-close"
+          type="button"
+          aria-label="내보내기 닫기"
+        >
+          ×
+        </button>
+      </header>
+
+      <!-- 파일 형식만 선택합니다. -->
+      <fieldset class="export-section">
+        <legend>
+          파일 형식
+        </legend>
+
+        <div class="export-formats">
+          <!-- Excel -->
+          <label class="export-format">
+            <input
+              type="radio"
+              name="format"
+              value="xlsx"
+              checked
+            >
+
+            <span>
+              <strong>Excel</strong>
+              <small>.xlsx · 표 편집용</small>
+            </span>
+          </label>
+
+          <!-- CSV -->
+          <label class="export-format">
+            <input
+              type="radio"
+              name="format"
+              value="csv"
+            >
+
+            <span>
+              <strong>CSV</strong>
+              <small>.csv · 데이터 분석용</small>
+            </span>
+          </label>
+
+          <!-- PDF -->
+          <label class="export-format">
+            <input
+              type="radio"
+              name="format"
+              value="pdf"
+            >
+
+            <span>
+              <strong>PDF</strong>
+              <small>보고서 · 인쇄용</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- 현재 검색 결과 건수 -->
+      <div class="export-summary">
+        <p>
+          내보내기 대상
+        </p>
+
+        <strong
+          id="export-count"
+          role="status"
+          aria-live="polite"
+        >
+          0건
+        </strong>
+      </div>
+
+      <!-- 파일 형식 안내 -->
+      <p
+        class="export-note"
+        id="export-note"
+      ></p>
+
+      <!-- 오류 안내 -->
+      <p
+        class="export-error"
+        id="export-error"
+        role="alert"
+      ></p>
+
+      <!-- 하단 버튼 -->
+      <footer class="export-actions">
+        <button
+          class="export-cancel"
+          id="export-cancel"
+          type="button"
+        >
+          취소
+        </button>
+
+        <button
+          class="export-submit"
+          id="export-submit"
+          type="submit"
+        >
+          내보내기
+        </button>
+      </footer>
+    </form>
+  </dialog>
+  <!-- [추가] 기록 내용 조회 팝업: 아이콘을 누르면 선택한 기록을 표시합니다. -->
+  <dialog
+    class="record-content-dialog"
+    id="record-content-dialog"
+    aria-labelledby="record-content-title"
+  >
+    <header class="record-content-header">
+      <!-- [2026-09-18] 고친 내용: 상세 팝업 제목과 닫기 안내를 조치 내용으로 통일합니다. -->
+      <h2 id="record-content-title">조치 내용</h2>
+
+      <!-- [추가] 닫기 버튼 또는 Esc 키로 팝업을 닫습니다. -->
+      <form method="dialog">
+        <button
+          class="record-content-close"
+          type="submit"
+          aria-label="조치 내용 닫기"
+          autofocus
+        >×</button>
+      </form>
+    </header>
+
+    <!-- [추가] JS에서 작성 내용을 텍스트로 넣고 줄바꿈을 유지합니다. -->
+    <p class="record-content-text" id="record-content-text"></p>
+  </dialog>
+</body>
+</html>

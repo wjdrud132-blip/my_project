@@ -1,0 +1,250 @@
+@charset "UTF-8";
+/* [2026.09.16] 추가한 내용: 비활성화 직원관리 상단의 서비스명을 일정한 크기와 간격으로 표시합니다. */
+.admin-service-name { white-space: nowrap; }
+/* [2026.09.16] 추가한 내용: 서비스 이름 자리 문구를 병동 통합 관제 옆의 보조 정보로 표시합니다. */
+.admin-service-placeholder { color: #dbe5d9; font-size: 12px; font-weight: 400; white-space: nowrap; }
+.admin-settings[aria-current="page"] { background: #f1f4ed; color: var(--admin-green); border-color: #f1f4ed; }
+.admin-settings-page { position: relative; }
+.admin-settings-heading { position: relative; padding: 0; margin-bottom: 24px; }
+.admin-settings-heading .admin-settings-eyebrow { margin-bottom: 10px; font-size: 11px; color: #647581; }
+/* [2026.09.16] 고친 내용: 비활성화 직원 카드를 작게 만들고 문서 흐름 안에 배치해 다른 섹션과 겹치지 않게 합니다. */
+.admin-inactive-overview { position: static; display: flex; justify-content: flex-end; margin: 0 0 16px; }
+.admin-inactive-stat { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--admin-border); border-radius: 12px; background: var(--admin-surface); }
+.admin-inactive-stat h2 { margin: 0 0 4px; font-size: 11px; font-weight: 400; color: #647581; }
+.admin-inactive-stat strong { font-size: 22px; line-height: 1.2; }
+.admin-inactive-stat strong span { margin-left: 4px; font-size: 12px; font-weight: 400; }
+.admin-inactive-symbol { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #edf3f7; color: #71806b; }
+.admin-inactive-symbol svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.admin-account-guide { display: flex; flex-direction: column; justify-content: center; padding: 18px 24px; border: 1px solid #d5dfe7; border-radius: 14px; background: #edf3f7; }
+.admin-settings-heading .admin-account-guide { width: 100%; max-width: none; margin-top: 14px; }
+.admin-inactive-overview .admin-inactive-stat { width: auto; margin-left: auto; }
+.admin-settings-heading .admin-account-guide p { white-space: nowrap; }
+/* [2026.09.16] 고친 내용: 넓은 화면에서는 비활성화 직원 카드를 제목 영역 오른쪽 위로 올립니다. */
+@media (min-width: 801px) {
+    .admin-settings-heading .admin-inactive-overview { position: absolute; top: 0; right: 0; margin: 0; }
+}
+.admin-guide-heading { display: flex; align-items: center; gap: 9px; color: #526d82; font-size: 16px; }
+.admin-guide-heading svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.admin-account-guide p { margin: 8px 0 0; color: #586a77; font-size: 14px; line-height: 1.7; }
+.admin-account-guide p strong { color: #526d82; }
+.admin-inactive-panel { padding-bottom: 0; }
+.admin-inactive-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.admin-inactive-label { padding: 5px 10px; border: 1px solid #dde4d6; border-radius: 6px; background: #edf3f7; color: #697a5e; font-size: 10px; white-space: nowrap; }
+.admin-inactive-toolbar { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: center; gap: 12px 20px; margin: 24px 0 16px; }
+.admin-inactive-toolbar .admin-search input { width: 260px; }
+.admin-inactive-filter { display: flex; order: 1; align-items: center; gap: 12px; }
+.admin-inactive-toolbar > .admin-search { order: 2; }
+.admin-inactive-filter label { color: #78816f; font-size: 11px; }
+/* [09.13]수정내용: 비활성화 사용자 병동 필터의 화살표를 오른쪽 끝에서 조금 왼쪽으로 배치한다. */
+.admin-inactive-filter select { appearance: none; height: 44px; min-width: 140px; padding: 0 36px 0 12px; background-color: #fff; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364705e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-position: calc(100% - 10px) center; background-size: 16px 16px; background-repeat: no-repeat; color: #56614e; font-size: 12px; }
+.admin-ward-dropdown { position: relative; z-index: 4; }
+.admin-ward-trigger { display: flex; align-items: center; gap: 8px; width: 144px; height: 44px; padding: 0 12px; border: 1px solid #b8cad8; border-radius: 8px; background: #f0f7fc; color: #36566f; font-size: 12px; white-space: nowrap; }
+.admin-ward-trigger:hover, .admin-ward-trigger[aria-expanded="true"] { background: #e9f0f5; border-color: #8ea6b8; }
+.admin-ward-trigger > svg { width: 17px; height: 17px; flex: none; }
+.admin-ward-trigger > span { min-width: 0; overflow: hidden; flex: 1; text-overflow: ellipsis; white-space: nowrap; }
+.admin-ward-trigger .admin-ward-chevron { width: 15px; height: 15px; margin-left: auto; }
+.admin-room-filter-dropdown .admin-ward-trigger { width: 164px; }
+.admin-room-filter-dropdown .admin-ward-trigger:disabled { border-color: #d7e0e6; background: #f5f7f8; color: #98a4ad; cursor: not-allowed; }
+.admin-ward-options { position: absolute; top: calc(100% + 5px); left: 0; z-index: 10; width: 100%; max-height: 240px; overflow-y: auto; overflow-x: hidden; padding: 4px; border: 1px solid #d5dfe7; border-radius: 6px; background: #fff; box-shadow: 0 4px 12px #0000001f; scrollbar-width: thin; scrollbar-color: #b8cad8 #edf3f7; }
+.admin-ward-options button { display: block; width: 100%; padding: 9px 6px; border: 0; border-radius: 4px; background: transparent; color: #29343d; font-size: 11px; line-height: 1.5; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+.admin-ward-options button:hover, .admin-ward-options button:focus-visible,
+.admin-ward-options button[aria-selected="true"] { background: #e1eaf2; color: #36566f; outline: 0; box-shadow: none; }
+.admin-inactive-result { margin: 0 0 12px; color: #647581; font-size: 11px; }
+.admin-inactive-selection-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin: 0 0 14px; padding: 10px 12px; border: 1px solid #d5dfe7; border-radius: 7px; background: #f1f7fb; }
+.admin-inactive-selection-toolbar button { min-height: 34px; padding: 6px 11px; border: 1px solid #b8cad8; border-radius: 6px; background: #fff; color: #36566f; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.admin-inactive-selection-toolbar button:not(:disabled):hover,
+.admin-inactive-selection-toolbar button:focus-visible { border-color: #8ea6b8; background: #e1eaf2; }
+.admin-inactive-selection-toolbar button[aria-pressed="true"] { border-color: #526d82; background: #526d82; color: #fff; }
+.admin-inactive-selection-toolbar button:disabled { opacity: .5; cursor: not-allowed; }
+.admin-inactive-selection-toolbar span { color: #52616d; font-size: 11px; }
+.admin-inactive-table th:first-child { width: 48px; }
+.admin-inactive-table th:first-child, .admin-inactive-table td:first-child { padding-left: 12px; text-align: left; }
+.admin-inactive-selection { display: inline-flex; align-items: center; min-height: 32px; cursor: pointer; }
+.admin-inactive-selection input { width: 16px; height: 16px; margin: 0; accent-color: var(--admin-green); cursor: pointer; }
+.admin-inactive-table tbody tr:has(.admin-inactive-checkbox:checked) { background: #edf3f7; }
+.admin-inactive-table th:nth-child(2) { width: 16%; }
+.admin-inactive-table th:nth-child(3) { width: 24%; }
+.admin-inactive-table th:nth-child(4) { width: 20%; }
+.admin-inactive-table th:nth-child(5) { width: 20%; }
+/* 간병인 목록은 아이디 열이 없으므로 표시되는 다섯 열에 맞춰 너비를 배분합니다. */
+body[data-admin-job-type="CAREGIVER"] .admin-inactive-table th:nth-child(2) { width: 24%; }
+body[data-admin-job-type="CAREGIVER"] .admin-inactive-table #admin-inactive-assignment-heading { width: 24%; }
+body[data-admin-job-type="CAREGIVER"] .admin-inactive-table th:nth-child(5) { width: 24%; }
+body[data-admin-job-type="CAREGIVER"] .admin-inactive-table th:last-child { width: calc(28% - 48px); }
+.admin-inactive-table { font-family: Inter, "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 11px; }
+.admin-inactive-table th,
+.admin-inactive-table td { font-size: 11px; line-height: 1.5; }
+.admin-inactive-table td { height: 68px; color: #647581; font-size: 13px; }
+.admin-inactive-table td:nth-child(2) { font-weight: 400; color: #565d4f; }
+.admin-inactive-table tbody tr:hover { background: #eef4f8; }
+.admin-inactive-table tbody tr:has(.admin-inactive-checkbox:checked):hover { background: #e5eef5; }
+.admin-inactive-table time { font-variant-numeric: tabular-nums; }
+/* [2026-09-18] 비활성 상태 배지와 두 작업 버튼을 구분하고 부드러운 테두리 디자인을 적용한다. */
+.admin-inactive-row-actions { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 216px; }
+.admin-inactive-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 20px; background: #eeece6; color: #7d776a; font-size: inherit; white-space: nowrap; }
+.admin-inactive-badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #a49d90; }
+.admin-inactive-task { min-height: 34px; padding: 6px 11px; border: 1px solid #b8cad8; border-radius: 8px; background: #edf3f7; color: #36566f; font-size: inherit; white-space: nowrap; }
+.admin-inactive-task[data-action="DELETE"] { background: transparent; color: #a75e57; border-color: #e3cfcb; }
+.admin-inactive-task:not(:disabled):hover { background: #dfeaf2; border-color: #7f9eb4; }
+.admin-inactive-task[data-action="DELETE"]:not(:disabled):hover { background: #faeeeb; border-color: #c58e87; }
+.admin-inactive-task:disabled { opacity: .45; cursor: not-allowed; }
+#admin-status-confirm.admin-delete-confirm { background: #b45b55; border-color: #b45b55; }
+#admin-inactive-error { margin-bottom: 16px; padding: 12px 16px; border: 1px solid #ead3ce; border-radius: 8px; background: #faeeeb; color: #984c45; font-size: 12px; }
+#admin-inactive-error p { margin: 0 0 8px; white-space: pre-line; }
+#admin-inactive-retry { padding: 7px 12px; background: #fff; color: #984c45; }
+.admin-inactive-empty { padding: 64px 16px; text-align: center; }
+.admin-inactive-empty strong { font-size: 15px; }
+.admin-inactive-empty p { color: #7b8473; font-size: 12px; }
+.admin-inactive-empty button { margin-top: 8px; padding: 9px 14px; background: #e4f1e9; color: #557e66; font-size: 12px; }
+.admin-inactive-pagination { margin: 18px 0 0; }
+.admin-inactive-pagination button:not(:disabled):hover,
+.admin-inactive-pagination button:focus-visible { border-color: #b8cad8; background: #edf3f7; }
+.admin-inactive-footer { display: flex; align-items: center; align-self: flex-start; gap: 7px; padding: 16px 0 0; color: #7a8370; font-size: 11px; line-height: 1.7; }
+.admin-inactive-footer svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.admin-bulk-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; padding: 12px 14px; border: 1px solid var(--admin-border); border-radius: 8px; background: #f2f3eb; }
+.admin-bulk-actions > span { color: #65765e; font-size: 12px; }
+.admin-bulk-actions[data-has-selection="true"] { border-color: #adc3a6; background: #eaf1e5; }
+.admin-bulk-actions[data-has-selection="true"] > span { color: #526d82; font-weight: 700; }
+.admin-bulk-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-bulk-buttons button { min-height: 34px; padding: 7px 12px; background: #edf3f7; color: #36566f; border-color: #b8cad8; font-size: 11px; font-weight: 700; }
+.admin-bulk-buttons button[data-bulk-status="INACTIVE"] { background: #eeeae3; color: #82725d; }
+.admin-bulk-buttons .admin-bulk-delete { background: #faeae7; color: #b45b55; }
+.admin-bulk-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.admin-bulk-buttons button:not(:disabled):hover { border-color: currentColor; }
+.admin-bulk-buttons button[data-bulk-status="ACTIVATE"]:not(:disabled):hover { background: #dfeaf2; border-color: #7f9eb4; }
+/* [09.13]수정내용: 검색 영역 안의 일괄 작업 박스는 별도 행을 차지하지 않고 버튼만 자연스럽게 이어지도록 정리한다. */
+.admin-inactive-toolbar .admin-bulk-actions { display: flex; order: 3; align-items: center; gap: 12px; margin: 0 0 0 auto; padding: 0; border: 0; background: transparent; }
+.admin-inactive-toolbar .admin-bulk-actions > span { white-space: nowrap; }
+@media (max-width: 800px) {
+    .admin-bulk-actions { align-items: flex-start; flex-direction: column; }
+    .admin-inactive-toolbar .admin-bulk-actions { width: 100%; margin-left: 0; }
+    .admin-account-guide { padding: 20px; }
+    /* [수정] 모바일에서는 통계 카드를 문서 흐름 안으로 되돌려 겹침을 방지 */
+    .admin-inactive-overview { position: static; display: flex; justify-content: flex-end; margin-bottom: 24px; }
+    .admin-settings-heading .admin-account-guide p { white-space: normal; }
+    .admin-inactive-toolbar { align-items: stretch; flex-direction: column; gap: 12px; }
+    .admin-inactive-toolbar .admin-search input { width: 100%; }
+    .admin-inactive-filter { justify-content: space-between; }
+    .admin-inactive-filter select { flex: 1; max-width: 220px; }
+}
+
+/* [2026.09.19] 공통 배경·강조색을 블루 그레이로 통일합니다. 위험 알림의 빨강·주황은 유지합니다. */
+/* [2026.10.01 변경] 비활성화 관리 화면은 기존 목록 구조를 유지하고 페이지 번호 모양만 다른 목록과 통일합니다. */
+#admin-inactive-view .admin-inactive-pagination {
+  display: flex;
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  align-self: stretch !important;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  width: 100%;
+  margin: 12px auto 0;
+  padding: 0;
+}
+
+#admin-inactive-view .admin-inactive-pagination button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #d5dfe7;
+  border-radius: 5px;
+  background: #fff;
+  color: #586a77;
+  font-size: 10px;
+  line-height: 1;
+  text-align: center;
+}
+
+#admin-inactive-view .admin-inactive-pagination button:hover,
+#admin-inactive-view .admin-inactive-pagination button:focus-visible,
+#admin-inactive-view .admin-inactive-pagination button[aria-current="page"] {
+  border-color: #526d82;
+  background: #526d82;
+  color: #fff;
+  font-weight: 700;
+  outline: 0;
+}
+/* [2026.10.01 변경] 비활성화 목록의 흰색 카드 아래 경계와 페이지 번호만 아래로 내립니다. */
+#admin-inactive-view .admin-inactive-footer {
+  display: none !important;
+}
+
+#admin-inactive-view .admin-inactive-panel {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: calc(100dvh - var(--admin-topbar-height) - 160px) !important;
+  overflow: visible !important;
+  padding-bottom: 24px !important;
+}
+
+#admin-inactive-view #admin-inactive-list {
+  flex: 0 0 auto !important;
+  overflow: visible !important;
+}
+
+#admin-inactive-view #admin-inactive-pagination {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+/* [2026.10.01 변경] 비활성화 페이지 번호가 카드 경계에 붙지 않도록 안쪽 여백과 버튼 표시를 보정합니다. */
+#admin-inactive-view .admin-inactive-panel {
+  padding-bottom: 34px !important;
+}
+
+#admin-inactive-view #admin-inactive-pagination {
+  margin-top: auto !important;
+  padding-top: 20px !important;
+  margin-bottom: 8px !important;
+}
+
+/* 간호사 페이지 이동은 동일한 크기의 셀을 카드 중앙에 배치합니다. */
+body[data-admin-job-type="GENERAL"] #admin-inactive-view #admin-inactive-pagination {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 26px;
+  grid-template-rows: 26px;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 46px;
+  column-gap: 6px;
+}
+
+body[data-admin-job-type="GENERAL"] #admin-inactive-view #admin-inactive-pagination > button {
+  box-sizing: border-box;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  min-height: 26px;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+body[data-admin-job-type="CAREGIVER"] #admin-inactive-view #admin-inactive-pagination {
+  padding-top: 28px !important;
+  margin-bottom: 0 !important;
+}
+
+#admin-inactive-view #admin-inactive-pagination button {
+  opacity: 1 !important;
+}
+
+#admin-inactive-view #admin-inactive-pagination button:disabled {
+  color: #b8cad8 !important;
+  background: #fff !important;
+  border-color: #e3ebf0 !important;
+  opacity: .65 !important;
+}

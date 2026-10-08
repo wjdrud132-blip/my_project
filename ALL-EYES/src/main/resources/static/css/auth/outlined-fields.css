@@ -1,0 +1,84 @@
+/* [2026.09.20] 도메인·로그인 입력칸: 테두리에 걸친 라벨과 값 지우기 버튼을 공통 적용합니다. */
+.auth-outlined-field { position: relative; }
+.auth-outlined-field + .auth-outlined-field { margin-top: 26px; }
+.auth-outlined-field > label {
+  position: absolute;
+  z-index: 1;
+  top: -9px;
+  left: 18px;
+  margin: 0;
+  padding: 0 7px;
+  background: #fff;
+  color: #647581;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.auth-outlined-field > input {
+  display: block;
+  width: 100%;
+  height: 64px;
+  margin: 0;
+  padding: 0 54px 0 22px;
+  border: 1px solid #d5dfe7;
+  border-radius: 16px;
+  background: #fff;
+  color: #29343d;
+  font-size: 15px;
+  outline: none;
+  box-shadow: none;
+}
+.auth-outlined-field > input:focus {
+  border-color: #526d82;
+  outline: none;
+  box-shadow: 0 0 0 2px #526d8214;
+}
+.auth-outlined-field:focus-within > label { color: #36566f; }
+.auth-outlined-field > input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  box-shadow: 0 0 0 1000px #fff inset;
+}
+.auth-outlined-field > .auth-clear {
+  position: absolute;
+  top: 16px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.auth-clear > span {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #8c96a2;
+  /* [2026.09.20] 글꼴의 기준선 대신 교차선을 사용해 원의 정확한 중앙에 X를 배치합니다. */
+  font-size: 0;
+}
+.auth-clear > span::before,
+.auth-clear > span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.auth-clear > span::after { transform: translate(-50%, -50%) rotate(-45deg); }
+.auth-clear:hover > span { background: #526d82; }
+.auth-clear:focus-visible { outline: 2px solid #526d82; outline-offset: 2px; }
+.auth-outlined-field > input:placeholder-shown:not(:-webkit-autofill) ~ .auth-clear { visibility: hidden; }
+.domain-card { background: #fff; }

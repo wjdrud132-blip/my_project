@@ -1,0 +1,4 @@
+/* [09.13]추가내용: 조치 이력의 기간·병동·상태·대상 필터 전용 스타일을 분리합니다. */
+.record-filter-panel{display:grid;gap:12px}
+.record-filter-panel select,.record-filter-panel input{min-height:40px}
+.record-filter-panel .filter-row{display:flex;flex-wrap:wrap;gap:10px}

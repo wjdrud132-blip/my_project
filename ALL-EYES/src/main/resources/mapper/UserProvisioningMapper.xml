@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aio.hospitalsafety.mapper.admin.UserProvisioningMapper">
+
+    <select id="existsUserId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_emp
+            WHERE emp_id = #{userId}
+        )
+    </select>
+
+    <!-- [2026.09.27] 같은 병원에 이 번호를 쓰는 활성 직원이 있는지 (전화번호 수정 API 와 같은 규칙) -->
+    <select id="existsActivePhone" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_emp
+            WHERE hosp_div_id = #{hospitalId}
+              AND role_cd = 'USER'
+              AND auth_st = 'APPROVED'
+              AND phone_no = #{phoneNumber}
+        )
+    </select>
+
+    <select id="existsWardInHospital" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM tb_ward
+            WHERE hosp_div_id = #{hospitalId}
+              AND ward_id = #{wardId}
+        )
+    </select>
+
+    <select id="findThirdFloorWardId" resultType="java.lang.Long">
+        SELECT ward_id
+        FROM tb_ward
+        WHERE hosp_div_id = #{hospitalId}
+          AND TRIM(ward_nm) LIKE '3%'
+        ORDER BY ward_id
+        LIMIT 1
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO tb_emp (
+            emp_id,
+            emp_pw,
+            hosp_div_id,
+            ward_id,
+            emp_nm,
+            phone_no,
+            role_cd,
+            auth_st,
+            must_change_password
+        )
+        VALUES (
+            #{userId},
+            #{passwordHash},
+            #{hospitalId},
+            #{wardId},
+            #{userName},
+            #{phoneNumber,jdbcType=VARCHAR},
+            'USER',
+            'APPROVED',
+            TRUE
+        )
+    </insert>
+
+</mapper>
