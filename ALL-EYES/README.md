@@ -1,4 +1,4 @@
-# 👀 ALL EYES — 시각지능 기반 요양병원 위험상황 감지 서비스
+# <img src="./images/all-eyes-logo.png" alt="ALL EYES 로고" width="48" /> ALL EYES — 시각지능 기반 요양병원 위험상황 감지 서비스
 
 ## 1. 프로젝트명 / 팀명
 
