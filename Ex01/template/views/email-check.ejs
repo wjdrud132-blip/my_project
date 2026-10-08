@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>이메일 인증 - FIDS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+      background: #f5f6fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #10172f;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #16213a;
+    }
+
+    .brand-line {
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: #2d6be4;
+      border-radius: 2px;
+      margin: 8px auto 12px;
+    }
+
+    .brand-desc {
+      font-size: 13px;
+      color: #9aa0ad;
+      line-height: 1.7;
+    }
+
+    .page {
+      width: 480px;
+      background: #fff;
+      border: 1px solid #e8e9ed;
+      border-radius: 16px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    .icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #eff6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .icon-wrap i {
+      font-size: 32px;
+      color: #2d6be4;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172f;
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      font-size: 14px;
+      color: #888;
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+
+    .email-highlight {
+      font-size: 14px;
+      font-weight: 700;
+      color: #2d6be4;
+      margin-bottom: 28px;
+    }
+
+    .code-wrap {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .code-input {
+      width: 52px;
+      height: 60px;
+      border-radius: 10px;
+      border: 1.5px solid #e8e9ed;
+      background: #fafafa;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a2e;
+      text-align: center;
+      outline: none;
+    }
+
+    .code-input:focus {
+      border-color: #2d6be4;
+      background: #fff;
+    }
+
+    .code-input.filled {
+      border-color: #2d6be4;
+      background: #f0f6ff;
+      color: #2d6be4;
+    }
+
+    .timer {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 24px;
+    }
+
+    .timer span {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .notice {
+      width: 100%;
+      background: #f0f6ff;
+      border: 1px solid #c7deff;
+      border-radius: 10px;
+      padding: 13px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: #2d5fa8;
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .notice i {
+      font-size: 15px;
+      color: #3b82f6;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      background: #1a2235;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-bottom: 14px;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      background: #243040;
+    }
+
+    .resend-wrap {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    .resend-wrap a {
+      color: #2d6be4;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">
+    <div class="brand-title">FIDS</div>
+    <span class="brand-line"></span>
+    <div class="brand-desc">
+      공공 쓰레기통 내 화재를 실시간으로<br>
+      감지하고 관리하는 스마트 플랫폼
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="icon-wrap"><i class="ti ti-mail"></i></div>
+
+    <div class="title">이메일 인증</div>
+    <div class="desc">아래 이메일로 인증 코드 6자리를 발송했습니다.</div>
+    <div id="emailText" class="email-highlight"></div>
+
+    <div class="code-wrap">
+      <input class="code-input" type="text" maxlength="1" autofocus>
+      <input class="code-input" type="text" maxlength="1">
+      <input class="code-input" type="text" maxlength="1">
+      <input class="code-input" type="text" maxlength="1">
+      <input class="code-input" type="text" maxlength="1">
+      <input class="code-input" type="text" maxlength="1">
+    </div>
+
+    <div class="timer">남은 시간 <span id="countdown">04:59</span></div>
+
+    <div class="notice">
+      <i class="ti ti-info-circle"></i>
+      <p>
+        이메일이 오지 않는 경우 스팸함을 확인하거나 아래 인증 코드 재발송 버튼을 눌러주세요.
+      </p>
+    </div>
+
+    <button id="checkBtn" class="btn-primary" type="button">
+      <i class="ti ti-check"></i>
+      인증하기
+    </button>
+
+    <div class="resend-wrap">
+      이메일을 받지 못했나요?
+      <a id="resendBtn">인증 코드 재발송</a>
+    </div>
+  </div>
+
+  <script>
+    const mgrEmail = sessionStorage.getItem("mgr_email");
+
+    if (!mgrEmail) {
+      alert("이메일 정보가 없습니다. 회원가입 화면으로 이동합니다.");
+      location.href = "/join";
+    }
+
+    document.getElementById("emailText").textContent = mgrEmail;
+
+    document.querySelectorAll(".code-input").forEach((el, i, arr) => {
+      el.addEventListener("input", () => {
+        el.value = el.value.replace(/[^0-9]/g, "");
+
+        if (el.value && i < arr.length - 1) {
+          arr[i + 1].focus();
+        }
+
+        if (el.value) {
+          el.classList.add("filled");
+        } else {
+          el.classList.remove("filled");
+        }
+      });
+
+      el.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !el.value && i > 0) {
+          arr[i - 1].focus();
+        }
+      });
+    });
+
+    let sec = 299;
+    const cd = document.getElementById("countdown");
+    const checkBtn = document.getElementById("checkBtn");
+    let timerExpired = false;
+
+    function resetTimer() {
+      sec = 299;
+      timerExpired = false;
+      cd.textContent = "04:59";
+      cd.style.color = "#dc2626";
+      checkBtn.disabled = false;
+      checkBtn.style.opacity = "1";
+      checkBtn.style.cursor = "pointer";
+    }
+
+    function expireTimer() {
+      timerExpired = true;
+      cd.textContent = "00:00";
+      cd.style.color = "#aaa";
+      checkBtn.disabled = true;
+      checkBtn.style.opacity = "0.55";
+      checkBtn.style.cursor = "not-allowed";
+    }
+
+    setInterval(() => {
+      if (timerExpired) return;
+
+      sec--;
+
+      if (sec <= 0) {
+        expireTimer();
+        return;
+      }
+
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+
+      cd.textContent = `${m}:${s}`;
+    }, 1000);
+
+    checkBtn.addEventListener("click", async () => {
+      if (timerExpired) {
+        alert("인증 시간이 만료되었습니다. 인증 코드 재발송을 눌러 다시 인증해주세요.");
+        return;
+      }
+
+      const code = Array.from(document.querySelectorAll(".code-input"))
+        .map((input) => input.value)
+        .join("");
+
+      if (code.length !== 6) {
+        alert("인증번호 6자리를 입력해주세요.");
+        return;
+      }
+
+      const response = await fetch("/manager/email/check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mgr_email: mgrEmail,
+          code: code
+        })
+      });
+
+      const result = await response.text();
+
+      if (result === "이메일 인증 성공") {
+        alert(result);
+        location.href = "/password";
+      } else {
+        alert(result);
+      }
+    });
+
+    document.getElementById("resendBtn").addEventListener("click", async () => {
+      const response = await fetch("/manager/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mgr_email: mgrEmail
+        })
+      });
+
+      const result = await response.text();
+      alert(result);
+
+      if (response.ok) {
+        resetTimer();
+        const inputs = document.querySelectorAll(".code-input");
+        inputs.forEach((input) => {
+          input.value = "";
+          input.classList.remove("filled");
+        });
+        inputs[0].focus();
+      }
+    });
+  </script>
+</body>
+</html>

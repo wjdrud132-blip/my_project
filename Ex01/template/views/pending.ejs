@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>승인 대기 - FIDS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+      background: #f5f6fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10172f;
+    }
+
+    .page {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 600px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e8e9ed;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+      background: #fff;
+    }
+
+    .left {
+      flex: 1;
+      background: #1a2235;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      color: #fff;
+    }
+
+    .left-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .brand-line {
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: #2d6be4;
+      border-radius: 2px;
+      margin: 10px auto 14px;
+    }
+
+    .left-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 48px;
+      width: 100%;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: rgba(45,107,228,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .feature-icon i {
+      font-size: 18px;
+      color: #6fa3f7;
+    }
+
+    .feature-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.5;
+    }
+
+    .right {
+      width: 480px;
+      flex-shrink: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 48px;
+      text-align: center;
+    }
+
+    .icon-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #fef3c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .icon-wrap i {
+      font-size: 32px;
+      color: #d97706;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+
+    .desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .steps-row {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 0 0 68px;
+      min-width: 68px;
+    }
+
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      min-height: 28px;
+      flex: 0 0 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      line-height: 1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .step-dot i {
+      display: block;
+      line-height: 1;
+      font-size: 15px;
+    }
+
+    .step-dot.done {
+      background: #2d6be4;
+      color: #fff;
+    }
+
+    .step-dot.active {
+      background: #fff;
+      border: 2.5px solid #2d6be4;
+      color: #2d6be4;
+    }
+
+    .step-dot.wait {
+      background: #f0f1f3;
+      border: 2px solid #e0e1e6;
+      color: #ccc;
+    }
+
+    .step-lbl {
+      min-height: 28px;
+      font-size: 10px;
+      color: #aaa;
+      text-align: center;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .step-lbl.active {
+      color: #1a1a2e;
+      font-weight: 700;
+    }
+
+    .step-lbl.done {
+      color: #2d6be4;
+    }
+
+    .step-conn {
+      flex: 1;
+      height: 2px;
+      background: #e8e9ed;
+      margin-top: 13px;
+      margin-bottom: 0;
+    }
+
+    .step-conn.done {
+      background: #2d6be4;
+    }
+
+    .info-box {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e8e9ed;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      color: #aaa;
+      min-width: 72px;
+      font-size: 12px;
+    }
+
+    .info-val {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .badge-pending {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #fef3c7;
+      color: #92400e;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notice {
+      width: 100%;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .notice i {
+      font-size: 16px;
+      color: #3b82f6;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .notice p {
+      font-size: 12px;
+      color: #1e40af;
+      line-height: 1.7;
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      background: #1a2235;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-back:hover {
+      background: #243040;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #d97706;
+      display: inline-block;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="left">
+      <div class="left-title">
+        FIDS
+        <span class="brand-line"></span>
+      </div>
+
+      <div class="left-sub">
+        공공 쓰레기통 내 화재를 실시간으로<br>
+        감지하고 관리하는 스마트 플랫폼
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-layout-dashboard"></i></div>
+          <div>
+            <div class="feature-title">대시보드</div>
+            <div class="feature-desc">전체 현황을 한 화면에서 직관적으로 파악</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-map-pin"></i></div>
+          <div>
+            <div class="feature-title">쓰레기통 관리</div>
+            <div class="feature-desc">설치 위치와 상태 정보를 한눈에 파악하고 관리</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-activity"></i></div>
+          <div>
+            <div class="feature-title">실시간 모니터링</div>
+            <div class="feature-desc">온도와 연기 데이터를 24시간 실시간 확인</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-clipboard-list"></i></div>
+          <div>
+            <div class="feature-title">알림 기록</div>
+            <div class="feature-desc">과거 화재 및 경보 이력을 검색하고 분석</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-settings"></i></div>
+          <div>
+            <div class="feature-title">설정</div>
+            <div class="feature-desc">시스템 환경과 알림 설정을 관리</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="icon-wrap"><i class="ti ti-clock"></i></div>
+
+      <div class="title">승인 대기 중입니다</div>
+      <div class="desc">
+        가입 신청이 완료되었습니다.<br>
+        FIDS 운영자가 소속 기관을 확인한 후<br>
+        승인 이메일을 발송해드립니다.
+      </div>
+
+      <div class="steps-row">
+        <div class="step-item">
+          <div class="step-dot done"><i class="ti ti-check"></i></div>
+          <div class="step-lbl done">계정 입력</div>
+        </div>
+        <div class="step-conn done"></div>
+
+        <div class="step-item">
+          <div class="step-dot done"><i class="ti ti-check"></i></div>
+          <div class="step-lbl done">이메일 인증</div>
+        </div>
+        <div class="step-conn done"></div>
+
+        <div class="step-item">
+          <div class="step-dot done"><i class="ti ti-check"></i></div>
+          <div class="step-lbl done">비밀번호 설정</div>
+        </div>
+        <div class="step-conn done"></div>
+
+        <div class="step-item">
+          <div class="step-dot active">4</div>
+          <div class="step-lbl active">승인 대기</div>
+        </div>
+        <div class="step-conn"></div>
+
+        <div class="step-item">
+          <div class="step-dot wait">5</div>
+          <div class="step-lbl">시스템 접속</div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-row">
+          <span class="info-label">신청자</span>
+          <span id="nameText" class="info-val"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">소속 기관</span>
+          <span id="orgText" class="info-val"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">이메일</span>
+          <span id="emailText" class="info-val"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">신청 일시</span>
+          <span id="dateText" class="info-val"></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">처리 상태</span>
+          <span class="badge-pending">
+            <span class="pulse-dot"></span>
+            승인 대기
+          </span>
+        </div>
+      </div>
+
+      <div class="notice">
+        <i class="ti ti-info-circle"></i>
+        <p>
+          승인은 보통 <strong>1~2 영업일</strong> 이내에 처리됩니다.<br>
+          승인 완료 후 입력하신 이메일로 안내 메일이 발송됩니다.
+        </p>
+      </div>
+
+        <button class="btn-back" type="button" onclick="location.href='/'">
+          메인화면으로 돌아가기
+        </button>
+    </div>
+  </div>
+
+  <script>
+    const mgrName = sessionStorage.getItem("mgr_name") || "-";
+    const organization = sessionStorage.getItem("organization") || "-";
+    const mgrEmail = sessionStorage.getItem("mgr_email") || "-";
+
+    document.getElementById("nameText").textContent = mgrName;
+    document.getElementById("orgText").textContent = organization;
+    document.getElementById("emailText").textContent = mgrEmail;
+
+    const now = new Date();
+    const dateText =
+      now.getFullYear() + "." +
+      String(now.getMonth() + 1).padStart(2, "0") + "." +
+      String(now.getDate()).padStart(2, "0") + " " +
+      String(now.getHours()).padStart(2, "0") + ":" +
+      String(now.getMinutes()).padStart(2, "0");
+
+    document.getElementById("dateText").textContent = dateText;
+  </script>
+</body>
+</html>

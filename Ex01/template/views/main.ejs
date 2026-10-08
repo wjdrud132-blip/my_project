@@ -1,0 +1,530 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280">
+    <title>FIDS</title>
+
+    <!-- CSS 연결 -->
+     <link rel="stylesheet" href="/main.css">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+
+</head>
+
+<body>
+
+    <!-- 상단 네비게이션 -->
+     <nav class="nav">
+        
+        <!-- 왼쪽 로고 -->
+        <div class="logo">
+            <strong>FIDS</strong>
+            <span>Fire IoT Detection System</span>
+        </div>
+
+        <!-- 가운데 메뉴 -->
+        <div class="menu">
+            <a href="#problem">문제 인식</a>
+            <a href="#product">화면 소개</a>
+            <a href="#how">작동 방식</a>
+            <a href="#hardware">하드웨어</a>
+            <a href="#about">팀 소개</a>
+            <a href="/dashboard">대시보드</a>
+        </div>
+
+        <!-- 오른쪽 버튼 -->
+        <div class="auth" id="authArea">
+            <button class="login" onclick="location.href='/login'">로그인</button>
+            <button class="sigup" onclick="location.href='/join'">회원가입</button>
+        </div>
+
+     </nav>
+    
+     <!-- 메인 히어로 -->
+     <section class="hero">
+        <div class="hero-content">
+            <!-- 작은 뱃지 -->
+            <div class="badge"><i class="ti ti-flame" style="font-size: 12px;"></i> fire IoT Detection System</div>
+
+            <!-- 메인 제목 -->
+            <h1>
+                공공 쓰레기통 화재, <br>
+                <span>지금 이 순간</span> 감지합니다
+            </h1>
+
+            <!-- 설명 -->
+            <p>
+                담배꽁초로 인한 쓰레기통 내부 화재는 조기 감지가 어렵습니다. <br>
+                FIDS는 온도·연기·화염 센서를 결합해 화재 발생 즉시 관리자에게 알리고, <br>
+                확산을 막는 스마트 화재 감지 시스템입니다.
+            </p>
+
+            <!-- 하단 정보 -->
+            <div class="info">
+                <div>
+                    <h2>24<span>h</span></h2>
+                    <p>실시간 연속 모니터링</p>
+                </div>
+
+                <div>
+                    <h2>3<span>종</span></h2>
+                    <p>복합 센서 탑재</p>
+                </div>
+
+                <div>
+                    <h2>즉시알림</h2>
+                    <p>화재 감지 후 즉시 알림 발송</p>
+                </div>
+            </div>
+
+        </div>
+     </section>
+
+     <!-- =====================================
+                    문제 인식 섹션 
+    =========================================-->
+<section class="problem-section" id="problem">
+
+    <!-- 상단 텍스트 -->
+    <p class="section-label">PROBLEM</p>
+    <h2 class="section-title">담배꽁초 화재, 왜 위험할까요?</h2>
+    <p class="section-text">매년 수천 건의 쓰레기통 화재가 발생하지만, 대부분 내부에서 서서히 진행되어 육안으로는 발견이 어렵습니다.</p>
+
+    <!-- 2열 그리드 (왼쪽 카드 + 오른쪽 통계) -->
+    <div class="problem-grid">
+
+        <!-- 왼쪽 : 카드 3개 -->
+         <div class="card-list">
+
+            <!-- 담배꽁초가 주요 화재 원인 -->
+             <div class="problem-card card-fire">
+                <div class="card-icon"><i class="ti ti-flame"></i></div>
+                <div class="cord-text">
+                    <div class="card-title">담배꽁초가 주요 화재 원인</div>
+                    <div class="card-desc">쓰레기통 내부에 투입된 담배꽁초는 불씨가 살아있는 상태로 내부 가연물에 착화되어 장시간 서서히 연소합니다.</div>
+                </div>
+             </div>
+
+             <!-- 카드 2 : 늦은 발견 -->
+              <div class="problem-card card-delay">
+                <div class="card-icon"><i class="ti ti-clock-exclamation"></i></div>
+                <div class="card-text">
+                    <div class="card-title">늦은 발견, 빠른 확산</div>
+                    <div class="card-desc">밀폐된 쓰레기통 구조상 연기와 열이 외부로 잘 배출되지 않아 화재가 이미 진행된 뒤에야 발견되는 경우가 많습니다.</div>
+                </div>
+            </div>
+
+                        <!-- 카드 3 : 공공시설 피해 -->
+            <div class="problem-card card-building">
+                <div class="card-icon"><i class="ti ti-building-community"></i></div>
+                <div class="card-text">
+                    <div class="card-title">공공 시설물 피해 및 2차 확산</div>
+                    <div class="card-desc">공원, 지하철역, 버스 정류장 등 밀집 공공장소에서 발생 시 인근 시설물 및 인명 피해로 이어질 수 있습니다.</div>
+                </div>
+            </div>
+
+        </div>
+         <!-- 오른쪽 : 통계 박스 -->
+        <div class="stat-box">
+
+            <!-- 큰 숫자 -->
+            <div class="stat-number">4,271<span class="stat-unit">건</span></div>
+            <div class="stat-label">2023년 한 해 동안 발생한<br>쓰레기통 관련 화재 신고 건수</div>
+
+            <!-- 통계 4줄 -->
+            <div class="stat-list">
+
+                <!-- 통계 행 1 -->
+                <div class="stat-row">
+                    <span class="stat-key">주요 발화 원인</span>
+                    <span class="stat-val red">담배꽁초 (43.2%)</span>
+                </div>
+
+                <!-- 통계 행 2 -->
+                <div class="stat-row">
+                    <span class="stat-key">평균 발견 소요 시간</span>
+                    <span class="stat-val yellow">약 12분</span>
+                </div>
+
+                <!-- 통계 행 3 -->
+                <div class="stat-row">
+                    <span class="stat-key">주요 발생 장소</span>
+                    <span class="stat-val">공원·공공시설 (61%)</span>
+                </div>
+
+                <!-- 통계 행 4 -->
+                <div class="stat-row">
+                    <span class="stat-key">연간 재산 피해 추정</span>
+                    <span class="stat-val red">약 38억 원</span>
+                </div>
+
+            </div>
+
+            <!-- 출처 -->
+            <div class="stat-source">
+                <a href="https://www.nfds.go.kr" target="_blank" style="color: rgba(255,255,255,0.25); text-decoration: none;">
+                    ※ 소방청 화재통계연감 참고 데이터
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- ===============================
+        화면 소개 섹션
+================================ -->
+<section class="product-section" id="product">
+
+    <!-- 상단 텍스트 -->
+    <p class="section-label">Product</p>
+    <h2 class="section-title">FIDS가 제공하는 기능</h2>
+    <p class="section-desc">쓰레기통 화재의 예방부터 대응, 사후 분석까지 — 하나의 플랫폼으로 관리하세요.</p>
+
+    <!-- 3열 카드 그리드 -->
+    <div class="product-grid">
+
+        <!-- 카드 1 : 실시간 대시보드 -->
+        <div class="feat-card">
+            <div class="feat-card-icon blue"><i class="ti ti-layout-dashboard"></i></div>
+            <div class="feat-card-name">실시간 대시보드</div>
+            <div class="feat-card-desc">관할 지역 내 전체 쓰레기통의 상태를 한 화면에서 직관적으로 파악합니다. 위험·주의·정상 현황을 색상으로 즉시 식별할 수 있습니다.</div>
+        </div>
+
+        <!-- 카드 2 : 즉시 알림 시스템 -->
+        <div class="feat-card">
+            <div class="feat-card-icon red"><i class="ti ti-bell-ringing"></i></div>
+            <div class="feat-card-name">즉시 알림 시스템</div>
+            <div class="feat-card-desc">화재 감지 즉시 관리자에게 웹 알림을 발송합니다. 위치·온도·연기 수치를 포함한 상세 정보를 함께 전달해 빠른 초동 대응을 지원합니다.</div>
+        </div>
+
+        <!-- 카드 3 : 센서 데이터 모니터링 -->
+        <div class="feat-card">
+            <div class="feat-card-icon green"><i class="ti ti-activity"></i></div>
+            <div class="feat-card-name">센서 데이터 모니터링</div>
+            <div class="feat-card-desc">온도, 연기, 화염 센서 데이터를 24시간 실시간으로 확인합니다. 임계값 초과 여부를 자동으로 판단해 단계별 경보를 발생시킵니다.</div>
+        </div>
+
+        <!-- 카드 4 : 쓰레기통 관리 -->
+        <div class="feat-card">
+            <div class="feat-card-icon purple"><i class="ti ti-map-pin"></i></div>
+            <div class="feat-card-name">쓰레기통 관리</div>
+            <div class="feat-card-desc">설치 위치, 상태, 센서 연결 정보를 등록하고 관리합니다. 기기 추가·삭제·상태 변경을 직관적인 인터페이스로 처리할 수 있습니다.</div>
+        </div>
+
+        <!-- 카드 5 : 알림 이력 분석 -->
+        <div class="feat-card">
+            <div class="feat-card-icon orange"><i class="ti ti-clipboard-list"></i></div>
+            <div class="feat-card-name">알림 기록 검색 및 관리</div>
+            <div class="feat-card-desc">센서 ID·위치·유형·기간별로 알림 이력을 검색하고 필터링합니다. 처리 상태를 확인하고 읽음 처리하여 체계적으로 이력을 관리합니다.</div>
+        </div>
+
+        <!-- 카드 6 : 시스템 설정 -->
+        <div class="feat-card">
+            <div class="feat-card-icon teal"><i class="ti ti-settings"></i></div>
+            <div class="feat-card-name">시스템 설정</div>
+            <div class="feat-card-desc">화재 감지 기준값 확인, 계정 정보 수정, 휴지통, 데이터 초기화까지 한 화면에서 관리합니다.</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===============================
+        작동 방식 섹션
+================================ -->
+<section class="how-section" id="how">
+
+    <!-- 상단 텍스트 -->
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">FIDS, 이렇게 작동합니다</h2>
+    <p class="section-desc">센서 감지부터 관리자 대응까지, 4단계로 화재를 신속하게 차단합니다.</p>
+
+    <!-- 4단계 흐름 -->
+    <div class="how-flow">
+
+        <!-- 단계 1 : 센서 감지 -->
+        <div class="how-step">
+            <div class="how-num"><i class="ti ti-cpu"></i></div>
+            <div class="how-step-title">센서 감지</div>
+            <div class="how-step-desc">MQ-2 연기·DS18B20 온도·화염 센서가 쓰레기통 내부를 실시간 모니터링</div>
+        </div>
+
+        <!-- 단계 2 : 데이터 전송 -->
+        <div class="how-step">
+            <div class="how-num"><i class="ti ti-device-desktop"></i></div>
+            <div class="how-step-title">데이터 전송</div>
+            <div class="how-step-desc">Raspberry Pi가 센서 데이터를 수집해 데이터 베이스로 실시간 전송</div>
+        </div>
+
+        <!-- 단계 3 : 이상 판단 -->
+        <div class="how-step">
+            <div class="how-num"><i class="ti ti-chart-bar"></i></div>
+            <div class="how-step-title">AI 판단</div>
+            <div class="how-step-desc">설정된 임계값 초과 시 위험·주의 등급으로 자동 분류</div>
+        </div>
+
+        <!-- 단계 4 : 즉시 알림 -->
+        <div class="how-step">
+            <div class="how-num"><i class="ti ti-bell-ringing"></i></div>
+            <div class="how-step-title">즉시 알림</div>
+            <div class="how-step-desc">관리자에게 위치·수치 정보를 포함한 경보 알림 즉시 발송</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===============================
+        하드웨어 섹션
+================================ -->
+<section class="hardware-section" id="hardware">
+
+    <!-- 상단 텍스트 -->
+    <p class="section-label">Hardware</p>
+    <h2 class="section-title">3종 복합 센서 구성</h2>
+    <p class="section-desc">단일 센서의 오탐을 줄이고 신뢰도를 높이기 위해 세 가지 센서를 조합해 화재를 다각도로 감지합니다.</p>
+
+    <!-- 3열 카드 그리드 -->
+    <div class="hw-grid">
+
+        <!-- 센서 1 : 연기 센서 -->
+        <div class="hw-sensor">
+            <div class="hw-sensor-icon" style="background:#FEF3C7; color:#d97706;">
+                <i class="ti ti-cloud"></i>
+            </div>
+            <div class="hw-sensor-name">MQ-2 가스·연기 센서</div>
+            <div class="hw-sensor-desc">연기 및 가연성 가스 농도를 아날로그 신호로 측정. 연소 초기 단계 감지에 적합</div>
+            <div class="hw-sensor-badge orange">연기 감지</div>
+        </div>
+
+        <!-- 센서 2 : 온도 센서 -->
+        <div class="hw-sensor">
+            <div class="hw-sensor-icon" style="background:#FEE2E2; color:#dc2626;">
+                <i class="ti ti-temperature"></i>
+            </div>
+            <div class="hw-sensor-name">DS18B20 온도 센서</div>
+            <div class="hw-sensor-desc">±0.5°C 정밀도의 디지털 온도 측정. 비정상적인 온도 상승을 수치로 정확하게 감지</div>
+            <div class="hw-sensor-badge red">온도 감지</div>
+        </div>
+
+        <!-- 센서 3 : 화염 센서 -->
+        <div class="hw-sensor">
+            <div class="hw-sensor-icon" style="background:#EBF4FF; color:#2d6be4;">
+                <i class="ti ti-flame"></i>
+            </div>
+            <div class="hw-sensor-name">NS-FDSM-5S 불꽃 감지 센서</div>
+            <div class="hw-sensor-desc">적외선 기반 불꽃 보조 감지. 직사광선 환경 특성을 고려해 연기·온도 센서와 복합 판단 활용</div>
+            <div class="hw-sensor-badge blue">화염 감지</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===============================
+        팀 소개 섹션
+================================ -->
+<section class="about-section" id="about">
+
+    <!-- 상단 텍스트 -->
+    <p class="section-label">About</p>
+    <h2 class="section-title">IGNIX 팀 소개</h2>
+    <p class="section-desc">스마트인재개발원에서 공공 안전 문제를 IoT 기술로 해결하고자 모인 팀입니다.</p>
+
+    <!-- 2열 그리드 -->
+    <div class="about-grid">
+
+        <!-- 왼쪽 : 팀 소개 텍스트 -->
+        <div class="about-text">
+            <p>IGNIX는 <strong>공공 안전</strong>과 <strong>IoT 기술</strong>을 연결하는 데 집중하는 개발팀입니다. 우리는 매년 반복되는 쓰레기통 화재 문제를 기술적으로 해결하기 위해 FIDS(Fire IoT Detection System) 시스템을 개발했습니다.</p>
+            <p>Raspberry Pi 기반 하드웨어와 실시간 웹 대시보드를 결합해, 공공기관 관리자가 현장에 있지 않아도 언제 어디서나 화재 상황을 즉각 인지하고 대응할 수 있는 환경을 만들었습니다.</p>
+
+            <!-- 핵심 가치 3개 -->
+            <div class="about-values">
+
+                <!-- 가치 1 -->
+                <div class="value-item">
+                    <div class="value-dot"></div>
+                    <div>
+                        <div class="value-title">조기 감지, 빠른 대응</div>
+                        <div class="value-desc">화재 초기 단계에서의 감지와 즉각 알림으로 피해를 최소화합니다.</div>
+                    </div>
+                </div>
+
+                <!-- 가치 2 -->
+                <div class="value-item">
+                    <div class="value-dot"></div>
+                    <div>
+                        <div class="value-title">신뢰할 수 있는 데이터</div>
+                        <div class="value-desc">3종 센서를 복합 활용해 오탐을 줄이고 정확도를 높입니다.</div>
+                    </div>
+                </div>
+
+                <!-- 가치 3 -->
+                <div class="value-item">
+                    <div class="value-dot"></div>
+                    <div>
+                        <div class="value-title">현장 중심 설계</div>
+                        <div class="value-desc">공공기관 관리자가 실제로 사용하기 쉬운 인터페이스를 지향합니다.</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 오른쪽 : 팀원 카드 4개 -->
+        <div style="padding-top: -20px;">
+            <div class="about-right-title">개발팀 구성</div>
+            <div class="team-cards">
+
+                <!-- 팀원 1 : 팀장 -->
+                <div class="team-card">
+                    <div class="team-avatar"><i class="ti ti-code"></i></div>
+                    <div class="team-role">팀장 · 백엔드 · DB</div>
+                    <div class="team-name">구정경</div>
+                    <div class="team-dept">데이터 처리 담당</div>
+                </div>
+
+                <!-- 팀원 2 : 프론트엔드 -->
+                <div class="team-card">
+                    <div class="team-avatar"><i class="ti ti-layout"></i></div>
+                    <div class="team-role">프론트엔드</div>
+                    <div class="team-name">구예진</div>
+                    <div class="team-dept">웹 화면 설계 담당</div>
+                </div>
+
+                <!-- 팀원 3 : 하드웨어 -->
+                <div class="team-card">
+                    <div class="team-avatar"><i class="ti ti-cpu"></i></div>
+                    <div class="team-role">하드웨어</div>
+                    <div class="team-name">한혜미</div>
+                    <div class="team-dept">센서 설계 담당</div>
+                </div>
+
+                <!-- 팀원 4 : 데이터 수집 -->
+                <div class="team-card">
+                    <div class="team-avatar"><i class="ti ti-chart-bar"></i></div>
+                    <div class="team-role">데이터 수집</div>
+                    <div class="team-name">장현지</div>
+                    <div class="team-dept">데이터 수집 담당</div>
+                </div>
+
+                 <!-- 팀원 5 : 문서 작성 -->
+                <div class="team-card">
+                    <div class="team-avatar"><i class="ti ti-file-text"></i></div>
+                    <div class="team-role">문서 작성</div>
+                    <div class="team-name">박문수</div>
+                    <div class="team-dept">문서 작성 담당</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===============================
+        CTA 섹션
+================================ -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="cta-title">지금 바로 시작하세요</h2>
+        <p class="cta-desc">소속 기관 계정을 등록하고 FIDS 대시보드로 스마트한 화재 감지를 시작하세요.</p>
+    </div>
+</section>
+
+<!-- ===============================
+        푸터
+================================ -->
+<footer class="footer">
+
+    <!-- 왼쪽 로고 -->
+    <div>
+        <div class="footer-logo">FIDS <span>Fire IoT Detection System by IGNIX</span></div>
+    </div>
+
+    <!-- 가운데 링크 -->
+    <div class="footer-links">
+        <span class="footer-link" onclick="openModal('terms')">이용약관</span>
+        <span class="footer-link" onclick="openModal('privacy')">개인정보처리방침</span>
+        <span class="footer-link" onclick="openModal('contact')">문의하기</span>
+    </div>
+
+    <!-- 오른쪽 카피라이트 -->
+    <div class="footer-copy">© 2026 IGNIX. All rights reserved.</div>
+
+</footer>
+
+<!-- ===============================
+        모달 팝업
+================================ -->
+<div class="modal-overlay" id="modal" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+
+        <!-- 닫기 버튼 -->
+        <button class="modal-close" onclick="closeModal()">✕</button>
+
+        <!-- 내용 -->
+        <div id="modal-content"></div>
+
+    </div>
+</div>
+
+<!-- ===============================
+        모달 스크립트
+================================ -->
+<script>
+    function openModal(type) {
+        const contents = {
+            terms: `
+                <h2>이용약관</h2>
+                <p>FIDS 서비스를 이용해 주셔서 감사합니다.</p>
+                <p>본 약관은 IGNIX가 제공하는 FIDS 서비스 이용에 관한 조건 및 절차를 규정합니다.</p>
+            `,
+            privacy: `
+                <h2>개인정보처리방침</h2>
+                <p>IGNIX는 이용자의 개인정보를 중요시하며, 개인정보 보호법에 따라 이용자의 개인정보를 보호하고 있습니다.</p>
+                <p>수집하는 개인정보는 서비스 제공 목적으로만 사용됩니다.</p>
+            `,
+            contact: `
+                <h2>문의하기</h2>
+                <p>이메일 : <a href="mailto:rndPwls11@korea.kr">rndPwls11@korea.kr</a></p>
+                <p>업무시간 : 평일 09:00 ~ 18:00</p>
+            `
+        };
+        document.getElementById('modal-content').innerHTML = contents[type];
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function renderMainAuth() {
+        const authArea = document.getElementById("authArea");
+        if (!authArea) return;
+
+        const email = sessionStorage.getItem("mgr_email");
+        const name = sessionStorage.getItem("mgr_name") || "관리자";
+
+        if (!email) return;
+
+        authArea.innerHTML = `
+            <button class="login" type="button">${name}</button>
+            <button class="sigup" type="button" onclick="logoutFromMain()">로그아웃</button>
+        `;
+    }
+
+
+    function logoutFromMain() {
+        sessionStorage.clear();
+        alert("로그아웃하였습니다.");
+        location.replace("/");
+    }
+    renderMainAuth();
+</script>
+
+</body>
+</html>
+
+
+

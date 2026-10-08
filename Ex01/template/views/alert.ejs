@@ -1,0 +1,500 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>알림 기록 - FIDS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/fire-alert.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Pretendard, "Apple SD Gothic Neo", Arial, sans-serif; background: #f5f6fa; color: #10172f; display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; height: 100vh; position: sticky; top: 0; background: #1a2235; color: #fff; display: flex; flex-direction: column; flex-shrink: 0; }
+    .sb-logo { padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sb-logo-title { font-size: 16px; font-weight: 700; line-height: 1.2; }
+    .sb-logo-title span { display: inline-block; width: 3px; height: 16px; background: #2d6be4; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+    .sb-logo-sub2 { font-size: 10px; color: rgba(255,255,255,.3); margin-top: 3px; }
+    .sb-logo-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
+    .sb-nav { padding: 14px 10px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: rgba(255,255,255,.55); cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active, .nav-item:hover { background: rgba(255,255,255,.10); color: #fff; }
+    .nav-item i { font-size: 17px; }
+    .operator-menu { display: none; }
+    .sb-bottom { margin-top: auto; padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.08); }
+    .sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 2px; }
+    .sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-avatar i { font-size: 15px; color: rgba(255,255,255,.7); }
+    .sb-user-name { font-size: 12px; font-weight: 600; color: #fff; }
+    .sb-user-email { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 1px; }
+    .sb-logout { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; color: rgba(255,255,255,.4); cursor: pointer; border-radius: 8px; }
+    .sb-logout:hover { color: #fff; background: rgba(255,255,255,.06); }
+    .main { flex: 1; min-width: 0; }
+    .topbar { height: 60px; background: #fff; border-bottom: 1px solid #e8e9ed; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-title { font-size: 20px; font-weight: 800; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #7c8aa5; }
+    .content { padding: 22px 28px; }
+    .btn { height: 36px; padding: 0 14px; border: 1px solid #dbe3ef; background: #fff; border-radius: 8px; font-family: inherit; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .btn.primary { background: #2d6be4; border-color: #2d6be4; color: #fff; }
+    .btn.danger { color: #dc2626; border-color: #fecaca; background: #fff5f5; }
+    .stat-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .stat-card { background: #fff; border: 1px solid #e8e9ed; border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .stat-label { font-size: 12px; font-weight: 800; margin-bottom: 8px; }
+    .stat-num { font-size: 30px; font-weight: 800; }
+    .stat-sub { font-size: 11px; color: #a0a7b5; margin-top: 5px; }
+    .stat-icon { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; }
+    .blue .stat-label, .blue .stat-num { color: #2d6be4; } .blue .stat-icon { background: #eaf2ff; color: #2d6be4; }
+    .red .stat-label, .red .stat-num { color: #dc2626; } .red .stat-icon { background: #fee2e2; color: #dc2626; }
+    .yellow .stat-label, .yellow .stat-num { color: #d97706; } .yellow .stat-icon { background: #fef3c7; color: #d97706; }
+    .chart-grid { display: grid; grid-template-columns: minmax(420px, 1.75fr) minmax(300px, .85fr) minmax(260px, .7fr); gap: 14px; margin-bottom: 12px; align-items: stretch; }
+    .chart-card { background: #fff; border: 1px solid #e8e9ed; border-radius: 12px; padding: 14px 18px; min-height: 0; height: 235px; overflow: hidden; }
+    .chart-title { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+    .chart-box { height: 150px; max-width: 520px; margin: 0 auto; }
+    .date-record-wrap { display: contents; }
+    .date-card-mini { border: 1px solid #e8edf5; border-radius: 12px; padding: 7px 10px; background: #fff; }
+    .calendar-head-mini { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+    .calendar-head-mini button { width: 20px; height: 20px; border: 0; border-radius: 7px; background: #fff; color: #64748b; cursor: pointer; }
+    .calendar-title-mini { font-weight: 900; color: #10172f; font-size: 12px; }
+    .week-mini, .days-mini { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 2px; }
+    .week-mini { color: #94a3b8; font-size: 10px; margin-bottom: 4px; }
+    .days-mini button { height: 18px; border: 0; border-radius: 6px; background: #fff; color: #64748b; font-size: 11px; cursor: pointer; }
+    .days-mini button:hover, .days-mini button.active { background: #2563eb; color: #fff; font-weight: 800; }
+    .record-list-mini { display: flex; flex-direction: column; gap: 8px; max-height: 155px; overflow-y: auto; }
+    .record-row-mini { display: grid; grid-template-columns: 10px 1fr; gap: 8px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+    .record-dot-mini { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; }
+    .record-dot-mini.danger { background: #dc2626; }
+    .record-dot-mini.warning { background: #d97706; }
+    .record-title-mini { font-size: 12px; font-weight: 900; }
+    .record-title-mini.danger { color: #dc2626; }
+    .record-title-mini.warning { color: #d97706; }
+    .record-title-mini.normal { color: #16a34a; }
+    .record-desc-mini, .record-time-mini { color: #94a3b8; font-size: 11px; margin-top: 2px; }
+    #alertRecordTitle { margin-bottom: 10px !important; font-size: 14px !important; }
+    .panel { background: #fff; border: 1px solid #e8e9ed; border-radius: 12px; overflow: hidden; }
+    .panel-head { padding: 18px 20px; border-bottom: 1px solid #eef2f7; display: flex; align-items: center; justify-content: space-between; }
+    .panel-title { font-size: 16px; font-weight: 800; }
+    .toolbar { padding: 14px 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #eef2f7; flex-wrap: wrap; }
+    .search-input, .select-input, .date-input { height: 36px; border: 1px solid #dbe3ef; border-radius: 8px; background: #fff; padding: 0 12px; font-family: inherit; font-size: 12px; }
+    .search-input { width: 190px; }
+    .date-range { height: 36px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #dbe3ef; border-radius: 8px; background: #fff; padding: 0 10px; }
+    .date-range .date-input { width: 118px; height: 34px; border: 0; padding: 0; background: transparent; }
+    .toolbar-spacer { flex: 1; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 14px; background: #f8fafc; color: #8b98b2; font-size: 12px; border-bottom: 1px solid #e8eef7; }
+    td { padding: 14px; font-size: 13px; border-bottom: 1px solid #eef2f7; }
+    tr.danger-row { background: #fff5f5; color: #dc2626; font-weight: 700; }
+    tr.warning-row { background: #fffbeb; }
+    tr.warning-row td:nth-child(5), tr.warning-row td:nth-child(6) { color: #d97706; font-weight: 700; }
+    tr.read-row { background: #fff; color: #111827; font-weight: 400; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .badge.danger { background: #fee2e2; color: #dc2626; }
+    .badge.warning { background: #fef3c7; color: #d97706; }
+    .badge.read { background: #f1f5f9; color: #64748b; }
+    .empty { padding: 36px; text-align: center; color: #98a2b3; font-size: 14px; }
+    .pager { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #eef2f7; }
+    .pager-info { font-size: 12px; color: #64748b; }
+    .pager-btns { display: flex; gap: 6px; }
+    .pager-btn { min-width: 32px; height: 32px; border: 1px solid #dbe3ef; background: #fff; border-radius: 8px; cursor: pointer; font-size: 12px; }
+    .pager-btn.active { background: #2d6be4; color: #fff; border-color: #2d6be4; }
+    .row-trash-btn { width: 32px; height: 32px; border: 1px solid #fecaca; border-radius: 8px; background: #fff5f5; color: #dc2626; cursor: pointer; display: inline-grid; place-items: center; }
+    .alert-area { position: relative; }
+    .alert-button { position: relative; width: 38px; height: 38px; border: 1px solid #e5e7eb; border-radius: 50%; background: #fff; cursor: pointer; display: grid; place-items: center; font-size: 17px; }
+    .alert-dot { position: absolute; top: 7px; right: 8px; width: 8px; height: 8px; background: #ef4444; border: 2px solid #fff; border-radius: 50%; }
+    .alert-dot.hide { display: none; }
+    .alert-dropdown { display: none; position: absolute; top: 48px; right: 0; width: 330px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 18px 45px rgba(15,23,42,.18); overflow: hidden; z-index: 100; }
+    .alert-dropdown.open { display: block; }
+    .alert-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid #eef2f7; }
+    .alert-head button, .alert-more { border: 0; background: #fff; color: #2563eb; cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 700; }
+    .alert-list { max-height: 300px; overflow-y: auto; }
+    .alert-item { display: grid; grid-template-columns: 42px 1fr 58px; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; align-items: center; }
+    .alert-item.danger { background: #fff5f5; }
+    .alert-icon { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #fee2e2; color: #ef4444; }
+    .alert-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .alert-text strong { font-size: 13px; color: #dc2626; }
+    .alert-text span, .alert-text small { font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .alert-time { font-size: 11px; color: #9ca3af; text-align: right; }
+    .alert-empty { padding: 24px; text-align: center; color: #94a3b8; font-size: 13px; }
+    .alert-more { width: 100%; height: 42px; border-top: 1px solid #eef2f7; }
+    .export-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.45); z-index:9000; align-items:center; justify-content:center; }
+    .export-overlay.open { display:flex; }
+    .export-modal { width:420px; background:#fff; border-radius:16px; box-shadow:0 24px 70px rgba(15,23,42,.25); padding:24px; }
+    .export-modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:20px; }
+    .export-modal-title { font-size:18px; font-weight:900; color:#10172f; }
+    .export-modal-sub { font-size:12px; color:#8b98b2; margin-top:5px; }
+    .export-close { width:32px; height:32px; border:0; border-radius:50%; background:#f8fafc; color:#94a3b8; cursor:pointer; font-size:20px; }
+    .export-period { margin-bottom:18px; }
+    .export-section-label { font-size:13px; font-weight:800; color:#334155; margin-bottom:8px; }
+    .export-date-range { display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; }
+    .export-date-range span { color:#94a3b8; font-weight:800; text-align:center; }
+    .export-format-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+    .export-format { height:86px; border:1px solid #dbe3ef; border-radius:10px; background:#fff; cursor:pointer; font-family:inherit; font-size:12px; font-weight:800; color:#475569; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; }
+    .export-format:hover { border-color:#2d6be4; color:#2d6be4; background:#eff6ff; }
+    .export-format i { font-size:22px; }
+    .export-actions { display:flex; justify-content:flex-end; }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title"><span></span>FIDS</div>
+      <div class="sb-logo-sub2">쓰레기통 화재 감지 시스템</div>
+      <div class="sb-logo-sub">관리자 대시보드</div>
+    </div>
+    <div class="sb-nav">
+      <div class="nav-item" onclick="location.href='/dashboard'"><i class="ti ti-home"></i>대시보드</div>
+      <div class="nav-item" onclick="location.href='/trashbins'"><i class="ti ti-trash"></i>쓰레기통 관리</div>
+      <div class="nav-item" onclick="location.href='/realtime'"><i class="ti ti-chart-line"></i>실시간 모니터링</div>
+      <div class="nav-item active" onclick="location.href='/alert'"><i class="ti ti-bell"></i>알림 기록</div>
+      <div class="nav-item operator-menu" onclick="location.href='/admin/approval'"><i class="ti ti-user-check"></i>관리자 승인 관리</div>
+      <div class="nav-item" onclick="location.href='/settings'"><i class="ti ti-settings"></i>설정</div>
+      <div class="nav-item" onclick="location.href='/'"><i class="ti ti-home-2"></i>메인페이지</div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user"><div class="sb-avatar"><i class="ti ti-user"></i></div><div><div id="userName" class="sb-user-name">관리자</div><div id="userEmail" class="sb-user-email">admin@korea.kr</div></div></div>
+      <div id="logoutBtn" class="sb-logout"><i class="ti ti-logout"></i>로그아웃</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title">알림 기록</div>
+      <div class="topbar-right">
+        <i class="ti ti-calendar"></i><span id="nowText"></span>
+        <div class="alert-area"><button class="alert-button" id="topbarAlertButton" type="button"><i class="ti ti-bell"></i><span class="alert-dot" id="topbarAlertDot"></span></button><div class="alert-dropdown" id="topbarAlertDropdown"><div class="alert-head"><strong>알림</strong><button type="button" id="topbarReadAllBtn">모두 읽음</button></div><div class="alert-list" id="topbarAlertList"></div><button class="alert-more" type="button" id="topbarOpenAllAlertsBtn">전체 알림 보기 →</button></div></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="stat-row">
+        <div class="stat-card blue"><div><div class="stat-label">전체 알림</div><div><span id="statTotal" class="stat-num">0</span> 건</div><div class="stat-sub">전체 기준</div></div><div class="stat-icon"><i class="ti ti-bell"></i></div></div>
+        <div class="stat-card red"><div><div class="stat-label">위험 정보</div><div><span id="statDanger" class="stat-num">0</span> 건</div><div class="stat-sub">즉각 대응 필요</div></div><div class="stat-icon"><i class="ti ti-flame"></i></div></div>
+        <div class="stat-card yellow"><div><div class="stat-label">주의 정보</div><div><span id="statWarning" class="stat-num">0</span> 건</div><div class="stat-sub">모니터링 필요</div></div><div class="stat-icon"><i class="ti ti-alert-triangle"></i></div></div>
+      </div>
+
+      <div class="chart-grid">
+        <section class="chart-card"><div class="chart-title">월별 알림 발생 추이</div><div class="chart-box"><canvas id="monthChart"></canvas></div></section>
+        <section class="chart-card calendar-card">
+          <div class="chart-title">날짜별 기록</div>
+          <div class="date-card-mini">
+            <div class="calendar-head-mini"><button type="button" onclick="moveAlertRecordMonth(-1)"><i class="ti ti-chevron-left"></i></button><span id="alertCalendarTitle" class="calendar-title-mini"></span><button type="button" onclick="moveAlertRecordMonth(1)"><i class="ti ti-chevron-right"></i></button></div>
+            <div class="week-mini"><span style="color:#dc2626">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span style="color:#2563eb">토</span></div>
+            <div id="alertCalendarDays" class="days-mini"></div>
+          </div>
+        </section>
+        <section class="chart-card daily-record-card">
+          <div id="alertRecordTitle" class="chart-title" style="font-size:14px;margin-bottom:12px;">기록 없음</div>
+          <div id="alertRecordList" class="record-list-mini"></div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head"><div class="panel-title">알림 기록 목록</div><button class="btn" type="button" onclick="exportAlerts()"><i class="ti ti-download"></i>내보내기</button></div>
+        <div class="toolbar">
+          <input id="sensorSearch" class="search-input" type="text" placeholder="센서 ID 검색">
+          <input id="locationSearch" class="search-input" type="text" placeholder="설치 위치 검색">
+          <select id="typeFilter" class="select-input"><option value="">전체 유형</option><option value="danger">위험 감지</option><option value="warning">주의 감지</option></select>
+          <select id="readFilter" class="select-input"><option value="">전체 상태</option><option value="N">미처리</option><option value="Y">처리 완료</option></select>
+          <div class="date-range"><input id="startDateInput" class="date-input" type="date"><span>~</span><input id="endDateInput" class="date-input" type="date"></div>
+          <button class="btn" type="button" onclick="applyFilters()"><i class="ti ti-filter"></i>필터 적용</button>
+          <span class="toolbar-spacer"></span>
+          <button class="btn" type="button" onclick="markSelectedRead()"><i class="ti ti-check"></i>선택 읽음 처리</button>
+          <button class="btn danger" type="button" onclick="deleteCheckedAlerts()"><i class="ti ti-trash"></i>선택 삭제</button>
+          <button class="btn primary" type="button" onclick="markAllRead()"><i class="ti ti-check"></i>전체 읽음 처리</button>
+        </div>
+        <table><thead><tr><th style="width:42px;"><input id="selectAllAlerts" type="checkbox" onclick="toggleSelectAllAlerts(this.checked)"></th><th>유형</th><th>센서 ID</th><th>설치 위치</th><th>내용</th><th>온도</th><th>연기감지값</th><th>불꽃 감지</th><th>발생 시간</th><th>처리 상태</th><th>처리 시간</th><th>관리</th></tr></thead><tbody id="alertBody"></tbody></table>
+        <div id="emptyText" class="empty" style="display:none;">조회된 알림 기록이 없습니다.</div>
+        <div class="pager"><div id="pagerInfo" class="pager-info">총 0건</div><div id="pagerBtns" class="pager-btns"></div></div>
+      </section>
+    </div>
+  </main>
+  <div class="export-overlay" id="exportOverlay">
+    <div class="export-modal">
+      <div class="export-modal-head">
+        <div>
+          <div class="export-modal-title">알림 기록 내보내기</div>
+          <div class="export-modal-sub">기간과 파일 형식을 선택해주세요.</div>
+        </div>
+        <button class="export-close" type="button" onclick="closeExportModal()">×</button>
+      </div>
+      <div class="export-period">
+        <div class="export-section-label">기간 설정</div>
+        <div class="export-date-range">
+          <input id="exportStartDate" class="date-input" type="date">
+          <span>~</span>
+          <input id="exportEndDate" class="date-input" type="date">
+        </div>
+      </div>
+      <div class="export-format-grid">
+        <button class="export-format" type="button" onclick="downloadAlerts('pdf')"><i class="ti ti-file-type-pdf"></i>PDF</button>
+        <button class="export-format" type="button" onclick="downloadAlerts('csv')"><i class="ti ti-file-type-csv"></i>CSV</button>
+        <button class="export-format" type="button" onclick="downloadAlerts('excel')"><i class="ti ti-file-spreadsheet"></i>Excel</button>
+      </div>
+      <div class="export-actions"><button class="btn" type="button" onclick="closeExportModal()">취소</button></div>
+    </div>
+  </div>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let alertRows = [];
+    let dailyRecordRows = [];
+    let currentPage = 1;
+    const pageLimit = 10;
+    let monthChart = null;
+    let selectedAlertIds = new Set();
+    let alertRecordDateKey = "";
+    let alertCalendarViewDate = new Date();
+
+    const role = sessionStorage.getItem("role");
+    const mgrName = sessionStorage.getItem("mgr_name");
+    const mgrEmail = sessionStorage.getItem("mgr_email");
+    if (!role) { alert("로그인이 필요합니다."); location.href = "/login"; }
+    $("userName").textContent = mgrName || "관리자";
+    $("userEmail").textContent = mgrEmail || "";
+    document.querySelectorAll(".operator-menu").forEach((item) => { item.style.display = role === "operator" ? "flex" : "none"; });
+    $("logoutBtn").onclick = () => { sessionStorage.clear(); alert("로그아웃되었습니다."); location.replace("/"); };
+
+    function setNowText() { const n = new Date(); const w = ["일", "월", "화", "수", "목", "금", "토"][n.getDay()]; $("nowText").textContent = `${n.getFullYear()}.${String(n.getMonth()+1).padStart(2,"0")}.${String(n.getDate()).padStart(2,"0")} (${w}) ${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}:${String(n.getSeconds()).padStart(2,"0")}`; }
+    function typeLabel(t) { return t === "danger" ? "위험 감지" : t === "warning" ? "주의 감지" : t === "normal" ? "정상" : "알림"; }
+    function typeIcon(t) { return t === "danger" ? "ti-flame" : t === "warning" ? "ti-alert-triangle" : "ti-bell"; }
+    function messageFor(t) { return t === "danger" ? "화재 위험 감지 - 즉각 대응 필요" : t === "warning" ? "주의 상태 감지 - 모니터링 필요" : t === "normal" ? "센서 상태 정상" : "알림 발생"; }
+    function rowMessage(row) {
+      if (!row) return messageFor("");
+      const msg = String(row.alert_msg || "").trim();
+      if (msg && msg !== "온도 및 연기 임계값 초과") return msg;
+      if (row.alert_type === "warning") {
+        const temp = Number(row.temp_value);
+        const smoke = Number(row.smoke_value);
+        const tempHigh = Number.isFinite(temp) && temp >= 40;
+        const smokeHigh = Number.isFinite(smoke) && smoke >= 150;
+        if (tempHigh && smokeHigh) return "온도·연기 주의 기준 감지";
+        if (smokeHigh) return "연기 감지값 주의 기준 초과";
+        if (tempHigh) return "온도 상승 주의 관찰";
+        return "센서값 증가폭 이상 감지";
+      }
+      return msg || messageFor(row.alert_type);
+    }
+    function displayBinId(row) { const id = row && row.display_bin_id != null ? row.display_bin_id : row && row.bin_id; return String(id || "").padStart(2, "0"); }
+    function timeOnly(v) { if (!v) return "-"; const d = new Date(v); if (Number.isNaN(d.getTime())) return "-"; return d.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); }
+    function dateTimeText(v) { if (!v) return "-"; const d = new Date(v); if (Number.isNaN(d.getTime())) return "-"; return d.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, ".").replace(/\.$/, "") + " " + d.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }); }
+    function monthKey(v) { const d = new Date(v); if (Number.isNaN(d.getTime())) return ""; return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
+    function recordPad(n) { return String(n).padStart(2, "0"); }
+    function recordKey(d) { return d.getFullYear() + "-" + recordPad(d.getMonth() + 1) + "-" + recordPad(d.getDate()); }
+    function parseTemp(row) { return row.temp_value != null && row.temp_value !== "" ? `${Number(row.temp_value).toFixed(1)}℃` : "-"; }
+    function parseSmoke(row) { return row.smoke_value != null && row.smoke_value !== "" ? Number(row.smoke_value).toFixed(1) : "-"; }
+    function parseFlame(row) { if (row.flame_value == null || row.flame_value === "") return "-"; return Number(row.flame_value) === 1 ? "O" : "X"; }
+    function isRowRead(row) { return row.is_received === "Y"; }
+    function rowReadAt(row) { return row.received_at || null; }
+
+    function filteredRows() {
+      const sensor = $("sensorSearch").value.trim().toLowerCase();
+      const loc = $("locationSearch").value.trim().toLowerCase();
+      const type = $("typeFilter").value;
+      const read = $("readFilter").value;
+      const start = $("startDateInput").value;
+      const end = $("endDateInput").value;
+      return alertRows.filter((row) => {
+        const date = row.alerted_at ? recordKey(new Date(row.alerted_at)) : "";
+        return (!sensor || String(row.bin_id).includes(sensor) || displayBinId(row).includes(sensor)) &&
+          (!loc || String(row.bin_loc || "").toLowerCase().includes(loc)) &&
+          (!type || row.alert_type === type) &&
+          (!read || row.is_received === read) &&
+          (!start || date >= start) &&
+          (!end || date <= end);
+      }).sort((a, b) => new Date(b.alerted_at) - new Date(a.alerted_at));
+    }
+
+    function renderStats() {
+      const rows = alertRows;
+      $("statTotal").textContent = rows.length;
+      $("statDanger").textContent = rows.filter((r) => r.alert_type === "danger").length;
+      $("statWarning").textContent = rows.filter((r) => r.alert_type === "warning").length;
+    }
+
+    function renderMonthChart() {
+      const months = {};
+      alertRows.forEach((row) => { const key = monthKey(row.alerted_at); if (!key) return; if (!months[key]) months[key] = { danger: 0, warning: 0 }; if (row.alert_type === "danger") months[key].danger++; if (row.alert_type === "warning") months[key].warning++; });
+      const keys = Object.keys(months).sort();
+      const labels = keys.map((key) => key);
+      if (monthChart) monthChart.destroy();
+      monthChart = new Chart($("monthChart"), { type: "bar", data: { labels, datasets: [{ label: "위험", data: keys.map((k) => months[k].danger), backgroundColor: "#fca5a5", stack: "alerts", barThickness: 42, maxBarThickness: 42, categoryPercentage: 0.42, barPercentage: 0.72 }, { label: "주의", data: keys.map((k) => months[k].warning), backgroundColor: "#fcd34d", stack: "alerts", barThickness: 42, maxBarThickness: 42, categoryPercentage: 0.42, barPercentage: 0.72 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } } } });
+    }
+
+    function renderTable() {
+      const rows = filteredRows();
+      const totalPage = Math.max(Math.ceil(rows.length / pageLimit), 1);
+      if (currentPage > totalPage) currentPage = totalPage;
+      const start = (currentPage - 1) * pageLimit;
+      const pageRows = rows.slice(start, start + pageLimit);
+      $("emptyText").style.display = rows.length ? "none" : "block";
+      $("alertBody").innerHTML = pageRows.map((row) => {
+        const key = String(row.alert_id);
+        const read = isRowRead(row);
+        const cls = read ? "read-row" : row.alert_type === "danger" ? "danger-row" : row.alert_type === "warning" ? "warning-row" : "";
+        return `<tr class="${cls}"><td><input type="checkbox" class="alert-row-check" data-alert-id="${key}" ${selectedAlertIds.has(key) ? "checked" : ""} onchange="toggleAlertSelection('${key}', this.checked)"></td><td><span class="badge ${read ? "read" : row.alert_type}"><i class="ti ${typeIcon(row.alert_type)}"></i>${typeLabel(row.alert_type)}</span></td><td><b>#${displayBinId(row)}</b></td><td>${row.bin_loc || "-"}</td><td>${rowMessage(row)}</td><td>${parseTemp(row)}</td><td>${parseSmoke(row)}</td><td>${parseFlame(row)}</td><td>${dateTimeText(row.alerted_at)}</td><td><span class="badge ${read ? "read" : "danger"}">${read ? "처리 완료" : "미처리"}</span></td><td>${read && rowReadAt(row) ? dateTimeText(rowReadAt(row)) : "-"}</td><td><button class="row-trash-btn" type="button" onclick="deleteAlert('${key}')"><i class="ti ti-trash"></i></button></td></tr>`;
+      }).join("");
+      const end = Math.min(start + pageLimit, rows.length);
+      $("pagerInfo").textContent = rows.length ? `총 ${rows.length}건 중 ${start + 1}-${end}건 표시` : "총 0건";
+      let pager = "";
+      for (let i = 1; i <= totalPage; i++) pager += `<button class="pager-btn ${i === currentPage ? "active" : ""}" onclick="goPage(${i})">${i}</button>`;
+      $("pagerBtns").innerHTML = pager;
+    }
+
+    function renderAlertCalendarDays() {
+      if (!alertRecordDateKey) { const source = dailyRecordRows.length ? dailyRecordRows[0] : alertRows[0]; const firstKey = source && source.record_date ? source.record_date : source && source.alerted_at ? recordKey(new Date(source.alerted_at)) : recordKey(new Date()); const parts = firstKey.split("-").map(Number); const first = new Date(parts[0], parts[1] - 1, parts[2]); alertCalendarViewDate = new Date(first.getFullYear(), first.getMonth(), 1); alertRecordDateKey = firstKey; }
+      const y = alertCalendarViewDate.getFullYear(); const m = alertCalendarViewDate.getMonth(); const first = new Date(y, m, 1); const last = new Date(y, m + 1, 0).getDate();
+      $("alertCalendarTitle").textContent = `${y}년 ${m + 1}월`;
+      let html = ""; for (let i = 0; i < first.getDay(); i++) html += "<span></span>";
+      for (let d = 1; d <= last; d++) { const key = recordKey(new Date(y, m, d)); html += `<button type="button" class="${key === alertRecordDateKey ? "active" : ""}" onclick="selectAlertRecordDate('${key}')">${d}</button>`; }
+      $("alertCalendarDays").innerHTML = html;
+    }
+    function selectAlertRecordDate(key) { alertRecordDateKey = key; renderAlertCalendarDays(); renderAlertDateRecords(); }
+    function moveAlertRecordMonth(diff) { alertCalendarViewDate = new Date(alertCalendarViewDate.getFullYear(), alertCalendarViewDate.getMonth() + diff, 1); alertRecordDateKey = recordKey(alertCalendarViewDate); renderAlertCalendarDays(); renderAlertDateRecords(); }
+    function renderAlertDateRecords() {
+      renderAlertCalendarDays();
+      const severityRank = (type) => type === "danger" ? 1 : type === "warning" ? 2 : 3;
+      const bestByBin = new Map();
+      dailyRecordRows
+        .filter((r) => (r.record_date || (r.alerted_at ? recordKey(new Date(r.alerted_at)) : "")) === alertRecordDateKey)
+        .forEach((row) => {
+          const key = String(row.bin_id || row.display_bin_id || "");
+          const old = bestByBin.get(key);
+          const rowRank = severityRank(row.alert_type);
+          const oldRank = old ? severityRank(old.alert_type) : 99;
+          if (!old || rowRank < oldRank || (rowRank === oldRank && new Date(row.alerted_at) > new Date(old.alerted_at))) {
+            bestByBin.set(key, row);
+          }
+        });
+      const rows = Array.from(bestByBin.values()).sort((a, b) => severityRank(a.alert_type) - severityRank(b.alert_type) || new Date(b.alerted_at) - new Date(a.alerted_at));
+      $("alertRecordTitle").textContent = `${alertRecordDateKey} 기록`;
+      $("alertRecordList").innerHTML = rows.length ? rows.map((r) => `<div class="record-row-mini"><span class="record-dot-mini ${r.alert_type}"></span><div><div class="record-title-mini ${r.alert_type}">${typeLabel(r.alert_type)}</div><div class="record-desc-mini">#${displayBinId(r)} ${r.bin_loc || "-"}</div><div class="record-time-mini">${timeOnly(r.alerted_at)}</div></div></div>`).join("") : '<div class="record-desc-mini">선택한 날짜의 기록이 없습니다.</div>';
+    }
+
+    function applyFilters() { currentPage = 1; renderTable(); }
+    function goPage(p) { currentPage = p; renderTable(); }
+    function toggleAlertSelection(id, checked) { checked ? selectedAlertIds.add(String(id)) : selectedAlertIds.delete(String(id)); }
+    function toggleSelectAllAlerts(checked) { document.querySelectorAll(".alert-row-check").forEach((box) => { box.checked = checked; toggleAlertSelection(box.dataset.alertId, checked); }); }
+    async function markSelectedRead() { if (!selectedAlertIds.size) return alert("읽음 처리할 알림을 선택해주세요."); const res = await fetch("/alert/api/read-selected", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ alertIds: Array.from(selectedAlertIds) }) }); const json = await res.json(); if (!json.success) return alert(json.message || "선택 읽음 처리 실패"); selectedAlertIds.clear(); await loadLogs(); }
+    async function markAllRead() { const res = await fetch("/alert/api/read-all", { method: "POST" }); const json = await res.json(); if (!json.success) return alert(json.message || "전체 읽음 처리 실패"); await loadLogs(); }
+    async function deleteCheckedAlerts() { if (!selectedAlertIds.size) return alert("삭제할 알림을 선택해주세요."); if (!confirm("선택한 알림을 삭제하시겠습니까?")) return; const res = await fetch("/alert/api/delete-selected", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ alertIds: Array.from(selectedAlertIds) }) }); const json = await res.json(); if (!json.success) return alert(json.message || "선택 삭제 실패"); selectedAlertIds.clear(); await loadLogs(); }
+    async function deleteAlert(id) { selectedAlertIds = new Set([String(id)]); await deleteCheckedAlerts(); }
+    function exportAlerts() {
+      const start = $("startDateInput") ? $("startDateInput").value : "";
+      const end = $("endDateInput") ? $("endDateInput").value : "";
+      if ($("exportStartDate")) $("exportStartDate").value = start;
+      if ($("exportEndDate")) $("exportEndDate").value = end;
+      $("exportOverlay").classList.add("open");
+    }
+    function closeExportModal() { $("exportOverlay").classList.remove("open"); }
+    function exportDateRows() {
+      const start = $("exportStartDate") ? $("exportStartDate").value : "";
+      const end = $("exportEndDate") ? $("exportEndDate").value : "";
+      return alertRows.filter((row) => {
+        const date = row.alerted_at ? recordKey(new Date(row.alerted_at)) : "";
+        return (!start || date >= start) && (!end || date <= end);
+      });
+    }
+    function alertExportLines() {
+      const rows = exportDateRows();
+      const lines = [["유형","센서 ID","설치 위치","내용","온도","연기감지값","불꽃 감지","발생 시간","처리 상태","처리 시간"]];
+      rows.forEach((r) => lines.push([typeLabel(r.alert_type), `#${displayBinId(r)}`, r.bin_loc || "-", rowMessage(r), parseTemp(r), parseSmoke(r), parseFlame(r), dateTimeText(r.alerted_at), isRowRead(r) ? "처리 완료" : "미처리", isRowRead(r) && rowReadAt(r) ? dateTimeText(rowReadAt(r)) : "-"]));
+      return lines;
+    }
+    function csvEscape(v) { return `"${String(v).replace(/"/g, '""')}"`; }
+    function downloadFile(filename, type, content) {
+      const blob = new Blob([content], { type });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    function downloadAlerts(format) {
+      const lines = alertExportLines();
+      if (format === "csv") {
+        downloadFile("fids_alert_log.csv", "text/csv;charset=utf-8", "\ufeff" + lines.map((line) => line.map(csvEscape).join(",")).join("\n"));
+        closeExportModal();
+        return;
+      }
+      if (format === "excel") {
+        const rows = lines.map((line) => `<tr>${line.map((cell) => `<td>${String(cell).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</td>`).join("")}</tr>`).join("");
+        const html = `<html><head><meta charset="UTF-8"></head><body><table border="1">${rows}</table></body></html>`;
+        downloadFile("fids_alert_log.xls", "application/vnd.ms-excel;charset=utf-8", "\ufeff" + html);
+        closeExportModal();
+        return;
+      }
+      const rows = lines.map((line) => `<tr>${line.map((cell) => `<td>${String(cell).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</td>`).join("")}</tr>`).join("");
+      const popup = window.open("", "_blank");
+      popup.document.write(`<html><head><meta charset="UTF-8"><title>FIDS 알림 기록</title><style>body{font-family:Arial,sans-serif;padding:24px}h1{font-size:22px}table{width:100%;border-collapse:collapse;margin-top:16px}td{border:1px solid #ddd;padding:8px;font-size:12px}tr:first-child td{font-weight:700;background:#f1f5f9}</style></head><body><h1>FIDS 알림 기록</h1><table>${rows}</table></body></html>`);
+      popup.document.close();
+      popup.print();
+      closeExportModal();
+    }
+
+    function renderTopbarAlerts() { const list = alertRows.filter((r) => r.alert_type === "danger" && r.is_received !== "Y").slice(0, 5); $("topbarAlertDot").classList.toggle("hide", list.length === 0); $("topbarAlertList").innerHTML = list.length ? list.map((r) => `<div class="alert-item danger"><div class="alert-icon"><i class="ti ti-flame"></i></div><div class="alert-text"><strong>위험 감지</strong><span>#${displayBinId(r)} ${r.bin_loc || ""}</span><small>${r.alert_msg || messageFor(r.alert_type)}</small></div><span class="alert-time">${timeOnly(r.alerted_at)}</span></div>`).join("") : '<div class="alert-empty">위험 알림이 없습니다.</div>'; }
+    $("topbarAlertButton").onclick = (e) => { e.stopPropagation(); $("topbarAlertDropdown").classList.toggle("open"); };
+    $("topbarReadAllBtn").onclick = markAllRead;
+    $("topbarOpenAllAlertsBtn").onclick = () => { location.href = "/alert"; };
+    document.onclick = (e) => { if (!e.target.closest(".alert-area")) $("topbarAlertDropdown").classList.remove("open"); };
+
+    async function loadDailyRecords() {
+  try {
+    const dailyRes = await fetch("/alerts/daily-records");
+    const dailyJson = await dailyRes.json();
+
+    dailyRecordRows = Array.isArray(dailyJson)
+      ? dailyJson
+      : Array.isArray(dailyJson.rows)
+        ? dailyJson.rows
+        : [];
+  } catch (error) {
+    dailyRecordRows = [];
+  }
+
+  renderAlertDateRecords();
+}
+    
+    async function loadLogs() {
+  const res = await fetch("/alert/api/logs");
+  const json = await res.json();
+
+  alertRows = Array.isArray(json.rows) ? json.rows : Array.isArray(json) ? json : [];
+  selectedAlertIds.clear();
+
+  renderStats();
+  renderMonthChart();
+  renderTable();
+  renderTopbarAlerts();
+
+  // 날짜별 기록은 알림목록이 아니라 센서 기록 API에서 따로 불러옴
+  dailyRecordRows = [];
+  renderAlertDateRecords();
+  loadDailyRecords();
+}
+    setNowText(); setInterval(setNowText, 1000); loadLogs();
+  </script>
+  <script src="/js/fire-alert.js"></script>
+  <script src="/js/topbar-alert.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

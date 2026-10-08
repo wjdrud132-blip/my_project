@@ -1,0 +1,313 @@
+.fire-alert-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(3px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fire-alert-modal {
+  width: 460px;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+}
+
+.fire-alert-head {
+  background: #c91f25;
+  color: #fff;
+  padding: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fire-alert-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.fire-alert-icon i {
+  font-size: 26px;
+}
+
+.fire-alert-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 99px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.fire-alert-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff3030;
+  border: 1.5px solid #fff;
+}
+
+.fire-alert-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.fire-alert-body {
+  padding: 22px 26px;
+}
+
+.fire-alert-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.fire-alert-info {
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.fire-alert-label {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.fire-alert-value {
+  font-size: 15px;
+  color: #111827;
+  font-weight: 800;
+}
+
+.fire-alert-value.danger {
+  color: #ef232a;
+}
+
+.fire-alert-time {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 18px;
+  padding-top: 14px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.fire-alert-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 26px 22px;
+}
+
+.fire-alert-move {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: 9px;
+  background: #ef232a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fire-alert-close {
+  width: 72px;
+  height: 44px;
+  border-radius: 9px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #555;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fire-alert-move:hover {
+  background: #dc1f26;
+}
+
+.fire-alert-close:hover {
+  background: #f8fafc;
+}
+
+/* Current danger modal markup support */
+.fire-alert-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.fire-alert-overlay .fire-alert-modal {
+  width: 460px;
+  max-width: calc(100vw - 40px);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+}
+
+.fire-alert-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 26px;
+  background: #c91f25;
+  color: #fff;
+}
+
+.fire-alert-overlay.warning .fire-alert-top {
+  background: #d97706;
+}
+
+.fire-alert-top h2 {
+  margin: 6px 0 0;
+  font-size: 21px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.fire-icon {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.fire-icon i {
+  font-size: 26px;
+}
+
+.fire-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.fire-badge span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ff3030;
+  border: 1.5px solid #fff;
+}
+
+.fire-alert-overlay.warning .fire-badge span {
+  background: #fbbf24;
+}
+
+.fire-alert-overlay .fire-alert-body {
+  padding: 22px 26px 0;
+}
+
+.fire-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.fire-info-box {
+  min-height: 64px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.fire-info-box span {
+  display: block;
+  margin-bottom: 6px;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.fire-info-box strong {
+  display: block;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.fire-info-box .danger-text,
+.danger-text {
+  color: #ef232a !important;
+}
+
+.fire-alert-overlay.warning .danger-text {
+  color: #d97706 !important;
+}
+
+.fire-alert-date {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e7eb;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+.fire-alert-overlay .fire-alert-actions {
+  display: flex;
+  gap: 10px;
+  padding: 22px 0 22px;
+}
+
+.fire-move-btn,
+.fire-close-btn {
+  height: 44px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.fire-move-btn {
+  flex: 1;
+  border: 0;
+  background: #ef232a;
+  color: #fff;
+}
+
+.fire-alert-overlay.warning .fire-move-btn {
+  background: #f59e0b;
+}
+
+.fire-close-btn {
+  width: 72px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #555;
+}

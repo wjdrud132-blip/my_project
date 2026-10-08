@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 승인 관리 - FIDS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif; background: #f5f6fa; min-height: 100vh; color: #10172f; }
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; flex-shrink: 0; background: #1a2235; display: flex; flex-direction: column; min-height: 100vh; }
+    .sb-logo { padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .sb-logo-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .sb-logo-title span { display: inline-block; width: 3px; height: 16px; background: #2d6be4; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+    .sb-logo-sub2 { font-size: 10px; color: rgba(255,255,255,.3); margin-top: 3px; }
+    .sb-logo-sub { font-size: 11px; color: rgba(255,255,255,.4); margin-top: 2px; }
+    .sb-nav { padding: 14px 10px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: rgba(255,255,255,.55); cursor: pointer; margin-bottom: 2px; position: relative; }
+    .nav-item.active, .nav-item:hover { background: rgba(255,255,255,.10); color: #fff; }
+    .nav-item i { font-size: 17px; }
+    .approval-badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: #ef4444; color: #fff; display: none; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; }
+    .approval-badge.show { display: inline-flex; }
+    .sb-bottom { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,.08); }
+    .sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 2px; }
+    .sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-avatar i { font-size: 15px; color: rgba(255,255,255,.7); }
+    .sb-user-name { font-size: 12px; font-weight: 600; color: #fff; }
+    .sb-user-email { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 1px; }
+    .sb-logout { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; color: rgba(255,255,255,.4); cursor: pointer; border-radius: 8px; }
+    .sb-logout:hover { color: #fff; background: rgba(255,255,255,.06); }
+    .main { flex: 1; padding: 34px 40px; overflow-y: auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+    .title { font-size: 24px; font-weight: 800; color: #10172f; margin-bottom: 6px; }
+    .sub { font-size: 13px; color: #8b93a3; }
+    .operator { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid #e8e9ed; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #555; }
+    .operator i { color: #2d6be4; font-size: 18px; }
+    .summary-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .summary-card { background: #fff; border: 1px solid #e8e9ed; border-radius: 12px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .summary-label { font-size: 12px; font-weight: 800; color: #667085; margin-bottom: 8px; }
+    .summary-num { font-size: 28px; font-weight: 800; color: #10172f; }
+    .summary-icon { width: 48px; height: 48px; border-radius: 50%; background: #eff6ff; color: #2d6be4; display: grid; place-items: center; font-size: 22px; }
+    .summary-icon.reject { background: #fff1f2; color: #e11d48; }
+    .tab-row { display: inline-flex; gap: 6px; background: #eef2f7; padding: 4px; border-radius: 10px; margin-bottom: 14px; }
+    .tab-btn { height: 34px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent; color: #64748b; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .tab-btn.active { background: #fff; color: #10172f; box-shadow: 0 1px 5px rgba(15,23,42,.08); }
+    .card { background: #fff; border: 1px solid #e8e9ed; border-radius: 12px; box-shadow: 0 4px 30px rgba(0,0,0,.05); overflow: visible; }
+    .card-head { padding: 18px 20px; border-bottom: 1px solid #eef0f4; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 16px; font-weight: 800; color: #10172f; }
+    .refresh-btn { height: 34px; padding: 0 12px; border-radius: 8px; border: 1.5px solid #d8e1f2; background: #f4f7fd; color: #4a6fa5; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+    .refresh-btn:hover { background: #e8effb; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8fafc; text-align: left; font-size: 12px; color: #667085; font-weight: 800; padding: 14px 16px; border-bottom: 1px solid #eef0f4; }
+    tbody tr { position: relative; }
+    tbody tr.region-open-row { z-index: 30; }
+    td { position: relative; overflow: visible; font-size: 13px; color: #333; padding: 15px 16px; border-bottom: 1px solid #f1f3f6; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .email, .muted { color: #64748b; }
+    .org { color: #1f2937; font-weight: 700; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .badge.approved { background: #dcfce7; color: #15803d; }
+    .badge.rejected { background: #ffe4e6; color: #e11d48; }
+    .action-group { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+    .approve-btn { height: 32px; padding: 0 12px; border-radius: 8px; border: none; background: #1a2235; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .approve-btn:hover { background: #243040; }
+    .reject-btn { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid #fecaca; background: #fff5f5; color: #dc2626; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .reject-btn:hover { background: #fee2e2; }
+    .region-options { position: relative; min-width: 180px; max-width: 220px; }
+    .region-select-wrap { position: relative; width: 180px; z-index: 1; }
+    .region-select-wrap.open { z-index: 1000; }
+    .region-select-button { width: 180px; height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 12px; border: 1px solid #dbe3ef; border-radius: 10px; background: #fff; color: #1f2937; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .region-select-button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .region-select-button:hover, .region-select-wrap.open .region-select-button { border-color: #2d6be4; box-shadow: 0 0 0 3px rgba(45, 107, 228, 0.12); }
+    .region-select-button i { color: #64748b; font-size: 16px; transition: transform 0.15s ease; }
+    .region-select-wrap.open .region-select-button i { transform: rotate(180deg); }
+    .region-select-menu { display: none; position: absolute; top: calc(100% + 6px); left: 0; width: 180px; max-height: 220px; overflow-y: auto; border: 1px solid #dbe3ef; border-radius: 10px; background: #fff; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14); z-index: 1001; padding: 6px; }
+    .region-select-wrap.open .region-select-menu { display: block; }
+    .region-option { width: 100%; min-height: 34px; padding: 7px 10px; border: 0; border-radius: 8px; background: transparent; color: #334155; text-align: left; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .region-option:hover, .region-option.selected { background: #eff6ff; color: #2563eb; }
+    .region-option-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .region-check { width: 16px; height: 16px; border: 1px solid #cbd5e1; border-radius: 5px; color: transparent; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; line-height: 1; flex-shrink: 0; }
+    .region-option.selected .region-check { background: #2d6be4; border-color: #2d6be4; color: #fff; }
+    .region-readonly { display: flex; flex-wrap: wrap; gap: 5px; }
+    .region-chip { display: inline-flex; align-items: center; height: 26px; padding: 0 9px; border-radius: 999px; background: #eef2ff; color: #3152a4; font-size: 12px; font-weight: 800; }
+    .empty { padding: 42px 20px; text-align: center; color: #9aa0ad; font-size: 14px; }
+    .empty i { display: block; font-size: 34px; color: #c6ccd6; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-title"><span></span>FIDS</div>
+        <div class="sb-logo-sub2">쓰레기통 화재 감지 시스템</div>
+        <div class="sb-logo-sub">관리자 대시보드</div>
+      </div>
+      <div class="sb-nav">
+        <div class="nav-item" onclick="location.href='/dashboard'"><i class="ti ti-home"></i>대시보드</div>
+        <div class="nav-item" onclick="location.href='/trashbins'"><i class="ti ti-trash"></i>쓰레기통 관리</div>
+        <div class="nav-item" onclick="location.href='/realtime'"><i class="ti ti-chart-line"></i>실시간 모니터링</div>
+        <div class="nav-item" onclick="location.href='/alert'"><i class="ti ti-bell"></i>알림 기록</div>
+        <div class="nav-item active operator-menu" onclick="location.href='/admin/approval'"><i class="ti ti-user-check"></i>관리자 승인 관리<span id="approvalBadge" class="approval-badge"></span></div>
+        <div class="nav-item" onclick="location.href='/settings'"><i class="ti ti-settings"></i>설정</div>
+        <div class="nav-item" onclick="location.href='/'"><i class="ti ti-home-2"></i>메인페이지</div>
+      </div>
+      <div class="sb-bottom">
+        <div class="sb-user">
+          <div class="sb-avatar"><i class="ti ti-user"></i></div>
+          <div>
+            <div id="userName" class="sb-user-name">운영자</div>
+            <div id="userEmail" class="sb-user-email">operator@korea.kr</div>
+          </div>
+        </div>
+        <div id="logoutBtn" class="sb-logout"><i class="ti ti-logout"></i>로그아웃</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">운영자 승인 관리</div>
+          <div class="sub">일반 관리자 가입 요청을 확인하고 담당 구역을 배정합니다.</div>
+        </div>
+        <div class="operator"><i class="ti ti-shield-check"></i><span id="operatorName">운영자</span></div>
+      </div>
+
+      <div class="summary-row">
+        <div class="summary-card"><div><div class="summary-label">승인 대기</div><div><span id="pendingCount" class="summary-num">0</span> 건</div></div><div class="summary-icon"><i class="ti ti-user-question"></i></div></div>
+        <div class="summary-card"><div><div class="summary-label">승인 완료</div><div><span id="approvedCount" class="summary-num">0</span> 건</div></div><div class="summary-icon"><i class="ti ti-user-check"></i></div></div>
+        <div class="summary-card"><div><div class="summary-label">거절 처리</div><div><span id="rejectedCount" class="summary-num">0</span> 건</div></div><div class="summary-icon reject"><i class="ti ti-user-x"></i></div></div>
+        <div class="summary-card"><div><div class="summary-label">현재 계정</div><div id="summaryEmail" class="summary-num" style="font-size:18px">operator@korea.kr</div></div><div class="summary-icon"><i class="ti ti-id"></i></div></div>
+      </div>
+
+      <div class="tab-row">
+        <button id="pendingTab" class="tab-btn active" type="button" onclick="switchTab('pending')">승인 대기 목록</button>
+        <button id="approvedTab" class="tab-btn" type="button" onclick="switchTab('approved')">승인처리완료</button>
+        <button id="rejectedTab" class="tab-btn" type="button" onclick="switchTab('rejected')">거절 처리 목록</button>
+      </div>
+
+      <section class="card">
+        <div class="card-head">
+          <div id="cardTitle" class="card-title">승인 대기 목록</div>
+          <button id="refreshBtn" class="refresh-btn" type="button"><i class="ti ti-refresh"></i>새로고침</button>
+        </div>
+        <div id="tableArea"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const dongCache = new Map();
+
+    function getDistrictFromOrg(org) {
+      const match = String(org || "").match(/(\uB3D9\uAD6C|\uB0A8\uAD6C|\uBD81\uAD6C|\uAD11\uC0B0\uAD6C|\uC11C\uAD6C)/);
+      return match ? match[1] : "";
+    }
+    const role = sessionStorage.getItem("role");
+    const mgrName = sessionStorage.getItem("mgr_name");
+    const mgrEmail = sessionStorage.getItem("mgr_email");
+
+    userName.textContent = mgrName || "운영자";
+    userEmail.textContent = mgrEmail || "operator@korea.kr";
+    operatorName.textContent = mgrName || "운영자";
+    summaryEmail.textContent = mgrEmail || "operator@korea.kr";
+
+    let currentTab = "pending";
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return date.getFullYear() + "." + String(date.getMonth() + 1).padStart(2, "0") + "." + String(date.getDate()).padStart(2, "0") + " " + String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
+    }
+
+    function parseRegions(value) {
+      return String(value || "").split(",").map((item) => item.trim()).filter(Boolean);
+    }
+
+    function renderRegionEditor(manager) {
+      return '<div class="region-options" data-region-box="' + manager.mgr_id + '"><span class="muted">\uB3D9 \uBAA9\uB85D\uC744 \uBD88\uB7EC\uC624\uB294 \uC911...</span></div>';
+    }
+
+    async function loadDongOptions(manager) {
+      const district = getDistrictFromOrg(manager.mgr_org);
+      if (!district) return [];
+
+      if (dongCache.has(district)) {
+        return await dongCache.get(district);
+      }
+
+      const request = fetch("/admin/regions/dongs?district=" + encodeURIComponent(district))
+        .then(async (response) => {
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "\uB3D9 \uBAA9\uB85D \uC870\uD68C \uC2E4\uD328");
+          }
+          return Array.isArray(result.dongs) ? result.dongs : [];
+        })
+        .catch((error) => {
+          dongCache.delete(district);
+          throw error;
+        });
+
+      dongCache.set(district, request);
+      const dongs = await request;
+      dongCache.set(district, dongs);
+      return dongs;
+    }
+
+    function formatRegionSelectLabel(values) {
+      if (!values.length) return "\uB2F4\uB2F9 \uB3D9 \uC120\uD0DD";
+      if (values.length === 1) return values[0];
+      return values.length + "\uAC1C \uB3D9 \uC120\uD0DD";
+    }
+
+    async function hydrateRegionEditors(managers) {
+      await Promise.all(managers.map(async (manager) => {
+        const box = document.querySelector('[data-region-box="' + manager.mgr_id + '"]');
+        if (!box) return;
+
+        const district = getDistrictFromOrg(manager.mgr_org);
+        if (!district) {
+          box.innerHTML = '<span class="muted">\uC18C\uC18D\uAE30\uAD00 \uD655\uC778 \uD544\uC694</span>';
+          return;
+        }
+
+        try {
+          const dongs = await loadDongOptions(manager);
+          const selectedDongs = parseRegions(manager.assigned_regions);
+          const selectedSet = new Set(selectedDongs);
+          if (!dongs.length) {
+            box.innerHTML = '<span class="muted">\uC870\uD68C\uB41C \uB3D9\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.</span>';
+            return;
+          }
+
+          const selectedLabel = formatRegionSelectLabel(selectedDongs);
+          box.innerHTML = '<div class="region-select-wrap" data-region-wrap="' + manager.mgr_id + '">' +
+            '<button type="button" class="region-select-button" data-region-selected="' + manager.mgr_id + '" data-values="' + escapeHtml(selectedDongs.join(",")) + '"><span>' + escapeHtml(selectedLabel) + '</span><i class="ti ti-chevron-down"></i></button>' +
+            '<div class="region-select-menu">' +
+            dongs.map((dong) => {
+              const selected = selectedSet.has(dong) ? " selected" : "";
+              const safeDong = escapeHtml(dong);
+              return '<button type="button" class="region-option' + selected + '" data-region-option="' + manager.mgr_id + '" data-value="' + safeDong + '"><span class="region-option-label">' + safeDong + '</span><span class="region-check">&#10003;</span></button>';
+            }).join("") +
+            '</div></div>';
+        } catch (error) {
+          box.innerHTML = '<span class="muted">\uB3D9 \uBAA9\uB85D \uC870\uD68C \uC2E4\uD328</span>';
+        }
+      }));
+    }
+
+    function renderRegionReadonly(value) {
+      const regions = parseRegions(value);
+      if (!regions.length) return '<span class="muted">미배정</span>';
+      return '<div class="region-readonly">' + regions.map((region) => '<span class="region-chip">' + escapeHtml(region) + '</span>').join("") + '</div>';
+    }
+
+    function getSelectedRegions(mgrId) {
+      const selected = document.querySelector('[data-region-selected="' + mgrId + '"]');
+      if (selected) {
+        return String(selected.dataset.values || "")
+          .split(",")
+          .map((value) => value.trim())
+          .filter(Boolean);
+      }
+      return [];
+    }
+
+    function closeRegionDropdowns(exceptWrap) {
+      document.querySelectorAll('.region-select-wrap.open').forEach((wrap) => {
+        if (wrap !== exceptWrap) {
+          wrap.classList.remove('open');
+          wrap.closest('tr')?.classList.remove('region-open-row');
+        }
+      });
+    }
+
+    document.addEventListener('click', (event) => {
+      const selectButton = event.target.closest('[data-region-selected]');
+      if (selectButton) {
+        const wrap = selectButton.closest('.region-select-wrap');
+        const willOpen = !wrap.classList.contains('open');
+        closeRegionDropdowns(wrap);
+        wrap.classList.toggle('open', willOpen);
+        wrap.closest('tr')?.classList.toggle('region-open-row', willOpen);
+        return;
+      }
+
+      const optionButton = event.target.closest('[data-region-option]');
+      if (optionButton) {
+        const mgrId = optionButton.dataset.regionOption;
+        const selected = document.querySelector('[data-region-selected="' + mgrId + '"]');
+        const wrap = optionButton.closest('.region-select-wrap');
+        optionButton.classList.toggle('selected');
+        const selectedValues = Array.from(wrap.querySelectorAll('.region-option.selected'))
+          .map((option) => option.dataset.value || "")
+          .filter(Boolean);
+        if (selected) {
+          selected.dataset.values = selectedValues.join(",");
+          selected.querySelector('span').textContent = formatRegionSelectLabel(selectedValues);
+        }
+        return;
+      }
+
+      if (!event.target.closest('.region-select-wrap')) {
+        closeRegionDropdowns();
+      }
+    });
+
+    function switchTab(tab) {
+      currentTab = tab;
+      pendingTab.classList.toggle("active", tab === "pending");
+      approvedTab.classList.toggle("active", tab === "approved");
+      rejectedTab.classList.toggle("active", tab === "rejected");
+      cardTitle.textContent = tab === "approved" ? "승인 완료 목록" : tab === "rejected" ? "거절 처리 목록" : "승인 대기 목록";
+      loadManagers();
+    }
+
+    async function fetchManagers(type) {
+      const url = type === "approved" ? "/admin/managers/approved" : type === "rejected" ? "/admin/managers/rejected" : "/admin/managers";
+      const response = await fetch(url);
+      if (!response.ok) return [];
+      const rows = await response.json();
+      return Array.isArray(rows) ? rows : [];
+    }
+
+    async function loadCounts() {
+      const [pendingManagers, approvedManagers, rejectedManagers] = await Promise.all([
+        fetchManagers("pending"),
+        fetchManagers("approved"),
+        fetchManagers("rejected"),
+      ]);
+      pendingCount.textContent = pendingManagers.length;
+      approvedCount.textContent = approvedManagers.length;
+      rejectedCount.textContent = rejectedManagers.length;
+      approvalBadge.textContent = pendingManagers.length;
+      approvalBadge.classList.toggle("show", pendingManagers.length > 0);
+      return { pendingManagers, approvedManagers, rejectedManagers };
+    }
+
+    async function loadManagers() {
+      const counts = await loadCounts();
+      const managers = currentTab === "approved" ? counts.approvedManagers : currentTab === "rejected" ? counts.rejectedManagers : counts.pendingManagers;
+
+      if (!managers.length) {
+        const emptyText = currentTab === "approved" ? "승인 처리 완료된 관리자가 없습니다." : currentTab === "rejected" ? "거절 처리된 관리자가 없습니다." : "승인 대기 중인 관리자가 없습니다.";
+        tableArea.innerHTML = '<div class="empty"><i class="ti ti-user-check"></i>' + emptyText + '</div>';
+        return;
+      }
+
+      tableArea.innerHTML = `<table><thead><tr><th>이름</th><th>이메일</th><th>소속기관</th><th>전화번호</th><th>${currentTab === "rejected" ? "거절일시" : "요청일시"}</th><th>담당 구역</th><th>상태</th><th>관리</th></tr></thead><tbody>${managers.map((manager) => {
+        const statusText = currentTab === "approved" ? "승인 완료" : currentTab === "rejected" ? "거절 처리" : "승인 대기";
+        const statusIcon = currentTab === "approved" ? "ti-check" : currentTab === "rejected" ? "ti-x" : "ti-clock";
+        const statusClass = currentTab === "approved" ? "approved" : currentTab === "rejected" ? "rejected" : "";
+        const dateValue = currentTab === "rejected" ? manager.rejected_at : manager.joined_at;
+        const regionHtml = currentTab === "pending" ? renderRegionEditor(manager) : renderRegionReadonly(manager.assigned_regions);
+        const actionHtml = currentTab === "pending"
+          ? `<div class="action-group"><button class="approve-btn" type="button" onclick="approveManager(${manager.mgr_id})">승인</button><button class="reject-btn" type="button" onclick="rejectManager(${manager.mgr_id})">거절</button></div>`
+          : "-";
+        return `<tr><td><b>${escapeHtml(manager.mgr_name || "-")}</b></td><td class="email">${escapeHtml(manager.mgr_email || "-")}</td><td class="org">${escapeHtml(manager.mgr_org || "미등록")}</td><td>${escapeHtml(manager.mgr_phone || "-")}</td><td>${formatDate(dateValue)}</td><td>${regionHtml}</td><td><span class="badge ${statusClass}"><i class="ti ${statusIcon}"></i>${statusText}</span></td><td>${actionHtml}</td></tr>`;
+      }).join("")}</tbody></table>`;
+      if (currentTab === "pending") {
+        hydrateRegionEditors(managers);
+      }
+    }
+
+    async function approveManager(mgrId) {
+      const selectedRegions = getSelectedRegions(mgrId);
+      if (!selectedRegions.length) {
+        alert("담당 구역을 하나 이상 선택해주세요.");
+        return;
+      }
+      if (!confirm("이 관리자를 승인하시겠습니까?")) return;
+      const response = await fetch("/admin/managers/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mgr_id: mgrId, assigned_regions: selectedRegions })
+      });
+      const result = await response.json();
+      alert(result.message || "처리가 완료되었습니다.");
+      loadManagers();
+    }
+
+    async function rejectManager(mgrId) {
+      if (!confirm("이 관리자 가입 요청을 거절하시겠습니까?")) return;
+      const response = await fetch("/admin/managers/reject", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mgr_id: mgrId })
+      });
+      const result = await response.json();
+      alert(result.message || "거절 처리되었습니다.");
+      loadManagers();
+    }
+
+    refreshBtn.addEventListener("click", loadManagers);
+    logoutBtn.addEventListener("click", async () => {
+      try { await fetch("/manager/logout", { method: "POST" }); } catch (error) {}
+      sessionStorage.clear();
+      alert("로그아웃되었습니다.");
+      location.replace("/");
+    });
+
+    loadManagers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>대시보드 - FIDS</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <link rel="stylesheet" href="/css/fire-alert.css">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      color: #1a1a2e;
+    }
+    .sidebar { width: 220px; flex-shrink: 0; background: #1a2235; display: flex; flex-direction: column; height: 100vh; }
+    .sb-logo { padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sb-logo-title{font-size:16px;font-weight:700;color:#fff;}
+    .sb-logo-title span { display: inline-block; width: 3px; height: 16px; background: #2d6be4; border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+    .sb-logo-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+    .sb-logo-sub2 { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 3px; }
+    .sb-nav { padding: 14px 10px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 13px; color: rgba(255,255,255,0.55); cursor: pointer; margin-bottom: 2px; }
+    .nav-item.active { background: rgba(255,255,255,0.10); color: #fff; }
+    .nav-item i { font-size: 17px; }
+    .sb-bottom { padding: 14px 10px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 2px; }
+    .sb-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-avatar i { font-size: 15px; color: rgba(255,255,255,0.7); }
+    .sb-user-name { font-size: 12px; font-weight: 600; color: #fff; }
+    .sb-user-email { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 1px; }
+    .sb-logout { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; color: rgba(255,255,255,0.4); cursor: pointer; border-radius: 8px; }
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { background: #fff; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e9ed; flex-shrink: 0; }
+    .topbar-title { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+    .topbar-right { display: flex; align-items: center; gap: 14px; font-size: 12px; color: #999; }
+    .refresh-btn { display: flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 8px; border: 1px solid #e0e0e0; background: #fff; font-size: 12px; color: #555; cursor: pointer; font-family: inherit; }
+    .content { flex: 1; overflow-y: auto; padding: 22px 28px; }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 20px 22px; border: 1px solid #e8e9ed; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .stat-label { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+    .stat-num { font-size: 30px; font-weight: 800; color: #1a1a2e; line-height: 1; }
+    .stat-unit { font-size: 15px; color: #888; margin-left: 4px; }
+    .stat-sub { font-size: 11px; color: #bbb; margin-top: 6px; }
+    .stat-pct { font-size: 13px; font-weight: 700; margin-top: 6px; }
+    .stat-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+    .total .stat-label { color: #378ADD; } .total .stat-icon { background: #EBF4FF; color: #378ADD; }
+    .good .stat-label, .good .stat-num { color: #22a06b; } .good .stat-icon { background: #e6f7f0; color: #22a06b; } .good .stat-pct { color: #22a06b; }
+    .warn .stat-label, .warn .stat-num { color: #d97706; } .warn .stat-icon { background: #FEF3C7; color: #d97706; } .warn .stat-pct { color: #d97706; }
+    .danger .stat-label, .danger .stat-num { color: #dc2626; } .danger .stat-icon { background: #FEE2E2; color: #dc2626; } .danger .stat-pct { color: #dc2626; }
+    .mid-row { display: grid; grid-template-columns: 1fr 340px; gap: 16px; margin-bottom: 16px; }
+    .panel { background: #fff; border-radius: 12px; border: 1px solid #e8e9ed; padding: 18px 22px; }
+    .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .panel-title { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .panel-more { font-size: 12px; color: #2d6be4; cursor: pointer; }
+    .filter-toggle { display: flex; gap: 4px; background: #f5f6fa; border-radius: 8px; padding: 3px; }
+    .ft-btn { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: transparent; color: #aaa; transition: all .15s; font-family: inherit; }
+    .ft-btn.active-all { background: #fff; color: #1a1a2e; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .ft-btn.active-danger { background: #FEE2E2; color: #dc2626; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .ft-btn.active-warn { background: #FEF3C7; color: #d97706; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .ft-btn.active-good { background: #e6f7f0; color: #14734a; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { text-align: center; color: #bbb; font-weight: 600; padding: 0 10px 10px; border-bottom: 1px solid #f0f0f0; }
+    tbody td { padding: 11px 10px; border-bottom: 1px solid #f5f5f5; color: #444; vertical-align: middle; text-align: center; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr.danger-row { background: #fff8f8; }
+    tbody tr.danger-row td { color: #dc2626; }
+    tbody tr.warn-row { background: #fffbeb; }
+    tbody tr.warn-row td { color: #b45309; }
+    tbody tr.hidden { display: none; }
+    tbody tr.focus-bin { outline: 3px solid #ef4444; outline-offset: -3px; background: #fff1f2; }
+    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+    .badge.ok { background: #e6f7f0; color: #14734a; } .badge.warn { background: #FEF3C7; color: #92400e; } .badge.danger { background: #FEE2E2; color: #991b1b; }
+    .ai-mini{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;background:#eef3fd;color:#1d4ed8;font-size:11px;font-weight:800;white-space:nowrap;}
+    .ai-mini.danger{background:#fee2e2;color:#dc2626;} .ai-mini.warn{background:#fef3c7;color:#b45309;} .ai-mini.good{background:#dcfce7;color:#15803d;}
+    .more-row { text-align: center; padding: 10px; font-size: 12px; color: #999; cursor: pointer; border-top: 1px solid #f0f0f0; margin-top: 6px; }
+    .side-alert-list { display: flex; flex-direction: column; }
+    .side-alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-bottom: 1px solid #f5f5f5; }
+    .side-alert-item:last-child { border-bottom: none; }
+    .adot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .adot.d { background: #FEE2E2; color: #dc2626; } .adot.w { background: #FEF3C7; color: #d97706; } .adot.o { background: #e6f7f0; color: #22a06b; }
+    .at { font-size: 12px; font-weight: 700; margin-bottom: 2px; } .at.d { color: #dc2626; } .at.w { color: #d97706; } .at.o { color: #22a06b; }
+    .aloc { font-size: 13px; font-weight: 600; color: #222; margin-bottom: 2px; }
+    .adesc { font-size: 11px; color: #aaa; }
+    .atime { font-size: 11px; color: #ccc; margin-left: auto; white-space: nowrap; padding-top: 2px; text-align: right; line-height: 1.6; }
+    .bottom-bar { background: #fff; border-radius: 12px; border: 1px solid #e8e9ed; padding: 16px 28px; display: flex; align-items: center; justify-content: space-around; }
+    .bot-item { display: flex; align-items: center; gap: 10px; }
+    .bot-icon { font-size: 24px; color: #bbb; }
+    .bot-label { font-size: 11px; color: #bbb; }
+    .bot-val { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .bot-val.ok { color: #22a06b; } .bot-val.blue { color: #2d6be4; } .bot-val.warn { color: #d97706; }
+    .sep { width: 1px; height: 36px; background: #f0f0f0; }
+
+    .alert-area { position: relative; }
+    .alert-button { position: relative; width: 44px; height: 44px; border: 1px solid #e5e7eb; border-radius: 50%; background: #fff; cursor: pointer; font-size: 18px; display: grid; place-items: center; color: #1f2937; }
+    .alert-dot { position: absolute; top: 9px; right: 10px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid #fff; }
+    .alert-dot.hide { display: none; }
+    .alert-dropdown { display: none; position: absolute; top: 52px; right: 0; width: 330px; max-height: 420px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); overflow: hidden; z-index: 50; }
+    .alert-dropdown.open { display: block; }
+    .alert-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid #eef2f7; }
+    .alert-head button { border: 0; background: none; color: #2563eb; font-size: 13px; cursor: pointer; }
+    .alert-list { max-height: 300px; overflow-y: auto; }
+    .alert-item { display: grid; grid-template-columns: 42px 1fr 56px; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+    .alert-item.danger { background: #fff5f5; }
+    .alert-icon { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; }
+    .alert-item.danger .alert-icon { background: #fee2e2; color: #ef4444; }
+    .alert-item.warning .alert-icon { background: #fef3c7; color: #f59e0b; }
+    .alert-item.success .alert-icon { background: #d1fae5; color: #10b981; }
+    .alert-text { display: flex; flex-direction: column; gap: 4px; }
+    .alert-text strong { font-size: 14px; }
+    .alert-text span { font-size: 13px; color: #111827; }
+    .alert-text small { font-size: 12px; color: #9ca3af; }
+    .alert-time { font-size: 12px; color: #c0c4cc; }
+    .alert-more { width: 100%; height: 42px; border: 0; background: #fff; color: #2563eb; font-weight: 600; cursor: pointer; }
+
+    .all-alert-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); z-index: 9000; align-items: center; justify-content: center; }
+    .all-alert-overlay.open { display: flex; }
+    .all-alert-modal { width: min(720px, calc(100% - 32px)); max-height: 80vh; background: #fff; border-radius: 16px; box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25); overflow: hidden; }
+    .all-alert-header { display: flex; align-items: center; justify-content: space-between; padding: 22px 24px; border-bottom: 1px solid #e5e7eb; }
+    .all-alert-header h2 { margin: 0; font-size: 22px; }
+    .all-alert-header p { margin: 6px 0 0; color: #6b7280; font-size: 14px; }
+    .all-alert-header button { width: 36px; height: 36px; border: 0; border-radius: 50%; background: #f3f4f6; font-size: 24px; cursor: pointer; }
+    .all-alert-list { max-height: 58vh; overflow-y: auto; padding: 10px; }
+    .all-alert-row { display: grid; grid-template-columns: 180px 1fr 90px; gap: 16px; align-items: center; padding: 16px; border-radius: 12px; border-bottom: 1px solid #f1f5f9; }
+    .all-alert-row.danger { background: #fff5f5; }
+    .all-alert-row.warning { background: #fffbeb; }
+    .all-alert-row.success { background: #ecfdf5; }
+    .all-alert-row strong { display: block; font-size: 15px; }
+    .all-alert-row span, .all-alert-row p, .all-alert-row time { color: #6b7280; font-size: 14px; }
+    .all-alert-row p { margin: 0; }
+      .alert-item.read { }
+    .alert-item.read .alert-text strong { font-weight: 500; color: #6b7280; }
+    .alert-item.read .alert-text span, .alert-item.read .alert-text small, .alert-item.read .alert-time { color: #b0b7c3; }
+    .alert-item.read .alert-icon { }
+    .all-alert-row.read { }
+    .all-alert-row.read strong { font-weight: 500; color: #9ca3af; }
+    .side-alert-item.read { opacity: .55; } .side-alert-item.read .at { font-weight: 500; color: #9ca3af; } .side-alert-item.read .adot { filter: grayscale(1); opacity: .55; }
+    .district-dashboard { display: grid; grid-template-columns: 230px 1fr; gap: 16px; align-items: stretch; }
+    .district-summary { border: 1px solid #eef2f7; border-radius: 12px; padding: 16px; background: #f8fafc; display: flex; flex-direction: column; justify-content: space-between; min-height: 300px; }
+    .district-summary-kicker { font-size: 12px; font-weight: 800; color: #2563eb; margin-bottom: 8px; }
+    .district-summary-title { font-size: 22px; font-weight: 900; color: #10172f; line-height: 1.35; }
+    .district-summary-desc { font-size: 12px; color: #7b8798; line-height: 1.6; margin-top: 10px; }
+    .district-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .district-legend span { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #64748b; font-weight: 700; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .legend-dot.danger { background: #ef4444; } .legend-dot.warn { background: #f59e0b; } .legend-dot.good { background: #22c55e; } .legend-dot.offline { background: #94a3b8; }
+    .district-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .district-card { min-height: 92px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px 14px; background: #fff; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
+    .district-card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15, 23, 42, .08); }
+    .district-card.hidden { display: none; }
+    .district-card.danger { background: #fff5f5; border-color: #fecaca; }
+    .district-card.warn { background: #fffbeb; border-color: #fde68a; }
+    .district-card.good { background: #f0fdf4; border-color: #bbf7d0; }
+    .district-card.offline { background: #f8fafc; border-color: #cbd5e1; }
+    .district-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .district-name { font-size: 15px; font-weight: 900; color: #10172f; }
+    .district-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 900; }
+    .district-badge.danger { background: #fee2e2; color: #dc2626; }
+    .district-badge.warn { background: #fef3c7; color: #b45309; }
+    .district-badge.good { background: #dcfce7; color: #15803d; }
+    .district-badge.offline { background: #e2e8f0; color: #475569; }
+    .district-counts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .district-counts span { font-size: 11px; color: #64748b; font-weight: 800; }
+    .district-counts b { margin-left: 3px; }
+    .district-counts .d { color: #dc2626; } .district-counts .w { color: #d97706; } .district-counts .g { color: #15803d; } .district-counts .o { color: #64748b; }
+    .district-foot { margin-top: 10px; font-size: 11px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .district-locations { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+    .district-location { display: flex; align-items: center; gap: 7px; min-width: 0; font-size: 11px; color: #64748b; }
+    .district-location b { flex: 0 0 auto; font-size: 11px; color: #10172f; }
+    .district-location span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .district-location-more { font-size: 11px; color: #94a3b8; font-weight: 700; }
+    .district-dashboard.compact { grid-template-columns: 190px 1fr; }
+    .district-dashboard.compact .district-summary { min-height: 220px; padding: 14px; }
+    .district-dashboard.compact .district-summary-title { font-size: 19px; }
+    .district-dashboard.compact .district-summary-desc { font-size: 11px; }
+    .district-dashboard.compact .district-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; }
+    .district-dashboard.compact .district-card { min-height: 132px; padding: 12px 14px; justify-content: flex-start; }
+    .district-dashboard.compact .district-counts { margin-top: 10px; }
+    .district-empty { grid-column: 1 / -1; padding: 42px; text-align: center; color: #94a3b8; border: 1px dashed #dbe3ef; border-radius: 12px; background: #f8fafc; }
+  .operator-menu{display:none}</style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title"><span></span>FIDS</div>
+      <div class="sb-logo-sub2">쓰레기통 화재 감지 시스템</div>
+      <div class="sb-logo-sub">관리자 대시보드</div>
+    </div>
+
+    <div class="sb-nav">
+      <div class="nav-item active" onclick="location.href='/dashboard'"><i class="ti ti-home"></i>대시보드</div>
+      <div class="nav-item" onclick="location.href='/trashbins'"><i class="ti ti-trash"></i>쓰레기통 관리</div>
+      <div class="nav-item" onclick="location.href='/realtime'"><i class="ti ti-chart-line"></i>실시간 모니터링</div>
+      <div class="nav-item" onclick="location.href='/alert'"><i class="ti ti-bell"></i>알림 기록</div>
+      <div class="nav-item operator-menu" onclick="location.href='/admin/approval'"><i class="ti ti-user-check"></i>관리자 승인 관리</div><div class="nav-item" onclick="location.href='/settings'"><i class="ti ti-settings"></i>설정</div><div class="nav-item" onclick="location.href='/'"><i class="ti ti-home-2"></i>메인페이지</div>
+    </div>
+
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar"><i class="ti ti-user"></i></div>
+        <div>
+          <div id="userName" class="sb-user-name">관리자</div>
+          <div id="userEmail" class="sb-user-email">admin@korea.kr</div>
+        </div>
+      </div>
+      <div id="logoutBtn" class="sb-logout"><i class="ti ti-logout"></i>로그아웃</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title">대시보드</div>
+      <div class="topbar-right">
+        <i class="ti ti-calendar"></i>
+        <span id="nowText"></span>
+        <div class="alert-area">
+          <button class="alert-button" id="alertButton" type="button" title="알림">
+            <i class="ti ti-bell"></i>
+            <span class="alert-dot" id="alertDot"></span>
+          </button>
+
+          <div class="alert-dropdown" id="alertDropdown">
+            <div class="alert-head">
+              <strong>알림</strong>
+              <button type="button" id="readAllBtn">모두 읽음</button>
+            </div>
+
+            <div class="alert-list" id="alertList"></div>
+
+            <button class="alert-more" type="button" id="openAllAlertsBtn">전체 알림 보기 →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="dashboardContent">
+      <div class="stat-row">
+        <div class="stat-card total" onclick="filterTable('all', document.querySelector('.ft-btn'))">
+          <div><div class="stat-label">전체 쓰레기통</div><div><span class="stat-num">0</span><span class="stat-unit">개</span></div><div class="stat-sub">등록된 전체 개수</div></div>
+          <div class="stat-icon"><i class="ti ti-trash"></i></div>
+        </div>
+        <div class="stat-card danger" onclick="filterTable('danger', document.querySelector('.ft-btn:nth-child(2)'))">
+          <div><div class="stat-label">위험</div><div><span class="stat-num">0</span><span class="stat-unit">개</span></div><div class="stat-pct">0%</div></div>
+          <div class="stat-icon"><i class="ti ti-flame"></i></div>
+        </div>
+        <div class="stat-card warn" onclick="filterTable('warn', document.querySelector('.ft-btn:nth-child(3)'))">
+          <div><div class="stat-label">주의</div><div><span class="stat-num">0</span><span class="stat-unit">개</span></div><div class="stat-pct">0%</div></div>
+          <div class="stat-icon"><i class="ti ti-alert-triangle"></i></div>
+        </div>
+        <div class="stat-card good" onclick="filterTable('good', document.querySelector('.ft-btn:nth-child(4)'))">
+          <div><div class="stat-label">정상</div><div><span class="stat-num">0</span><span class="stat-unit">개</span></div><div class="stat-pct">0%</div></div>
+          <div class="stat-icon"><i class="ti ti-check"></i></div>
+        </div>
+      </div>
+
+      <div class="mid-row">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">쓰레기통 상태 현황</div>
+            <div class="filter-toggle">
+              <button class="ft-btn active-all" onclick="filterTable('all', this)">전체</button>
+              <button class="ft-btn" onclick="filterTable('danger', this)">위험</button>
+              <button class="ft-btn" onclick="filterTable('warn', this)">주의</button>
+              <button class="ft-btn" onclick="filterTable('good', this)">정상</button>
+            </div>
+          </div>
+
+          <div class="district-dashboard">
+            <div class="district-summary">
+              <div>
+                <div class="district-summary-kicker">LOCATION OVERVIEW</div>
+                <div class="district-summary-title">광주광역시<br>구별 위험 요약</div>
+                <div class="district-summary-desc">등록된 쓰레기통 주소를 기준으로 광주 5개 구의 위험 현황을 먼저 보여줍니다.</div>
+              </div>
+              <div class="district-legend">
+                <span><i class="legend-dot danger"></i>&#50948;&#54744; &#48156;&#49373;</span>
+                <span><i class="legend-dot warn"></i>&#51452;&#51032; &#44048;&#51648;</span>
+                <span><i class="legend-dot good"></i>&#51221;&#49345; &#50868;&#50689;</span>
+              </div>
+            </div>
+            <div class="district-grid" id="districtMap">
+              <div class="district-empty">&#44396;&#48324; &#54788;&#54889;&#51012; &#48520;&#47084;&#50724;&#45716; &#51473;&#51077;&#45768;&#45796;.</div>
+            </div>
+          </div>        </div>
+
+        <div class="panel">
+          <div class="panel-header"><div class="panel-title">최근 알림</div><div class="panel-more" id="sideOpenAllAlerts">더보기 →</div></div>
+          <div class="side-alert-list">
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-bar">
+        <div class="bot-item"><i class="bot-icon ti ti-wifi"></i><div><div class="bot-label">네트워크 상태</div><div class="bot-val ok">정상 연결</div></div></div>
+        <div class="sep"></div>
+        <div class="bot-item"><i class="bot-icon ti ti-clock"></i><div><div class="bot-label">마지막 동기화</div><div class="bot-val blue">방금 전</div></div></div>
+        <div class="sep"></div>
+        <div class="bot-item"><i class="bot-icon ti ti-server"></i><div><div class="bot-label">서버 상태</div><div class="bot-val ok">정상</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="all-alert-overlay" id="allAlertOverlay">
+    <div class="all-alert-modal">
+      <div class="all-alert-header">
+        <div><h2>전체 알림</h2><p>최근 감지된 알림 내역입니다.</p></div>
+        <button type="button" id="closeAllAlertsBtn">×</button>
+      </div>
+      <div class="all-alert-list" id="allAlertList"></div>
+    </div>
+  </div>
+
+  <script>
+const FIDS_ALERT_READ_KEY="fids_alerts_read_all";function fidsApplyAlertReadState(rows){return Array.isArray(rows)?rows:[];}function fidsMarkAlertsRead(){}function fidsAlertsAreRead(){return false;}
+
+    const role = sessionStorage.getItem("role");
+    const mgrName = sessionStorage.getItem("mgr_name");
+    const mgrEmail = sessionStorage.getItem("mgr_email");
+
+    if (!role) {
+      alert("로그인이 필요합니다.");
+      location.href = "/login";
+    }
+
+    document.getElementById("userName").textContent = mgrName || "관리자";
+    document.getElementById("userEmail").textContent = mgrEmail || "";
+
+    function setNowText() {
+      const now = new Date();
+      const week = ["일", "월", "화", "수", "목", "금", "토"][now.getDay()];
+      document.getElementById("nowText").textContent =
+        now.getFullYear() + "." +
+        String(now.getMonth() + 1).padStart(2, "0") + "." +
+        String(now.getDate()).padStart(2, "0") + " (" + week + ") " +
+        String(now.getHours()).padStart(2, "0") + ":" +
+        String(now.getMinutes()).padStart(2, "0") + ":" +
+        String(now.getSeconds()).padStart(2, "0");
+    }
+
+    setNowText();
+    setInterval(setNowText, 1000);
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.clear();
+      alert("\uB85C\uADF8\uC544\uC6C3\uB418\uC5C8\uC2B5\uB2C8\uB2E4.");
+      location.replace("/");
+    });
+
+    let dashboardCurrentFilter = "all";
+    let dashboardBins = [];
+
+    function filterTable(type, btn) {
+      dashboardCurrentFilter = type;
+      document.querySelectorAll(".ft-btn").forEach((button) => { button.className = "ft-btn"; });
+      if (type === "all") btn.className = "ft-btn active-all";
+      else if (type === "danger") btn.className = "ft-btn active-danger";
+      else if (type === "warn") btn.className = "ft-btn active-warn";
+      else if (type === "good") btn.className = "ft-btn active-good";
+      renderDistrictMap(dashboardBins, dashboardCurrentFilter);
+    }
+    function openAllAlerts() {
+      document.getElementById("alertDropdown").classList.remove("open");
+      document.getElementById("allAlertOverlay").classList.add("open");
+    }
+
+    const alertButton = document.getElementById("alertButton");
+    const alertDropdown = document.getElementById("alertDropdown");
+    const readAllBtn = document.getElementById("readAllBtn");
+    const alertDot = document.getElementById("alertDot");
+    const openAllAlertsBtn = document.getElementById("openAllAlertsBtn");
+    const sideOpenAllAlerts = document.getElementById("sideOpenAllAlerts");
+    const allAlertOverlay = document.getElementById("allAlertOverlay");
+    const closeAllAlertsBtn = document.getElementById("closeAllAlertsBtn");
+
+    alertButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      alertDropdown.classList.toggle("open");
+    });
+
+    readAllBtn.addEventListener("click", async () => {
+      fidsMarkAlertsRead();
+      await fetch("/alerts/read-all", { method: "POST" });
+      await loadDashboardData();
+    });
+
+    openAllAlertsBtn.addEventListener("click", openAllAlerts);
+    sideOpenAllAlerts.addEventListener("click", openAllAlerts);
+
+    closeAllAlertsBtn.addEventListener("click", () => {
+      allAlertOverlay.classList.remove("open");
+    });
+
+    allAlertOverlay.addEventListener("click", (event) => {
+      if (event.target === allAlertOverlay) {
+        allAlertOverlay.classList.remove("open");
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".alert-area")) {
+        alertDropdown.classList.remove("open");
+      }
+    });
+
+    const params = new URLSearchParams(location.search);
+    const binId = params.get("bin_id");
+    if (binId) {
+      const target = document.getElementById("bin-" + binId);
+      if (target) {
+        target.classList.add("focus-bin");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }
+  </script>
+  <script>
+    function dashboardStatusOf(row) {
+      if (String(row.sensor_online || "") === "N" || Number(row.network_status) === 0) return "offline";
+      if (row.alert_type === "danger") return "danger";
+      if (row.alert_type === "warning") return "warn";
+      return "good";
+    }
+
+    function dashboardParseSmoke(row) {
+      if (row.smoke_value !== undefined && row.smoke_value !== null && row.smoke_value !== "") return row.smoke_value;
+      const match = String(row.alert_msg || "").match(/\uC5F0\uAE30\s*\uAC10\uC9C0\uAC12\s*(\d+(?:\.\d+)?)/);
+      return match ? Number(match[1]) : "-";
+    }
+
+    function dashboardParseTemp(row) {
+      if (row.temp_value !== undefined && row.temp_value !== null && row.temp_value !== "") return row.temp_value;
+      const match = String(row.alert_msg || "").match(/\uC628\uB3C4\s*([0-9.]+)/);
+      return match ? Number(match[1]) : "-";
+    }
+
+    function dashboardParseFlame(row) {
+      if (row.flame_value !== undefined && row.flame_value !== null && row.flame_value !== "") return String(row.flame_value) === "1" ? "O" : "X";
+      const match = String(row.alert_msg || "").match(/\uBD88\uAF43\s*\uAC10\uC9C0\s*(0|1|O|X)/i);
+      if (!match) return "-";
+      return String(match[1]).toUpperCase() === "1" || String(match[1]).toUpperCase() === "O" ? "O" : "X";
+    }
+
+    function dashboardAlertTimestamp(value) {
+      if (!value) return 0;
+      if (value instanceof Date) return value.getTime();
+      const raw = String(value).trim();
+      const direct = new Date(raw);
+      if (!Number.isNaN(direct.getTime())) return direct.getTime();
+      const normalized = raw.replace(/\./g, "-").replace(/\s+/g, " ");
+      const parsed = new Date(normalized);
+      if (!Number.isNaN(parsed.getTime())) return parsed.getTime();
+      const numbers = raw.match(/\d+/g) || [];
+      if (numbers.length >= 3) {
+        const year = Number(numbers[0]);
+        const month = Number(numbers[1]) - 1;
+        const day = Number(numbers[2]);
+        const hour = Number(numbers[3] || 0);
+        const minute = Number(numbers[4] || 0);
+        const second = Number(numbers[5] || 0);
+        return new Date(year, month, day, hour, minute, second).getTime();
+      }
+      return 0;
+    }
+
+    function dashboardTime(value) {
+      if (!value) return "-";
+      const timestamp = dashboardAlertTimestamp(value);
+      if (!timestamp) return "-";
+      const date = new Date(timestamp);
+      const dateText = date.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\.\s?/g, ".").replace(/\.$/, "");
+      const timeText = date.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      return dateText + "<br>" + timeText;
+    }
+
+    function dashboardAiSummary(row, status) {
+      const aiLabel = status === "danger" ? "\uC704\uD5D8" : status === "warn" ? "\uC8FC\uC758" : status === "offline" ? "\uC624\uD504\uB77C\uC778" : "\uC815\uC0C1";
+      const rule = row.rule_status ? (row.rule_status === "danger" ? "\uC704\uD5D8" : row.rule_status === "warning" ? "\uC8FC\uC758" : "\uC815\uC0C1") : aiLabel;
+      const confidence = row.ai_confidence != null ? ` \u00B7 ${row.ai_confidence}%` : "";
+      return `\uAE30\uC874 ${rule} \u2192 AI ${aiLabel}${confidence}`;
+    }
+
+    function dashboardAlertTitle(type) {
+      if (type === "danger") return "위험 감지";
+      if (type === "warning") return "주의 감지";
+      return "정상";
+    }
+
+    function dashboardAlertIcon(type) {
+      if (type === "danger") return "ti-flame";
+      if (type === "warning" || type === "warn") return "ti-alert-triangle";
+      if (type === "offline") return "ti-wifi-off";
+      return "ti-check";
+    }
+
+    function dashboardDistrictOf(row) {
+      const loc = String(row.bin_loc || "").trim();
+      const parts = loc.split(/\s+/);
+      const gwangjuDistricts = ["동구", "남구", "북구", "광산구", "서구"];
+      const matched = gwangjuDistricts.find((district) => parts.includes(district) || loc.includes("광주광역시 " + district) || loc.includes("광주시 " + district));
+      if (matched) return matched;
+      const anyGu = parts.find((part) => part.endsWith("구"));
+      return anyGu || "기타";
+    }
+
+    function dashboardDistrictStatus(item) {
+      if (item.danger > 0) return "danger";
+      if (item.warn > 0) return "warn";
+      if (item.good > 0) return "good";
+      return "offline";
+    }
+
+    function dashboardDistrictLabel(status) {
+      if (status === "danger") return "\uC704\uD5D8";
+      if (status === "warn") return "\uC8FC\uC758";
+      if (status === "offline") return "\uC624\uD504\uB77C\uC778";
+      return "\uC815\uC0C1";
+    }
+
+    function renderDistrictMap(bins, filterType = "all") {
+      const map = {};
+      const visibleBins = filterType === "all"
+        ? bins
+        : bins.filter((row) => dashboardStatusOf(row) === filterType);
+
+      visibleBins.forEach((row) => {
+        const district = dashboardDistrictOf(row);
+        if (!map[district]) map[district] = { name: district, total: 0, danger: 0, warn: 0, good: 0, offline: 0, samples: [] };
+        const item = map[district];
+        const status = dashboardStatusOf(row);
+        item.total += 1;
+        if (status === "danger") item.danger += 1;
+        else if (status === "warn") item.warn += 1;
+        else if (status === "good") item.good += 1;
+        else item.offline += 1;
+        item.samples.push(row);
+      });
+
+      const rank = (item) => item.danger > 0 ? 1 : item.warn > 0 ? 2 : item.good > 0 ? 3 : 4;
+      const rows = Object.values(map).sort((a, b) => rank(a) - rank(b) || b.danger - a.danger || b.warn - a.warn || b.total - a.total || a.name.localeCompare(b.name, "ko-KR"));
+      const target = document.getElementById("districtMap");
+      if (!rows.length) {
+        const emptyText = filterType === "danger" ? "위험 상태의 쓰레기통이 없습니다." : filterType === "warn" ? "주의 상태의 쓰레기통이 없습니다." : filterType === "good" ? "정상 상태의 쓰레기통이 없습니다." : filterType === "offline" ? "오프라인 상태의 쓰레기통이 없습니다." : "표시할 쓰레기통 데이터가 없습니다.";
+        target.innerHTML = '<div class="district-empty">' + emptyText + '</div>';
+        return;
+      }
+
+      target.innerHTML = rows.map((item) => {
+        const status = filterType === "all" ? dashboardDistrictStatus(item) : filterType;
+        const iconType = status === "warn" ? "warning" : status;
+        const top = item.samples.find((row) => dashboardStatusOf(row) === status) || item.samples[0];
+        const counts = filterType === "all"
+          ? '<span class="d">위험 <b>' + item.danger + '</b></span><span class="w">주의 <b>' + item.warn + '</b></span><span class="g">정상 <b>' + item.good + '</b></span><span class="o">오프라인 <b>' + item.offline + '</b></span><span>전체 <b>' + item.total + '</b></span>'
+          : '<span class="' + (status === "danger" ? "d" : status === "warn" ? "w" : status === "offline" ? "o" : "g") + '">' + dashboardDistrictLabel(status) + ' <b>' + item.total + '</b></span>';
+        const locationHtml = '<div class="district-locations">' + item.samples.slice(0, 3).map((row) => '<div class="district-location"><b>#' + String(row.bin_id).padStart(2, "0") + '</b><span>' + (row.bin_loc || "-") + '</span></div>').join("") + (item.samples.length > 3 ? '<div class="district-location-more">외 ' + (item.samples.length - 3) + '개 더 보기</div>' : '') + '</div>';
+        return '<div class="district-card ' + status + '" data-status="' + status + '" onclick="location.href=\'/realtime?gun=' + encodeURIComponent(item.name) + '&status=' + encodeURIComponent(status) + '\'">' +
+          '<div class="district-card-head"><div class="district-name">' + item.name + '</div><span class="district-badge ' + status + '"><i class="ti ' + dashboardAlertIcon(iconType) + '"></i>' + dashboardDistrictLabel(status) + '</span></div>' +
+          '<div class="district-counts">' + counts + '</div>' +
+          locationHtml +
+        '</div>';
+      }).join("");
+    }
+
+    function renderDashboardRecentAlerts(sourceRows) {
+      const list = document.querySelector(".side-alert-list");
+      if (!list) return;
+
+      const escapeHtml = (value) => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+      const rowId = (row) => {
+        const value = row.display_bin_id || row.bin_id || row.sensor_id || "";
+        const number = String(value).replace(/[^0-9]/g, "");
+        return number ? number.padStart(2, "0") : String(value || "-");
+      };
+
+      const rowTimestamp = (row) => {
+        const raw = row.alerted_at || row.last_updated_at || row.updated_at || row.created_at || row.installed_at || "";
+        const parsed = new Date(raw);
+        if (!Number.isNaN(parsed.getTime())) return parsed.getTime();
+        const nums = String(raw).match(/\d+/g) || [];
+        if (nums.length >= 3) {
+          return new Date(Number(nums[0]), Number(nums[1]) - 1, Number(nums[2]), Number(nums[3] || 0), Number(nums[4] || 0), Number(nums[5] || 0)).getTime();
+        }
+        return 0;
+      };
+
+      const rowTime = (row) => {
+        const timestamp = rowTimestamp(row);
+        if (!timestamp) return "-";
+        const date = new Date(timestamp);
+        const dateText = date.toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })
+          .replace(/\.\s?/g, ".")
+          .replace(/\.$/, "");
+        const timeText = date.toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+        return dateText + "<br>" + timeText;
+      };
+
+      const rows = (Array.isArray(sourceRows) ? sourceRows : [])
+        .filter((row) => row && (row.alert_type === "danger" || row.alert_type === "warning"))
+        .sort((a, b) => rowTimestamp(b) - rowTimestamp(a) || Number(a.bin_id || 0) - Number(b.bin_id || 0))
+        .slice(0, 5);
+
+      if (!rows.length) {
+        list.innerHTML = '<div class="empty" style="padding:24px 0">표시할 위험/주의 알림이 없습니다.</div>';
+        return;
+      }
+
+      list.innerHTML = rows.map((row) => {
+        const isDanger = row.alert_type === "danger";
+        const kind = isDanger ? "d" : "w";
+        const icon = isDanger ? "ti-flame" : "ti-alert-triangle";
+        const title = isDanger ? "\uC704\uD5D8 \uAC10\uC9C0" : "\uC8FC\uC758 \uAC10\uC9C0";
+        let message = row.alert_msg || ((row.temp_value != null || row.smoke_value != null || row.flame_value != null) ? ("온도 " + (row.temp_value ?? "-") + " / 연기 감지값 " + (row.smoke_value ?? "-") + " / 불꽃 감지 " + ((String(row.flame_value) === "1" || String(row.flame_value).toUpperCase() === "O") ? "O" : "X")) : (isDanger ? "\uD654\uC7AC \uC704\uD5D8 \uAC10\uC9C0 - \uC989\uAC01 \uB300\uC751 \uD544\uC694" : "\uC628\uB3C4 \uBC0F \uC5F0\uAE30 \uC784\uACC4\uAC12 \uCD08\uACFC"));
+        message = String(message)
+          .replace(/\uBD88\uAF43\s*\uAC10\uC9C0\s*1/g, "\uBD88\uAF43 \uAC10\uC9C0 O")
+          .replace(/\uBD88\uAF43\s*\uAC10\uC9C0\s*0/g, "\uBD88\uAF43 \uAC10\uC9C0 X");
+        return '<div class="side-alert-item">' +
+          '<div class="adot ' + kind + '"><i class="ti ' + icon + '"></i></div>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div class="at ' + kind + '">' + title + '</div>' +
+            '<div class="aloc">#' + rowId(row) + ' ' + escapeHtml(row.bin_loc || '') + '</div>' +
+            '<div class="adesc">' + escapeHtml(message) + '</div>' +
+          '</div>' +
+          '<div class="atime">' + rowTime(row) + '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    let dashboardLastRefreshAt = new Date();
+    async function loadDashboardData() {
+      dashboardLastRefreshAt = new Date();
+      const binResponse = await fetch("/trashbins/list");
+      const alertResponse = await fetch("/alerts/list");
+      const bins = await binResponse.json();
+      let alerts = await alertResponse.json();
+      alerts = fidsApplyAlertReadState(alerts);
+      const sortRank = (type) => type === "danger" ? 1 : (type === "warning" || type === "warn") ? 2 : (type === "normal" || type === "good") ? 3 : 4;
+      bins.sort((a, b) => sortRank(dashboardStatusOf(a)) - sortRank(dashboardStatusOf(b)) || Number(a.bin_id) - Number(b.bin_id));
+      alerts.sort((a, b) => sortRank(a.alert_type) - sortRank(b.alert_type) || Number(a.bin_id) - Number(b.bin_id));
+      alertDot.classList.toggle("hide", !alerts.some((alert) => alert.alert_type === "danger" && alert.is_received !== "Y"));
+      const danger = bins.filter((row) => dashboardStatusOf(row) === "danger").length;
+      const warn = bins.filter((row) => dashboardStatusOf(row) === "warn").length;
+      const good = bins.filter((row) => dashboardStatusOf(row) === "good").length;
+      const offline = bins.filter((row) => dashboardStatusOf(row) === "offline").length;
+      const statNums = document.querySelectorAll(".stat-num");
+
+      statNums[0].textContent = bins.length;
+      statNums[1].textContent = danger;
+      statNums[2].textContent = warn;
+      statNums[3].textContent = good;
+      document.querySelector(".danger .stat-pct").textContent = bins.length ? ((danger / bins.length) * 100).toFixed(1) + "%" : "0%";
+      document.querySelector(".warn .stat-pct").textContent = bins.length ? ((warn / bins.length) * 100).toFixed(1) + "%" : "0%";
+      document.querySelector(".good .stat-pct").textContent = bins.length ? ((good / bins.length) * 100).toFixed(1) + "%" : "0%";
+      const networkStatus = document.querySelector(".bottom-bar .bot-item:first-child .bot-val");
+      if (networkStatus) {
+        networkStatus.textContent = offline ? "오프라인 " + offline + "개" : "정상 연결";
+        networkStatus.className = "bot-val " + (offline ? "warn" : "ok");
+      }
+
+      dashboardBins = bins;
+      document.querySelector(".district-dashboard").classList.add("compact");
+      renderDistrictMap(dashboardBins, dashboardCurrentFilter);
+      renderDashboardRecentAlerts(alerts);
+
+      document.querySelector(".alert-dropdown .alert-list").innerHTML = alerts.filter((alert) => alert.alert_type === "danger").slice(0, 5).map((alert) => {
+        const type = alert.alert_type === "normal" ? "success" : alert.alert_type;
+        return `<div class="alert-item ${type} ${alert.is_received === "Y" ? "read" : ""}"><div class="alert-icon"><i class="ti ${dashboardAlertIcon(alert.alert_type)}"></i></div><div class="alert-text"><strong>${dashboardAlertTitle(alert.alert_type)}</strong><span>#${displayBinId(alert)} ${alert.bin_loc || ""}</span><small>${alert.alert_msg || "센서 상태 정상"}</small></div><span class="alert-time">${dashboardTime(alert.alerted_at)}</span></div>`;
+      }).join("");
+
+      document.querySelector(".all-alert-list").innerHTML = alerts.filter((alert) => alert.alert_type === "danger").map((alert) => {
+        const type = alert.alert_type === "normal" ? "success" : alert.alert_type;
+        return `<div class="all-alert-row ${type} ${alert.is_received === "Y" ? "read" : ""}"><div><strong>${dashboardAlertTitle(alert.alert_type)}</strong><span>#${displayBinId(alert)} ${alert.bin_loc || ""}</span></div><p>${alert.alert_msg || "센서 상태 정상"}</p><time>${dashboardTime(alert.alerted_at)}</time></div>`;
+      }).join("");
+
+      const params = new URLSearchParams(location.search);
+      const binId = params.get("bin_id");
+      if (binId) {
+        const target = document.getElementById("bin-" + binId);
+        if (target) {
+          target.classList.add("focus-bin");
+          target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
+
+    loadDashboardData();
+  </script>
+  <script src="/js/fire-alert.js"></script>
+  <script src="/js/topbar-alert.js"></script>
+<script>document.querySelectorAll(".operator-menu").forEach((item)=>{item.style.display=sessionStorage.getItem("role")==="operator"?"flex":"none";});</script>
+<script>
+  window.addEventListener("pageshow", function () {
+    if (!sessionStorage.getItem("role")) {
+      location.replace("/");
+    }
+  });
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

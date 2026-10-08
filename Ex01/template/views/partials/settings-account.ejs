@@ -1,0 +1,65 @@
+﻿<div class="panel" id="section-account">
+  <div class="panel-header">
+    <div class="panel-icon green"><i class="ti ti-user"></i></div>
+    <div>
+      <div class="panel-title">계정 정보</div>
+      <div class="panel-sub">관리자 계정 정보를 확인하고 수정합니다.</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field-group">
+      <div class="field-label">이름</div>
+      <input id="profileName" class="input-field" style="width:100%" required>
+    </div>
+    <div class="field-group">
+      <div class="field-label">소속 기관</div>
+      <input id="profileOrg" class="input-field" style="width:100%" disabled>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field-group">
+      <div class="field-label">이메일</div>
+      <input id="profileEmail" class="input-field" style="width:100%" type="email" disabled>
+    </div>
+    <div class="field-group">
+      <div class="field-label">휴대전화</div>
+      <input id="profilePhone" class="input-field" style="width:100%" placeholder="010-0000-0000" required>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field-group">
+      <div class="field-label">&#45812;&#45817; &#46041;</div>
+      <input id="profileAssignedRegions" class="input-field" style="width:100%" disabled>
+    </div>
+    <div class="field-group">
+      <div class="field-label">&#44428;&#54620;</div>
+      <input id="accountRole" class="input-field" style="width:100%" disabled>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="field-group">
+      <div class="field-label">&#49849;&#51064; &#49345;&#53468;</div>
+      <input id="approvalStatus" class="input-field" style="width:100%" disabled>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <i class="ti ti-info-circle"></i>
+    &#51060;&#47700;&#51068;, &#49548;&#49549; &#44592;&#44288;, &#45812;&#45817; &#46041;&#51008; &#49849;&#51064; &#51221;&#48372;&#50752; &#50672;&#44208;&#46104;&#50612; &#51080;&#50612; &#51060; &#54868;&#47732;&#50640;&#49436; &#48148;&#47196; &#49688;&#51221;&#54624; &#49688; &#50630;&#49845;&#45768;&#45796;. &#51060;&#47492;&#44284; &#55092;&#45824;&#51204;&#54868;&#47564; &#49688;&#51221;&#54624; &#49688; &#51080;&#49845;&#45768;&#45796;.
+  </div>
+
+  <div class="info-box readonly-note">
+    <i class="ti ti-alert-triangle"></i>
+    계정 탈퇴 시 해당 계정은 영구히 삭제되며, 담당 중인 쓰레기통과 알림 기록은 운영자에게 이관됩니다.
+  </div>
+
+  <div class="save-bar" style="justify-content:space-between;">
+    <button class="btn" type="button" onclick="withdrawAccount()" style="border-color:#fecaca;color:#dc2626;background:#fff5f5;"><i class="ti ti-user-x"></i>계정 탈퇴</button>
+    <button class="btn blue" type="button" onclick="saveProfile()"><i class="ti ti-device-floppy"></i>계정 정보 저장</button>
+  </div>
+</div>
+

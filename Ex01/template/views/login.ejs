@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 - FIDS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", Arial, sans-serif;
+      background: #f5f6fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #10172f;
+    }
+
+    .page {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      min-height: 600px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e8e9ed;
+      box-shadow: 0 4px 40px rgba(0, 0, 0, 0.08);
+      background: #fff;
+    }
+
+    .left {
+      flex: 1;
+      background: #1a2235;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px;
+      padding-top: 32px;
+    }
+
+    .left-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .left-title span {
+      display: block;
+      width: 32px;
+      height: 3px;
+      background: #2d6be4;
+      border-radius: 2px;
+      margin: 10px auto 0;
+    }
+
+    .left-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 48px;
+      width: 100%;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: rgba(45, 107, 228, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .feature-icon i {
+      font-size: 18px;
+      color: #6fa3f7;
+    }
+
+    .feature-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+      line-height: 1.5;
+    }
+
+    .right {
+      width: 480px;
+      flex-shrink: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 52px 48px;
+    }
+
+    .form-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      align-self: flex-start;
+      width: 100%;
+    }
+
+    .form-sub {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 24px;
+      align-self: flex-start;
+    }
+
+    .field {
+      width: 100%;
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #ccc;
+      z-index: 1;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      height: 44px;
+      border-radius: 9px;
+      border: 1.5px solid #e8e9ed;
+      background: #fafafa;
+      padding: 0 14px 0 38px;
+      font-size: 14px;
+      color: #222;
+      outline: none;
+      transition: border .15s;
+      font-family: inherit;
+    }
+
+    .input-wrap input:focus {
+      border-color: #2d6be4;
+      background: #fff;
+    }
+
+    .email-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    .email-wrap input {
+      border-radius: 9px 0 0 9px;
+      border-right: none;
+      flex: 1;
+    }
+
+    .email-domain {
+      height: 44px;
+      padding: 0 12px;
+      background: #f0f2f5;
+      border: 1.5px solid #e8e9ed;
+      border-left: none;
+      border-radius: 0 9px 9px 0;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #888;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 46px;
+      border-radius: 10px;
+      background: #1a2235;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-bottom: 16px;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      background: #243040;
+    }
+
+    .btn-primary i {
+      font-size: 17px;
+    }
+
+    .signup-link {
+      font-size: 13px;
+      color: #aaa;
+      text-align: center;
+    }
+
+    .signup-link a {
+      color: #2d6be4;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="left">
+      <div class="left-title">
+        FIDS
+        <span></span>
+      </div>
+
+      <div class="left-sub">
+        공공 쓰레기통 내부 화재를 실시간으로<br>
+        감지하고 관리하는 스마트 플랫폼
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-layout-dashboard"></i></div>
+          <div>
+            <div class="feature-title">대시보드</div>
+            <div class="feature-desc">전체 현황을 한 화면에서 직관적으로 파악</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-map-pin"></i></div>
+          <div>
+            <div class="feature-title">쓰레기통 관리</div>
+            <div class="feature-desc">설치 위치·상태·센서 정보를 한눈에 파악하고 관리</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-activity"></i></div>
+          <div>
+            <div class="feature-title">실시간 모니터링</div>
+            <div class="feature-desc">쓰레기통 내부 온도·연기 데이터를 24시간 실시간 확인</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-clipboard-list"></i></div>
+          <div>
+            <div class="feature-title">알림 기록</div>
+            <div class="feature-desc">과거 발생한 화재·경보 이력을 검색하고 분석</div>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon"><i class="ti ti-settings"></i></div>
+          <div>
+            <div class="feature-title">설정</div>
+            <div class="feature-desc">시스템 환경 및 알림 설정을 관리</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="form-title">로그인</div>
+      <div class="form-sub">관리자 계정으로 로그인하세요</div>
+
+      <div class="field">
+        <label>이메일</label>
+        <div class="input-wrap email-wrap">
+          <i class="ti ti-mail"></i>
+          <input id="email_id" type="text" placeholder="이메일을 입력하세요">
+          <span class="email-domain">@korea.kr</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>비밀번호</label>
+        <div class="input-wrap">
+          <i class="ti ti-lock"></i>
+          <input id="mgr_pw" type="password" placeholder="비밀번호를 입력하세요">
+        </div>
+      </div>
+
+      <button id="loginBtn" class="btn-primary" type="button">
+        <i class="ti ti-login"></i>
+        로그인
+      </button>
+
+      <div class="signup-link" style="margin-top:12px;">
+        &#48708;&#48128;&#48264;&#54840;&#47484; &#51082;&#51004;&#49512;&#45208;&#50836;? <a href="/find-password">&#48708;&#48128;&#48264;&#54840; &#48320;&#44221;</a>
+      </div>
+
+      <div class="signup-link">
+        계정이 없으신가요? <a href="/join">회원가입</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const emailId = document.getElementById("email_id").value.trim();
+      const mgrPw = document.getElementById("mgr_pw").value.trim();
+
+      if (!emailId) {
+        alert("이메일을 입력해주세요.");
+        return;
+      }
+
+      if (!mgrPw) {
+        alert("비밀번호를 입력해주세요.");
+        return;
+      }
+
+      const mgrEmail = emailId.includes("@") ? emailId : emailId + "@korea.kr";
+
+      const response = await fetch("/manager/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mgr_email: mgrEmail,
+          mgr_pw: mgrPw
+        })
+      });
+
+      const result = await response.json();
+
+      alert(result.message);
+
+      if (result.success) {
+        sessionStorage.setItem("mgr_id", result.user.mgr_id);
+        sessionStorage.setItem("mgr_email", result.user.mgr_email);
+        sessionStorage.setItem("mgr_name", result.user.mgr_name);
+        sessionStorage.setItem("mgr_org", result.user.mgr_org || "");
+        sessionStorage.setItem("organization", result.user.mgr_org || "");
+        sessionStorage.setItem("role", result.role);
+
+        location.href = "/";
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+

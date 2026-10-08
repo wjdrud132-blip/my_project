@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280"><title>?ㅼ떆媛?紐⑤땲?곕쭅 - FIDS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"><link rel="stylesheet" href="/css/fire-alert.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Pretendard,"Apple SD Gothic Neo",Arial,sans-serif;background:#f5f6fa;display:flex;height:100vh;overflow:hidden;color:#07112d}.sidebar{width:220px;background:#1a2235;display:flex;flex-direction:column;height:100vh;flex-shrink:0}.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}.sb-logo-title{font-size:16px;font-weight:700;color:#fff}.sb-logo-title span{display:inline-block;width:3px;height:16px;background:#2d6be4;border-radius:2px;margin-right:8px;vertical-align:middle}.sb-logo-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}.sb-logo-sub2{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px}.sb-nav{padding:14px 10px;flex:1}.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:13px;color:rgba(255,255,255,.55);cursor:pointer;margin-bottom:2px}.nav-item.active,.nav-item:hover{background:rgba(255,255,255,.1);color:#fff}.nav-item i{font-size:17px}.sb-bottom{padding:14px 10px;border-top:1px solid rgba(255,255,255,.08)}.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:2px}.sb-avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}.sb-avatar i{font-size:15px;color:rgba(255,255,255,.7)}.sb-user-name{font-size:12px;font-weight:600;color:#fff}.sb-user-email{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px}.sb-logout{display:flex;align-items:center;gap:10px;padding:9px 12px;font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;border-radius:8px}.sb-logout:hover{color:#fff;background:rgba(255,255,255,.06)}.main{flex:1;display:flex;flex-direction:column;overflow:hidden}.topbar{height:60px;background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;display:flex;align-items:center;justify-content:space-between}.topbar-title{font-size:20px;font-weight:800}.topbar-right{display:flex;align-items:center;gap:14px;font-size:12px;color:#8a94a6}.live-dot{display:flex;align-items:center;gap:6px;font-weight:800;color:#16a34a}.live-dot:before{content:"";width:8px;height:8px;border-radius:50%;background:#16a34a}.refresh-btn{height:34px;border-radius:8px;display:flex;align-items:center;gap:6px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;padding:0 12px;border:1px solid #e0e0e0;background:#fff;color:#555}.content{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:20px;gap:16px}.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat-card{height:82px;background:#fff;border:1px solid #e1e6ef;border-radius:12px;padding:0 20px;display:flex;align-items:center;gap:18px}.stat-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px}.stat-num{font-size:28px;font-weight:700;line-height:1}.stat-lbl{font-size:12px;color:#8b98b2;margin-top:5px}.info-banner{height:42px;background:#eff6ff;border:1px solid #93c5fd;border-radius:9px;padding:0 16px;display:flex;align-items:center;gap:10px}.info-banner i{color:#2d6be4}.info-banner p{font-size:12px;color:#1d4ed8}.body-wrap{flex:1;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-height:0}.sensor-panel{display:flex;flex-direction:column;min-width:0;min-height:0}.sensor-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}.sensor-title{font-size:16px;font-weight:700}.sensor-sub{font-size:12px;color:#8b98b2;margin-top:4px}.filters{display:flex;align-items:center;gap:8px}.search-box{width:280px;height:36px;display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid #dbe3ef;border-radius:8px;background:#fff;color:#8b98b2}.search-box input{border:0;outline:0;background:transparent;width:100%;font-size:12px}.filter-sel{height:36px;border:1px solid #dbe3ef;border-radius:8px;background:#fff;padding:0 10px;font-size:12px;font-family:inherit}.tabs{display:flex;gap:8px;margin:0 0 14px}.tab{height:30px;min-width:48px;border:0;border-radius:7px;background:transparent;color:#8b98b2;font-size:12px;font-weight:700;cursor:pointer}.tab.active{background:#fff;color:#07112d;box-shadow:0 1px 5px rgba(15,23,42,.1)}.sensor-list{flex:1;overflow-y:auto;padding-right:6px;display:flex;flex-direction:column;gap:10px}.sensor-card{background:#fff;border:1px solid #e1e6ef;border-radius:12px;overflow:hidden;flex-shrink:0}.sensor-card.danger{border-color:#ff7a7a;background:#fff7f7}.sensor-card.warning{border-color:#f2bc1b;background:#fffdf1}.sensor-card.offline{border-color:#cbd5e1;background:#f8fafc}.card-top{height:48px;display:grid;grid-template-columns:52px 1fr 92px 28px;align-items:center;padding:0 18px}.sensor-id{font-size:13px;font-weight:900;color:#94a3b8}.sensor-id.danger{color:#dc2626}.sensor-id.offline{color:#64748b}.name{font-size:15px;font-weight:700;color:#07112d}.addr{font-size:12px;color:#8b98b2;margin-top:3px}.badge{justify-self:end;display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 12px;border-radius:999px;font-size:12px;font-weight:700}.badge.danger{background:#fee2e2;color:#dc2626}.badge.warning{background:#fef3c7;color:#b45309}.badge.normal{background:#dcfce7;color:#15803d}.badge.offline{background:#e2e8f0;color:#475569}.chev{color:#9aa6bb;font-size:16px;justify-self:end}.card-body{display:none;border-top:1px solid #edf1f7}.sensor-card.open .card-body{display:grid;grid-template-columns:repeat(4,1fr);min-height:92px}.metric{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #edf1f7}.metric:last-child{border-right:0}.metric-label{font-size:12px;color:#9aa6bb;margin-bottom:8px}.metric-value{font-size:18px;font-weight:700}.metric-value.danger{color:#dc2626}.metric-value.warning{color:#d97706}.metric-value.normal{color:#07112d}.metric-value.offline{color:#64748b}.unit{font-size:11px;color:#8b98b2;font-weight:500}.ai-box{grid-column:1/-1;margin:0 18px 12px;padding:12px 14px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;align-items:flex-start;gap:10px}.sensor-card.danger .ai-box{background:#fff1f2;border-color:#fecdd3}.sensor-card.warning .ai-box{background:#fffbeb;border-color:#fde68a}.ai-icon{width:28px;height:28px;border-radius:50%;background:#eef3fd;color:#2563eb;display:grid;place-items:center;flex-shrink:0}.ai-title{font-size:12px;font-weight:900;color:#0f172a;margin-bottom:4px}.ai-reason{font-size:12px;color:#475569;line-height:1.5}.ai-meta{font-size:11px;color:#94a3b8;margin-top:5px}.card-foot{grid-column:1/-1;text-align:right;padding:0 18px 12px;color:#c3cad8;font-size:11px}.side{display:flex;flex-direction:column;gap:14px;min-height:0;overflow-y:auto}.side-card{background:#fff;border:1px solid #e1e6ef;border-radius:12px;padding:16px}.side-title{font-size:14px;font-weight:900;margin-bottom:14px}.calendar-head{display:flex;align-items:center;justify-content:space-between;color:#94a3b8}.calendar-title{font-size:13px;font-weight:900;color:#172033}.week{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11px;color:#8b98b2;margin-top:18px}.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}.calendar-day{height:28px;border:0;border-radius:7px;background:#fff;color:#64748b;font-size:12px;cursor:pointer}.calendar-day:hover,.calendar-day.active{background:#2563eb;color:#fff;font-weight:800}.record-empty{height:70px;display:flex;align-items:center;justify-content:center;color:#a7b0c2;font-size:12px}.event{display:flex;gap:8px;padding:9px 0;border-bottom:1px solid #f1f4f8}.dot{width:8px;height:8px;border-radius:50%;margin-top:5px}.dot.danger{background:#dc2626}.dot.warning{background:#d97706}.dot.normal{background:#16a34a}.event-title{font-size:12px;font-weight:800}.event-title.danger{color:#dc2626}.event-title.warning{color:#d97706}.event-title.normal{color:#16a34a}.event-desc,.event-time{font-size:11px;color:#94a3b8}.alert-area{position:relative}.alert-button{position:relative;width:38px;height:38px;border:1px solid #e5e7eb;border-radius:50%;background:#fff;cursor:pointer;font-size:17px;display:grid;place-items:center}.alert-dot{position:absolute;top:7px;right:8px;width:8px;height:8px;background:#ef4444;border-radius:50%;border:2px solid #fff}.alert-dot.hide{display:none}.alert-dropdown{display:none;position:absolute;top:46px;right:0;width:330px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 18px 45px rgba(15,23,42,.18);overflow:hidden;z-index:50}.alert-dropdown.open{display:block}.alert-head{display:flex;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #eef2f7}.alert-head button,.alert-more{border:0;background:#fff;color:#2563eb;cursor:pointer}.alert-list{max-height:300px;overflow-y:auto}.alert-item{display:grid;grid-template-columns:42px 1fr 56px;gap:10px;padding:14px 16px;border-bottom:1px solid #f1f5f9}.alert-item.danger{background:#fff5f5}.alert-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center}.alert-item.danger .alert-icon{background:#fee2e2;color:#ef4444}.alert-item.warning .alert-icon{background:#fef3c7;color:#f59e0b}.alert-item.normal .alert-icon{background:#d1fae5;color:#10b981}.alert-text{display:flex;flex-direction:column;gap:4px}.alert-text strong{font-size:14px}.alert-text span{font-size:13px}.alert-text small,.alert-time{font-size:12px;color:#9ca3af}.alert-more{width:100%;height:42px;font-weight:700}.all-alert-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:9000;align-items:center;justify-content:center}.all-alert-overlay.open{display:flex}.all-alert-modal{width:720px;max-height:80vh;background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(15,23,42,.25);overflow:hidden}.all-alert-header{display:flex;justify-content:space-between;padding:22px 24px;border-bottom:1px solid #e5e7eb}.all-alert-header button{width:36px;height:36px;border:0;border-radius:50%;font-size:24px}.all-alert-list{max-height:58vh;overflow:auto;padding:10px}.all-alert-row{display:grid;grid-template-columns:180px 1fr 90px;gap:16px;padding:16px;border-bottom:1px solid #f1f5f9}.all-alert-row.danger{background:#fff5f5}.all-alert-row.warning{background:#fffbeb}.all-alert-row.normal{background:#ecfdf5}
+    .alert-item.read { }
+    .alert-item.read .alert-text strong { font-weight: 500; color: #6b7280; }
+    .alert-item.read .alert-text span, .alert-item.read .alert-text small, .alert-item.read .alert-time { color: #b0b7c3; }
+    .alert-item.read .alert-icon { }
+    .all-alert-row.read { }
+    .all-alert-row.read strong { font-weight: 500; color: #9ca3af; }
+.operator-menu{display:none}.alert-item:not(.read) .alert-text strong{color:#111827!important;font-weight:800!important}.alert-item:not(.read) .alert-text span{color:#1f2937!important}.alert-item:not(.read) .alert-text small,.alert-item:not(.read) .alert-time{color:#6b7280!important}.all-alert-row:not(.read) strong{color:#111827!important;font-weight:800!important}.all-alert-row:not(.read) span,.all-alert-row:not(.read) p,.all-alert-row:not(.read) time{color:#1f2937!important}</style><style>
+.body-wrap{grid-template-columns:minmax(0,1fr)!important}.side{display:none!important}.realtime-trend-card{min-height:260px}.trend-sub{font-size:12px;color:#8b98b2;margin:-6px 0 10px;line-height:1.45}.realtime-smoke-chart{width:100%;height:190px;display:block}.sensor-card.open .card-body{grid-template-columns:repeat(4,minmax(0,.8fr)) 460px;grid-template-rows:92px auto;align-items:stretch}.inline-trend-card{grid-column:5;grid-row:1/3;margin:0 18px 12px 0;padding:12px 14px;border-left:1px solid #edf1f7;background:#fff;display:flex;flex-direction:column;justify-content:center;min-width:0}.inline-trend-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.inline-trend-title{font-size:12px;font-weight:900;color:#0f172a;white-space:nowrap}.inline-trend-sub{font-size:10px;color:#8b98b2;white-space:nowrap}.inline-smoke-chart{width:100%;height:138px;display:block}.ai-box{grid-column:1/5!important;margin:0 12px 12px 18px!important}.card-foot{grid-column:1/-1!important}.rt-axis{stroke:#e5e7eb;stroke-width:1}.rt-warning{stroke:#fbbf24;stroke-width:1.2;stroke-dasharray:4 4}.rt-danger{stroke:#ef4444;stroke-width:1.2;stroke-dasharray:4 4}.rt-area{fill:rgba(37,99,235,.08)}.rt-line{fill:none;stroke:#2563eb;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.rt-point{fill:#2563eb;stroke:#fff;stroke-width:1.7}.rt-label{font-size:10px;fill:#94a3b8}.rt-danger-label{font-size:10px;fill:#ef4444;font-weight:800}.rt-warning-label{font-size:10px;fill:#d97706;font-weight:800}.rt-empty{font-size:12px;fill:#94a3b8}.sensor-panel{min-width:0}
+</style></head><body>
+<div class="sidebar"><div class="sb-logo"><div class="sb-logo-title"><span></span>FIDS</div><div class="sb-logo-sub2">?곕젅湲고넻 ?붿옱 媛먯? ?쒖뒪??/div><div class="sb-logo-sub">愿由ъ옄 ??쒕낫??/div></div><div class="sb-nav"><div class="nav-item" onclick="location.href='/dashboard'"><i class="ti ti-home"></i>??쒕낫??/div><div class="nav-item" onclick="location.href='/trashbins'"><i class="ti ti-trash"></i>?곕젅湲고넻 愿由?/div><div class="nav-item active" onclick="location.href='/realtime'"><i class="ti ti-chart-line"></i>?ㅼ떆媛?紐⑤땲?곕쭅</div><div class="nav-item" onclick="location.href='/alert'"><i class="ti ti-bell"></i>?뚮┝ 湲곕줉</div><div class="nav-item operator-menu" onclick="location.href='/admin/approval'"><i class="ti ti-user-check"></i>愿由ъ옄 ?뱀씤 愿由?/div><div class="nav-item" onclick="location.href='/settings'"><i class="ti ti-settings"></i>?ㅼ젙</div><div class="nav-item" onclick="location.href='/'"><i class="ti ti-home-2"></i>硫붿씤?섏씠吏</div></div><div class="sb-bottom"><div class="sb-user"><div class="sb-avatar"><i class="ti ti-user"></i></div><div><div id="userName" class="sb-user-name">愿由ъ옄</div><div id="userEmail" class="sb-user-email">admin@korea.kr</div></div></div><div id="logoutBtn" class="sb-logout"><i class="ti ti-logout"></i>濡쒓렇?꾩썐</div></div></div>
+<div class="main"><div class="topbar"><div class="topbar-title">?ㅼ떆媛?紐⑤땲?곕쭅</div><div class="topbar-right"><span class="live-dot">LIVE</span><span>쨌</span><i class="ti ti-calendar"></i><span id="nowText"></span><div class="alert-area"><button class="alert-button" id="alertButton"><i class="ti ti-bell"></i><span class="alert-dot" id="alertDot"></span></button><div class="alert-dropdown" id="alertDropdown"><div class="alert-head"><strong>?뚮┝</strong><button id="readAllBtn">紐⑤몢 ?쎌쓬</button></div><div class="alert-list" id="alertList"></div><button class="alert-more" id="openAllAlertsBtn">?꾩껜 ?뚮┝ 蹂닿린 ??/button></div></div></div></div>
+<div class="content"><div class="stat-row"><div class="stat-card" onclick="setStatusFilter('')"><div class="stat-icon" style="background:#eff6ff;color:#3b82f6"><i class="ti ti-map-pin"></i></div><div><div class="stat-num" id="totalCount">0</div><div class="stat-lbl">?깅줉???ㅼ튂 ?꾩튂</div></div></div><div class="stat-card" onclick="setStatusFilter('danger')"><div class="stat-icon" style="background:#fee2e2;color:#dc2626"><i class="ti ti-flame"></i></div><div><div class="stat-num" id="dangerCount" style="color:#dc2626">0</div><div class="stat-lbl">?꾪뿕 寃쎈낫</div></div></div><div class="stat-card" onclick="setStatusFilter('warning')"><div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-alert-triangle"></i></div><div><div class="stat-num" id="warningCount" style="color:#d97706">0</div><div class="stat-lbl">二쇱쓽 媛먯?</div></div></div><div class="stat-card" onclick="setStatusFilter('normal')"><div class="stat-icon" style="background:#dcfce7;color:#16a34a"><i class="ti ti-check"></i></div><div><div class="stat-num" id="normalCount" style="color:#16a34a">0</div><div class="stat-lbl">?뺤긽 ?댁쁺 以?/div></div></div></div><div class="info-banner"><i class="ti ti-info-circle"></i><p>?ㅼ튂 ?꾩튂??愿由ъ옄媛 <b>?곕젅湲고넻 愿由?/b> 硫붾돱?먯꽌 ?깅줉??二쇱냼 湲곕컲?쇰줈 ?쒖떆?⑸땲?? ?ㅼ젣 GPS ?꾩튂媛 ?꾨땶 ?깅줉???ㅼ튂 二쇱냼瑜?湲곗??쇰줈 ?쇱꽌 ?곗씠?곕? 留ㅽ븨?⑸땲??</p></div><div class="body-wrap"><section class="sensor-panel"><div class="sensor-head"><div><div class="sensor-title">?ㅼ튂 ?꾩튂蹂??쇱꽌 ?꾪솴</div><div class="sensor-sub" id="listSub">?쇱꽌 ?곗씠??濡쒕뵫 以?/div></div><input type="hidden" id="statusFilter" value=""></div><div class="tabs"><button class="tab active" data-type="" onclick="setStatusFilter('')">?꾩껜</button><button class="tab" data-type="danger" onclick="setStatusFilter('danger')">?꾪뿕</button><button class="tab" data-type="warning" onclick="setStatusFilter('warning')">二쇱쓽</button><button class="tab" data-type="normal" onclick="setStatusFilter('normal')">?뺤긽</button></div><div class="sensor-list" id="sensorList"></div></section><aside class="side"><div class="side-card realtime-trend-card"><div class="side-title">?곌린媛먯?媛??ㅼ떆媛?異붿씠</div><div class="trend-sub" id="smokeTrendSub">理쒓렐 ?섏떊 湲곗?</div><svg class="realtime-smoke-chart" id="realtimeSmokeChart" viewBox="0 0 320 190" preserveAspectRatio="none"></svg></div></aside></div></div></div>
+<div class="all-alert-overlay" id="allAlertOverlay"><div class="all-alert-modal"><div class="all-alert-header"><div><h2>?꾩껜 ?뚮┝</h2><p>理쒓렐 媛먯????뚮┝ ?댁뿭?낅땲??</p></div><button id="closeAllAlertsBtn">횞</button></div><div class="all-alert-list" id="allAlertList"></div></div></div>
+<script>
+const FIDS_ALERT_READ_KEY="fids_alerts_read_all";function fidsApplyAlertReadState(rows){return Array.isArray(rows)?rows:[];}function fidsMarkAlertsRead(){}function fidsAlertsAreRead(){return false;}
+
+let sensors=[],alerts=[],dailyRecords=[],smokeHistory=[],opened=new Set();let smokeThresholds={dangerSmoke:230,warningSmoke:150};function displayBinId(row){const id=row&&row.display_bin_id!=null?row.display_bin_id:row&&row.bin_id;return String(id||"").padStart(2,"0");}const realtimeParams=new URLSearchParams(location.search);const initialGun=realtimeParams.get("gun")||realtimeParams.get("district")||"";let selectedRecordDateKey="";let calendarViewDate=new Date();const role=sessionStorage.getItem("role"),mgrName=sessionStorage.getItem("mgr_name"),mgrEmail=sessionStorage.getItem("mgr_email");if(!role){alert("濡쒓렇?몄씠 ?꾩슂?⑸땲??");location.href="/login"}userName.textContent=mgrName||"愿由ъ옄";userEmail.textContent=mgrEmail||"";logoutBtn.onclick=()=>{sessionStorage.clear();alert("\uB85C\uADF8\uC544\uC6C3\uB418\uC5C8\uC2B5\uB2C8\uB2E4.");location.replace("/")};function tick(){const n=new Date();const w=["??,"??,"??,"??,"紐?,"湲?,"??][n.getDay()];nowText.textContent=n.getFullYear()+"."+String(n.getMonth()+1).padStart(2,"0")+"."+String(n.getDate()).padStart(2,"0")+" ("+w+") "+String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0")+":"+String(n.getSeconds()).padStart(2,"0")}function statusOf(r){if(String(r.sensor_online||"")==="N"||Number(r.network_status)===0)return"offline";if(r.alert_type==="danger")return"danger";if(r.alert_type==="warning")return"warning";return"normal"}function statusText(s){return s==="danger"?"?꾪뿕":s==="warning"?"二쇱쓽":s==="offline"?"?ㅽ봽?쇱씤":"?뺤긽"}function rank(s){return s==="danger"?1:s==="warning"?2:s==="normal"?3:4}function ftime(v){return v?new Date(v).toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"-"}function splitRegion(loc){const p=String(loc||"").trim().split(/\s+/);const city=p[0]||"";const gun=p[1]||"";const ok=/([\uC2DC\uB3C4]|\uD2B9\uBCC4\uC2DC|\uAD11\uC5ED\uC2DC|\uD2B9\uBCC4\uC790\uCE58\uC2DC|\uD2B9\uBCC4\uC790\uCE58\uB3C4)$/.test(city);return{city:ok?city:"\uAE30\uD0C0",gun:ok&&gun?gun:"\uBBF8\uBD84\uB958"}}function enrich(r){const rg=splitRegion(r.bin_loc);return{...r,city:rg.city,gun:rg.gun}}function temp(r){const m=String(r.alert_msg||"").match(/\uC628\uB3C4\s*([0-9.]+)/);if(r.temp_value!=null&&r.temp_value!=="")return Number(r.temp_value).toFixed(1);return m?Number(m[1]).toFixed(1):"-"}function smoke(r){const m=String(r.alert_msg||"").match(/\uC5F0\uAE30\s*\uAC10\uC9C0\uAC12\s*(\d+(?:\.\d+)?)/);if(r.smoke_value!=null&&r.smoke_value!=="")return Number(r.smoke_value);return m?Number(m[1]):"-"}function flame(r){if(r.flame_value!=null&&r.flame_value!=="")return Number(r.flame_value)===1?"O":"X";const m=String(r.alert_msg||"").match(/\uBD88\uAF43\s*\uAC10\uC9C0\s*(0|1|O|X)/i);if(!m)return "-";const v=String(m[1]).toUpperCase();return v==="1"||v==="O"?"O":"X"}function aiSummary(r){const ai=statusText(r.ai_status||statusOf(r));return `AI ?먮떒: ${ai}`}function aiReason(r){return r.ai_reason||"\uC13C\uC11C\uAC12\uC774 \uD604\uC7AC \uC0C1\uD0DC \uAE30\uC900\uACFC \uC77C\uCE58\uD569\uB2C8\uB2E4."}function wifi(r){if(statusOf(r)==="offline")return "-";return Math.max(-79,Math.min(-49,-48-Math.round(smoke(r)/11)))}function battery(r){return statusOf(r)==="offline"?"?ㅽ봽?쇱씤":statusOf(r)==="normal"?"?뺤긽":"??꾩븬"}function updateGunFilter(){}function updateFilters(){}function setStatusFilter(t){statusFilter.value=t;document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.type===t));renderSensors();renderSmokeTrend()}
+function initOpen(){
+  return;
+}function visibleSensorRows(){const sf=statusFilter.value,gun=initialGun;return sensors.filter(r=>{const st=statusOf(r);return(!sf||st===sf)&&(!gun||r.gun===gun)}).sort((a,b)=>rank(statusOf(a))-rank(statusOf(b))||Number(a.bin_id)-Number(b.bin_id))}function smokeTrendSvg(target){
+  const danger=Number(smokeThresholds.dangerSmoke)||230,warning=Number(smokeThresholds.warningSmoke)||150;
+  const w=286,h=104,ox=26,oy=8;
+  const targetId=target?Number(target.bin_id):0;
+  const rows=smokeHistory.filter(r=>Number(r.bin_id)===targetId).sort((a,b)=>{const ta=new Date(a.sensed_at||a.created_at||a.alerted_at||a.received_at||0).getTime();const tb=new Date(b.sensed_at||b.created_at||b.alerted_at||b.received_at||0).getTime();return ta-tb;}).slice(-12);
+  let vals=rows.map(r=>Number(r.gas)).filter(v=>Number.isFinite(v));
+  if(!target || statusOf(target)==="offline" || !vals.length) vals=Array(12).fill(0);
+  const axisMin=80;
+  const rawMax=Math.max(danger,warning,...vals,100);
+  const axisMax=Math.max(300,Math.ceil(rawMax/100)*100);
+  const denom=Math.max(axisMax-axisMin,1);
+  const clamp=v=>Math.max(axisMin,Math.min(axisMax,Number(v)||0));
+  const y=v=>oy+h-((clamp(v)-axisMin)/denom)*h;
+  const x=i=>ox+(w/Math.max(vals.length-1,1))*i;
+  const tickVals=[axisMin];for(let t=100;t<=axisMax;t+=100) tickVals.push(t);
+  const grid=tickVals.map(t=>`<line class="rt-axis" x1="${ox}" y1="${y(t)}" x2="${ox+w}" y2="${y(t)}"></line><text class="rt-label" x="${ox-5}" y="${y(t)+3}" text-anchor="end">${t}</text>`).join("");
+  const points=vals.map((v,i)=>`${x(i)},${y(v)}`).join(" ");
+  const area=`${ox},${oy+h} ${points} ${ox+w},${oy+h}`;
+  const currentLabel=target&&statusOf(target)!=="offline"?smoke(target):0;
+  const dangerLabelY=Math.max(10,y(danger)-22);
+  const warningLabelY=Math.max(24,y(warning)-7);
+  return `${grid}<line class="rt-axis" x1="${ox}" y1="${oy+h}" x2="${ox+w}" y2="${oy+h}"></line><line class="rt-warning" x1="${ox}" y1="${y(warning)}" x2="${ox+w}" y2="${y(warning)}"></line><line class="rt-danger" x1="${ox}" y1="${y(danger)}" x2="${ox+w}" y2="${y(danger)}"></line><text class="rt-danger-label" x="${ox+w-40}" y="${dangerLabelY}">\uC704\uD5D8 ${danger}</text><text class="rt-warning-label" x="${ox+w-40}" y="${warningLabelY}">\uC8FC\uC758 ${warning}</text><polygon class="rt-area" points="${area}"></polygon><polyline class="rt-line" points="${points}"></polyline>${vals.map((v,i)=>`<circle class="rt-point" cx="${x(i)}" cy="${y(v)}" r="3"></circle>`).join("")}<text class="rt-label" x="${ox+w}" y="${oy+h+12}" text-anchor="end">\uD604\uC7AC ${currentLabel}</text>`;
+}function smokeTrendBlock(row){
+  return `<div class="inline-trend-card"><div class="inline-trend-head"><div class="inline-trend-title">\uC5F0\uAE30\uAC10\uC9C0\uAC12 \uCD94\uC774</div></div><svg class="inline-smoke-chart" viewBox="0 0 320 126" preserveAspectRatio="none">${smokeTrendSvg(row)}</svg></div>`;
+}
+function renderSmokeTrend(){}let thresholdsLoaded=false;async function loadRealtimeThresholds(){if(thresholdsLoaded)return;try{const r=await fetch("/settings/api/thresholds");const j=await r.json();if(j.success&&j.thresholds){smokeThresholds.dangerSmoke=Number(j.thresholds.dangerSmoke)||230;smokeThresholds.warningSmoke=Number(j.thresholds.warningSmoke)||150;thresholdsLoaded=true}}catch(e){}}
+function isAiEnabled(row){return row && (row.ai_enabled === "Y" || row.ai_enabled === true || row.ai_enabled === 1 || row.ai_enabled === "1");}function toggleOpen(id){id=String(id);opened.has(id)?opened.delete(id):opened.add(id);renderSensors()}function renderStats(){const total=sensors.length,d=sensors.filter(s=>statusOf(s)==="danger").length,w=sensors.filter(s=>statusOf(s)==="warning").length,n=sensors.filter(s=>statusOf(s)==="normal").length,o=sensors.filter(s=>statusOf(s)==="offline").length;totalCount.textContent=total;dangerCount.textContent=d;warningCount.textContent=w;normalCount.textContent=n;listSub.textContent=`珥?${total}媛??쇱꽌 쨌 ?꾪뿕 ${d}媛?쨌 二쇱쓽 ${w}媛?쨌 ?뺤긽 ${n}媛?쨌 ?ㅽ봽?쇱씤 ${o}媛?}function renderSensors(){const kw="",sf=statusFilter.value,city="",gun=initialGun;const rows=sensors.filter(r=>{const st=statusOf(r),text=(`${r.bin_id} ${r.bin_loc||""} ${r.city} ${r.gun}`).toLowerCase();return(!kw||text.includes(kw))&&(!sf||st===sf)&&(!city||r.city===city)&&(!gun||r.gun===gun)}).sort((a,b)=>rank(statusOf(a))-rank(statusOf(b))||Number(a.bin_id)-Number(b.bin_id));sensorList.innerHTML=rows.map(r=>{const st=statusOf(r),tm=temp(r),sm=smoke(r),fl=flame(r),wf=wifi(r),open=opened.has(String(r.bin_id));return `<article class="sensor-card ${st} ${open?"open":""}" title="${st === "offline" ? "?ㅽ봽?쇱씤 ?곹깭?낅땲?? : (r.ai_reason || "")}"><div class="card-top" onclick="toggleOpen(${r.bin_id})"><span class="sensor-id ${st}">#${displayBinId(r)}</span><div><div class="name">${r.bin_loc||"-"}</div><div class="addr">${r.city} ${r.gun}</div></div><span class="badge ${st}"><i class="ti ${st==="danger"?"ti-flame":st==="warning"?"ti-alert-triangle":st==="offline"?"ti-wifi-off":"ti-check"}"></i>${statusText(st)}</span><i class="chev ti ${open?"ti-chevron-up":"ti-chevron-down"}"></i></div><div class="card-body"><div class="metric"><div class="metric-label">?⑤룄</div><div class="metric-value ${st}">${tm}<span class="unit"> ??/span></div></div><div class="metric"><div class="metric-label">?곌린媛먯?媛?/div><div class="metric-value ${st}">${sm}</div></div><div class="metric"><div class="metric-label">遺덇퐙 媛먯?</div><div class="metric-value ${st}">${fl}</div></div><div class="metric"><div class="metric-label">Wi-Fi</div><div class="metric-value ${st}">${wf}${wf==="-"?"":" dBm"}</div></div>${open ? smokeTrendBlock(r) : ""}${isAiEnabled(r) && st!=="offline" ? `<div class="ai-box"><div class="ai-icon"><i class="ti ti-sparkles"></i></div><div><div class="ai-title">AI \uD310\uB2E8</div><div class="ai-reason">${aiReason(r)}</div><div class="ai-meta">${aiSummary(r)}</div></div></div>` : ""}<div class="card-foot">留덉?留??섏떊: ${ftime(r.alerted_at)}</div></div></article>`}).join("")||'<div class="side-card" style="text-align:center;color:#94a3b8">議곌굔??留욌뒗 ?쇱꽌媛 ?놁뒿?덈떎.</div>';renderStats()}function atitle(t){return t==="danger"?"?꾪뿕 媛먯?":t==="warning"?"二쇱쓽 媛먯?":"?뺤긽"}function aicon(t){return t==="danger"?"ti-flame":t==="warning"?"ti-alert-triangle":"ti-check"}function renderAlerts(){alertDot.classList.toggle("hide", !alerts.some(a=>a.alert_type==="danger" && a.is_received !== "Y"));const dangerAlerts=alerts.filter(a=>a.alert_type==="danger");alertList.innerHTML=dangerAlerts.slice(0,5).map(a=>`<div class="alert-item ${a.alert_type} ${fidsAlertsAreRead()?"read":""}"><div class="alert-icon"><i class="ti ${aicon(a.alert_type)}"></i></div><div class="alert-text"><strong>${atitle(a.alert_type)}</strong><span>#${displayBinId(a)} ${a.bin_loc||""}</span><small>${a.alert_msg||"?쇱꽌 ?곹깭 ?뺤긽"}</small></div><span class="alert-time">${ftime(a.alerted_at)}</span></div>`).join("");allAlertList.innerHTML=dangerAlerts.map(a=>`<div class="all-alert-row ${a.alert_type} ${fidsAlertsAreRead()?"read":""}"><div><strong>${atitle(a.alert_type)}</strong><span>#${displayBinId(a)} ${a.bin_loc||""}</span></div><p>${a.alert_msg||"?쇱꽌 ?곹깭 ?뺤긽"}</p><time>${ftime(a.alerted_at)}</time></div>`).join("")}function recordPad(n){return String(n).padStart(2,"0")}function recordKey(d){return d.getFullYear()+"-"+recordPad(d.getMonth()+1)+"-"+recordPad(d.getDate())}function renderCalendarDays(){if(!selectedRecordDateKey)selectedRecordDateKey=recordKey(new Date());const now=calendarViewDate,year=now.getFullYear(),month=now.getMonth(),first=new Date(year,month,1),last=new Date(year,month+1,0).getDate();calendarTitle.textContent=year+"??"+String(month+1)+"??;let html="";for(let i=0;i<first.getDay();i++)html+="<span></span>";for(let day=1;day<=last;day++){const key=recordKey(new Date(year,month,day));html+=`<button class="calendar-day ${key===selectedRecordDateKey?"active":""}" type="button" onclick="selectRecordDate('${key}')">${day}</button>`}calendarDays.innerHTML=html}function selectRecordDate(key){selectedRecordDateKey=key;renderCalendarDays();renderDateRecords()}function moveRecordMonth(diff){calendarViewDate=new Date(calendarViewDate.getFullYear(),calendarViewDate.getMonth()+diff,1);selectedRecordDateKey=recordKey(calendarViewDate);renderCalendarDays();renderDateRecords()}function renderDateRecords(){if(!selectedRecordDateKey)selectedRecordDateKey=recordKey(new Date());const rows=dailyRecords.filter(a=>a.alerted_at&&recordKey(new Date(a.alerted_at))===selectedRecordDateKey).sort((a,b)=>rank(a.alert_type)-rank(b.alert_type)||Number(a.bin_id)-Number(b.bin_id));recordTitle.textContent=selectedRecordDateKey+" 湲곕줉";recordList.className=rows.length?"":"record-empty";recordList.innerHTML=rows.length?rows.map(a=>`<div class="event"><span class="dot ${a.alert_type}"></span><div><div class="event-title ${a.alert_type}">${atitle(a.alert_type)}</div><div class="event-desc">#${displayBinId(a)} ${a.bin_loc||""}</div><div class="event-time">${ftime(a.alerted_at)}</div></div></div>`).join(""):"?좏깮???좎쭨??湲곕줉???놁뒿?덈떎."}async function loadRealtimeData(){await loadRealtimeThresholds();const [br,ar,hr]=await Promise.all([fetch("/trashbins/list"),fetch("/alerts/list"),fetch("/trashbins/sensor-history")]);sensors=(await br.json()).map(enrich);alerts=fidsApplyAlertReadState(await ar.json());const historyJson=await hr.json();smokeHistory=Array.isArray(historyJson)?historyJson:[];dailyRecords=[];if(!selectedRecordDateKey){const firstRecordDate=dailyRecords.length?new Date(dailyRecords[0].alerted_at):alerts.length?new Date(alerts[0].alerted_at):new Date();if(!Number.isNaN(firstRecordDate.getTime())){calendarViewDate=new Date(firstRecordDate.getFullYear(),firstRecordDate.getMonth(),1);selectedRecordDateKey=recordKey(firstRecordDate);}}updateFilters();initOpen();renderSensors();renderSmokeTrend();renderAlerts()}alertButton.onclick=e=>{e.stopPropagation();alertDropdown.classList.toggle("open")};readAllBtn.onclick=async()=>{fidsMarkAlertsRead();await fetch("/alerts/read-all",{method:"POST"});await loadRealtimeData();};openAllAlertsBtn.onclick=()=>{alertDropdown.classList.remove("open");allAlertOverlay.classList.add("open")};closeAllAlertsBtn.onclick=()=>allAlertOverlay.classList.remove("open");document.onclick=e=>{if(!e.target.closest(".alert-area"))alertDropdown.classList.remove("open")};let historyLoadedAt = 0;
+let alertLoadedAt = 0;
+let currentLoading = false;
+let historyLoading = false;
+const HISTORY_REFRESH_MS = 15000;
+const ALERT_REFRESH_MS = 15000;
+
+async function loadRealtimeCurrentData(forceAlerts = false) {
+  if (currentLoading) return;
+  currentLoading = true;
+
+  try {
+    await loadRealtimeThresholds();
+
+    const now = Date.now();
+    const shouldLoadAlerts = forceAlerts || now - alertLoadedAt >= ALERT_REFRESH_MS;
+    const binResponse = await fetch("/trashbins/list");
+
+    sensors = (await binResponse.json()).map(enrich);
+
+    if (shouldLoadAlerts) {
+      const alertResponse = await fetch("/alerts/list");
+      alerts = fidsApplyAlertReadState(await alertResponse.json());
+      alertLoadedAt = now;
+    }
+
+    updateFilters();
+    initOpen();
+    renderSensors();
+    renderAlerts();
+  } finally {
+    currentLoading = false;
+  }
+}
+
+async function loadSmokeHistory(force = false) {
+  const now = Date.now();
+  if (historyLoading) return;
+  if (!force && now - historyLoadedAt < HISTORY_REFRESH_MS) return;
+
+  historyLoading = true;
+  try {
+    const historyResponse = await fetch("/trashbins/sensor-history");
+    const historyJson = await historyResponse.json();
+
+    smokeHistory = Array.isArray(historyJson) ? historyJson : [];
+    historyLoadedAt = now;
+
+    renderSensors();
+    renderSmokeTrend();
+  } finally {
+    historyLoading = false;
+  }
+}
+
+async function loadRealtimeData() {
+  await loadRealtimeCurrentData(true);
+  await loadSmokeHistory(true);
+}
+
+tick();
+setInterval(tick, 1000);
+loadRealtimeData();
+setInterval(() => loadRealtimeCurrentData(false), 3000);
+setInterval(() => loadSmokeHistory(false), HISTORY_REFRESH_MS);
+</script><script src="/js/fire-alert.js"></script>
+  <script src="/js/topbar-alert.js"></script><script>document.querySelectorAll(".operator-menu").forEach((item)=>{item.style.display=sessionStorage.getItem("role")==="operator"?"flex":"none";});</script>
+<script>
+  window.addEventListener("pageshow", function () {
+    if (!sessionStorage.getItem("role")) {
+      location.replace("/");
+    }
+  });
+</script>
+</body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
